@@ -726,3 +726,42 @@ body.lang-zh .ztip .zh { color: var(--ink2); }
   body.print-zine .shell { display: block; }
 }
 .zine-actions { display: flex; gap: 8px; flex-wrap: wrap; } .zine-actions a.tool { text-decoration: none; }
+
+/* full zine: generated question pages (HTML so text wraps; sized with container units) */
+.zine-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.zclass { grid-column: 1 / -1; margin: 26px 0 -14px; font: 400 26px/1.2 var(--serif); display: flex; gap: 12px; align-items: baseline; border-top: 1px solid var(--hair); padding-top: 18px; }
+.zclass > span:first-child { font: 500 28px var(--mono); color: var(--mag); }
+.zclass .zh { font: 700 16px var(--zh-serif); color: var(--ink2); }
+body.lang-both .zclass .zh { margin-left: 4px; }
+.zpage { container-type: inline-size; position: relative; overflow: hidden; }
+.zpage-q { background:
+  linear-gradient(90deg, transparent 5%, #f2b8b8 5%, #f2b8b8 calc(5% + 1px), transparent calc(5% + 1px)),
+  repeating-linear-gradient(transparent 0 calc(5.6cqw - 1px), #d6deee calc(5.6cqw - 1px) 5.6cqw) 0 17cqw / 100% auto no-repeat,
+  #fffdf8; }
+.zq { position: absolute; inset: 0; padding: 6cqw 6cqw 5cqw 8cqw; display: flex; flex-direction: column; }
+.zq-h { font: 500 2.25cqw var(--mono); color: #333; letter-spacing: .02em; }
+.zq-h b { color: var(--mag); margin-right: 1.2cqw; font-weight: 500; }
+.zq-q { font: 400 2.45cqw/1.45 var(--mono); color: #7b776f; margin-top: 1.2cqw; padding-bottom: 2.2cqw; border-bottom: 1px dashed #999; }
+.zq-fig { flex: 0 1 auto; max-height: 46%; display: flex; justify-content: center; align-items: center; margin: 2.2cqw 0 1cqw; min-height: 0; }
+.zq-fig svg { width: 100%; height: 100%; max-height: 100%; display: block; overflow: visible; }
+.zq-fig.is-site svg { filter: url(#zrough2); }
+.zq-fig.is-site svg text, .zq-fig.is-site svg tspan { font-family: Caveat, 'Patrick Hand', cursive !important; font-size: 15px !important; letter-spacing: 0 !important; font-weight: 600 !important; }
+.zq-fig.is-site svg .st { font-size: 12px !important; }
+.zq-fig.is-site .ex { transform: none !important; }
+.zq-fig.is-site .lbl { opacity: 1 !important; }
+.zq-fig .part { cursor: default; }
+.zq-a { font-family: Caveat, 'Patrick Hand', cursive; color: #1f2a44; line-height: 1.32; flex: 1 1 auto; overflow: hidden; }
+.zq-a p { margin: 0 0 .35em; }
+.zq-a mark { background: linear-gradient(transparent 38%, rgba(255, 230, 107, .9) 38%, rgba(255, 230, 107, .9) 92%, transparent 92%); color: inherit; padding: 0 .1em; }
+.zq-a u { text-decoration-color: #d2453a; text-decoration-thickness: .08em; text-underline-offset: .12em; }
+.zq-a .zc { font-family: 'JetBrains Mono', monospace; font-size: .62em; background: #fff; border: 1px solid #ccc; padding: 0 .2em; }
+.zq-n { position: absolute; right: 6cqw; bottom: 3.5cqw; font: 600 4cqw Caveat, cursive; color: #6b6b6b; }
+.zpage-wrap .zpage svg.zart { filter: none; }
+@media print {
+  body.print-zine .zclass { display: none !important; }
+  body.print-zine .zpage { aspect-ratio: 3 / 4; height: auto; width: 100%; }
+}
+.zq-fig svg.zart { overflow: hidden !important; }
+.zine-grid { grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 40px 30px; }
+@media (max-width: 900px) { .zine-grid { grid-template-columns: 1fr; } }
+.zpage, .zpage * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

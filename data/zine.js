@@ -177,25 +177,66 @@
         ${marker(60, 120, 'before I clip it:', 40, ink, 'start', -2)}
         ${['every question answered (no blanks!)', 'definitions as the SOURCES say them', 'source named (Wright, Zuboff, MDN...)', 'in MY own words, not copied', 'one drawing / collage per class', 'name + section on the cover', 'pages in order, binder clip on'].map((t, i) => `<g ${rough}>${box(64, 170 + i * 66, 30, 30)}</g>${hand(80, 196 + i * 66, '✓', 34, green, 'middle')}${hand(112, 196 + i * 66, t, 28)}`).join('')}
         ${hand(300, 690, 'due Fri Nov 20 · 5 pm', 30, red, 'middle', -2)}
-        ${hand(300, 730, '+5 points for the zine version', 26, pencil, 'middle')}` }
+` }
   ];
 
-  window.ZINE = { pages, W, H };
+  // hand-drawn art reused for these questions: crop window [y0, y1] of each custom page (drawing only)
+  const CROP = { q13: [150, 452], q23: [150, 500], q32: [168, 300], q43: [170, 588], q51: [158, 492], q61: [168, 525],
+    q73: [158, 445], q85: [160, 462], q91: [170, 612], qC5: [150, 625] };
+  const art = {}; pages.forEach(p => { if (CROP[p.id]) art[p.id.slice(1).replace(/^(\d)(\d)$/, '$1.$2')] = p; });
+  const cover = pages.find(p => p.id === 'cover'), back = pages.find(p => p.id === 'back');
+  window.ZINE = { pages, art, W, H };
+
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // site markup → handwritten HTML: [[k|text]] → text, **bold** → highlighter, *em* → underline
+  const handHTML = src => esc(src || '').trim()
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (m, k, t) => t || ((window.TERMS || {})[k.trim()] || {}).en || k)
+    .replace(/\*\*([^*]+)\*\*/g, '<mark>$1</mark>')
+    .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?![*\w])/g, '$1<u>$2</u>')
+    .replace(/`([^`]+)`/g, '<span class="zc">$1</span>')
+    .split(/\n\s*\n/).map(b => `<p>${b.replace(/\n/g, '<br>')}</p>`).join('');
+  // pages where the zine needs a written-out answer instead of the site's template
+  const ZTEXT = {
+    'C5': `These tools resonate most in the **making** stage of my design work. **Positive:** a local model and an agent harness let me prototype in an afternoon — I write a clear spec (prompt as specification), the agent builds, and I check it against a rubric I wrote first; with *file over app* my notes and sketches stay mine. **Negative:** the same speed risks **de-skilling** and sameness — if every idea starts from the same model, the work starts to look alike; and hosted tools feed **surveillance capitalism** with my drafts. My rule: research and ideas by hand first, AI for building, and local models for anything private.`
+  };
+  const words = t => (t || '').split(/\s+/).length;
+
+  function svgPage(p, n) {
+    return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="${W}" height="${H}" fill="#fffdf8"/>${p.svg}</svg>`;
+  }
+  function qPage(q, n) {
+    let fig = '';
+    const a = art[q.id];
+    if (a) { const [y0, y1] = CROP[a.id]; fig = `<svg class="zart" viewBox="0 ${y0} ${W} ${y1 - y0}" xmlns="http://www.w3.org/2000/svg">${a.svg}</svg>`; }
+    else { try { fig = q.fig ? q.fig() : ''; } catch (e) { fig = ''; } }
+    const wc = words(ZTEXT[q.id] || q.short_en);
+    const fs = Math.max(2.9, Math.min(3.9, 4.6 - wc * 0.017)).toFixed(2);
+    return `<div class="zq">
+      <div class="zq-h"><b>${esc(q.id)}</b> ${esc(q.t_en)}</div>
+      <div class="zq-q">${esc(q.q_en)}</div>
+      <div class="zq-fig ${a ? 'is-art' : 'is-site'}">${fig}</div>
+      <div class="zq-a" style="font-size:${fs}cqw">${handHTML(ZTEXT[q.id] || q.short_en)}</div>
+      <div class="zq-n">${n}</div>
+    </div>`;
+  }
 
   window.renderZine = function (host) {
     const defs = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
       <filter id="zrough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter>
-      <pattern id="zruled" width="600" height="34" patternUnits="userSpaceOnUse"><line x1="0" y1="33" x2="600" y2="33" stroke="#cfd8ea" stroke-width="1"/></pattern>
+      <filter id="zrough2" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter>
     </defs></svg>`;
-    host.innerHTML = defs + pages.map((p, i) => `
-      <figure class="zpage-wrap">
-        <div class="zpage" aria-label="Zine page ${i}">
-          <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img">
-            <rect width="${W}" height="${H}" fill="#fffdf8"/>${p.id === 'cover' || p.id === 'back' ? '' : `<rect x="0" y="${130}" width="${W}" height="${H - 130}" fill="url(#zruled)" opacity=".7"/><line x1="30" y1="0" x2="30" y2="${H}" stroke="#f2b8b8" stroke-width="1.2"/>`}
-            ${p.svg}
-          </svg>
-        </div>
-        <figcaption class="ztip"><span class="en">${p.tip_en}</span><span class="zh">${p.tip_zh}</span></figcaption>
-      </figure>`).join('');
+    const qs = (window.CLASSES || []).slice().sort((a, b) => a.order - b.order).flatMap(c => c.qs.map(q => ({ q, c })));
+    let html = defs;
+    html += `<figure class="zpage-wrap"><div class="zpage">${svgPage(cover)}</div><figcaption class="ztip"><span class="en">${cover.tip_en}</span><span class="zh">${cover.tip_zh}</span></figcaption></figure>`;
+    let lastC = null;
+    qs.forEach(({ q, c }, i) => {
+      const a = art[q.id];
+      const sep = c !== lastC ? `<h3 class="zclass"><span>${c.n === 'C' ? 'C' : c.n}</span> <span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></h3>` : '';
+      lastC = c;
+      html += sep + `<figure class="zpage-wrap"><div class="zpage zpage-q">${qPage(q, i + 1)}</div>` +
+        (a ? `<figcaption class="ztip"><span class="en">${a.tip_en}</span><span class="zh">${a.tip_zh}</span></figcaption>` : '') + `</figure>`;
+    });
+    html += `<figure class="zpage-wrap"><div class="zpage">${svgPage(back)}</div><figcaption class="ztip"><span class="en">${back.tip_en}</span><span class="zh">${back.tip_zh}</span></figcaption></figure>`;
+    host.innerHTML = html;
   };
 })();
