@@ -528,3 +528,66 @@ body.lang-en .glow-plate .label-zh, body.lang-zh .glow-plate .label-en { display
 body.recall .q:not(.revealed) .glow-plate figcaption { filter: blur(5px); }
 @media (max-width: 900px) { .glow-plate { padding: 12px 10px; } .glow-plate .g-sw { display: none; } }
 .foot .made-with a { color: var(--mute); text-decoration: none; letter-spacing: .12em; } .foot .made-with a:hover { color: var(--ink); }
+
+/* ═══════════ Editorial pass (design-taste / editorial-minimal audit) ═══════════
+   - serif display + grotesk body + mono labels (no Inter default)
+   - structure over shadows: hairlines, small radii, no drop shadows
+   - restrained accent: magenta points at answers; pastel note fills removed
+   - one reveal per card, emphasized easing, reduced-motion safe        */
+:root {
+  --sans: "IBM Plex Sans", -apple-system, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, "Noto Serif SC", serif;
+  --zh-serif: "Noto Serif SC", "Songti SC", "STSong", serif;
+  --hair: #d6d2c8;
+  --ease-emph: cubic-bezier(.22, 1, .36, 1);
+  --ease-std: cubic-bezier(.4, 0, .2, 1);
+}
+body { font-size: 16px; }
+
+/* display type */
+.hero h1 { font: 400 clamp(2.9rem, 5.4vw, 5.2rem)/1.0 var(--serif); letter-spacing: -.025em; margin-bottom: 26px; }
+.hero h1 .en { display: block; }
+.hero h1 .zh { font: 700 .56em/1.35 var(--zh-serif); letter-spacing: .02em; margin-top: 16px; color: var(--ink2); }
+body.lang-zh .hero h1 .zh { font-size: .82em; margin-top: 0; color: var(--ink); }
+.cls-h h2 { font: 400 clamp(26px, 2.6vw, 34px)/1.12 var(--serif); text-transform: none; letter-spacing: -.015em; margin: 0 0 12px; }
+.cls-h h2 .zh { font: 700 19px/1.45 var(--zh-serif); margin-top: 6px; }
+body.lang-zh .cls-h h2 .zh { font-size: 28px; }
+.cls-h { border-bottom: 1px solid var(--hair); padding-bottom: 26px; margin-bottom: 30px; }
+.cls { padding-top: 104px; }
+.cls-n small::before { content: "— "; }
+.hero { border-bottom: 1px solid var(--hair); padding: 64px 0 56px; }
+
+/* cards: paper-on-paper, hairline, no shadow */
+.q { border-radius: 6px; box-shadow: none; border-color: var(--hair); background: #fbfaf6; margin-bottom: 30px; }
+.plate { border-radius: 4px; border-color: var(--hair); }
+.glow-plate { border-radius: 6px; }
+.ans.short { border-radius: 4px; box-shadow: none; }
+.g-item, .rel-chip, .links a { border-radius: 4px; }
+.note { border-radius: 0; background: transparent !important; border-top: 1px solid var(--hair); padding: 12px 0 0; }
+.notes { gap: 28px; }
+.note.hook h5::before { content: "→ "; }
+.note.trap h5::before { content: "! "; }
+.q-done { border-radius: 4px; }
+.q-id { border-radius: 3px; }
+
+/* measure: single-language columns stay readable */
+body.lang-en .bi, body.lang-zh .bi { max-width: 42em; }
+.ans .bi .en { font-size: 16px; line-height: 1.65; }
+
+/* micro-interactions + focus */
+a, button, .term { transition: color .12s var(--ease-std), background-color .12s var(--ease-std), border-color .12s var(--ease-std); }
+:is(button, a, summary, input, .g-stage):focus-visible { outline: 2px solid var(--mag); outline-offset: 2px; border-radius: 3px; }
+.rel-chip:hover, .links a:hover { transform: translateY(-1px); }
+
+/* one reveal per card */
+.q.pre { opacity: 0; transform: translateY(12px); }
+.q.reveal-in { opacity: 1; transform: none; transition: opacity .5s var(--ease-emph), transform .5s var(--ease-emph); }
+@media (prefers-reduced-motion: reduce) { .q.pre { opacity: 1; transform: none; } .q.reveal-in { transition: none; } }
+
+/* minimum text size in figures */
+svg .tiny { font-size: 10px; }
+body.lang-both :is(h4, h5, summary) > .zh { margin-left: 8px; letter-spacing: .06em; }
+.hero h1 { font-size: clamp(2.6rem, 4.3vw, 4.4rem); }
+.hero h1 .en { max-width: 9.5em; }
+@media (max-width: 1180px) { .hero { grid-template-columns: 1fr; } .hero-fig { max-width: 680px; width: 100%; } }
+@media (max-width: 900px) { .hero-fig.plate { overflow: visible; } .hero-fig svg.fig { min-width: 0 !important; } .hero { padding-top: 36px; } .kicker { line-height: 1.6; } }

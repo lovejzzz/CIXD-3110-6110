@@ -235,6 +235,12 @@
   }), { rootMargin: '-40% 0px -55% 0px' });
   $$('section.cls, #glossary').forEach(s => navIO.observe(s));
 
+  /* one entrance per card (skipped for cards already on screen at load) */
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const cio = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('reveal-in'); en.target.classList.remove('pre'); cio.unobserve(en.target); } }), { threshold: 0.06 });
+    $$('article.q').forEach(q => { if (q.getBoundingClientRect().top > innerHeight) { q.classList.add('pre'); cio.observe(q); } });
+  }
+
   /* hero layers jump */
   document.addEventListener('click', e => { const g = e.target.closest('[data-jump]'); if (g) location.hash = g.dataset.jump; });
   /* expand/collapse print */
