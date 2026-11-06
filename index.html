@@ -12,9 +12,10 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="lang-both">
+<a class="skip" href="#content">Skip to questions · 跳到题目</a>
 <div id="tip" role="tooltip"></div>
 <div id="flash" class="flash" hidden>
-  <div class="fc-box" role="dialog" aria-label="Flashcards">
+  <div class="fc-box" role="dialog" aria-modal="true" aria-label="Flashcards">
     <div class="fc-top">
       <span class="fc-title"><span class="en">Flashcards</span><span class="zh">闪卡</span></span>
       <span id="fc-pos" class="fc-pos"></span>
@@ -39,8 +40,8 @@
   </a>
   <div class="top-r">
     <div class="tools">
-      <button id="recall-toggle" class="tool" aria-pressed="false" title="Hide answers until you reveal them / 先遮住答案"><span class="sw"></span><span class="en">Recall mode</span><span class="zh">自测模式</span></button>
-      <button id="flash-open" class="tool" title="Flashcards / 闪卡"><span class="ico">▤</span><span class="en">Flashcards</span><span class="zh">闪卡</span></button>
+      <button id="recall-toggle" class="tool" aria-label="Recall mode / 自测模式" aria-pressed="false" title="Hide answers until you reveal them / 先遮住答案"><span class="sw"></span><span class="en">Recall mode</span><span class="zh">自测模式</span></button>
+      <button id="flash-open" class="tool" aria-label="Flashcards / 闪卡" title="Flashcards / 闪卡"><span class="ico">▤</span><span class="en">Flashcards</span><span class="zh">闪卡</span></button>
       <button id="expand-all" class="tool tool-sm" title="Expand all explanations / 展开全部讲解"><span class="ico">↕</span><span class="en">Expand all</span><span class="zh">全部展开</span></button>
     </div>
     <div class="prog" title="Questions marked “Got it” / 已标记“懂了”的题目">

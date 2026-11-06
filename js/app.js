@@ -60,7 +60,7 @@
     return `<article class="q" id="q${q.id.replace(".", "-")}" data-id="${q.id}">
   <header class="q-h">
     <div class="q-id">${q.id}</div>
-    <div class="q-title"><span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></div>
+    <h3 class="q-title"><span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></h3>
     ${q.src ? `<div class="q-src" title="Source hint on the exam / 考卷上的出处提示">↳ ${esc(q.src)}</div>` : ''}
     <button class="q-done ${done.has(q.id) ? 'on' : ''}" data-done="${q.id}" aria-pressed="${done.has(q.id)}"><span class="box"></span><span class="en">Got it</span><span class="zh">懂了</span></button>
   </header>
@@ -285,8 +285,9 @@
       </div>`;
     $('#fc-know').classList.toggle('on', done.has(q.id));
   }
-  const openFlash = () => { fc.hidden = false; document.body.classList.add('fc-open'); flipped = false; drawCard(); $('#fc-card').focus(); };
-  const closeFlash = () => { fc.hidden = true; document.body.classList.remove('fc-open'); };
+  let fcReturn = null;
+  const openFlash = () => { fcReturn = document.activeElement; fc.hidden = false; document.body.classList.add('fc-open'); flipped = false; drawCard(); $('#fc-card').focus(); };
+  const closeFlash = () => { fc.hidden = true; document.body.classList.remove('fc-open'); if (fcReturn && fcReturn.focus) fcReturn.focus(); };
   $('#flash-open').addEventListener('click', openFlash);
   fc.addEventListener('click', e => {
     if (e.target === fc || e.target.closest('[data-fc-close]')) return closeFlash();

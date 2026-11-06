@@ -591,3 +591,51 @@ body.lang-both :is(h4, h5, summary) > .zh { margin-left: 8px; letter-spacing: .0
 .hero h1 .en { max-width: 9.5em; }
 @media (max-width: 1180px) { .hero { grid-template-columns: 1fr; } .hero-fig { max-width: 680px; width: 100%; } }
 @media (max-width: 900px) { .hero-fig.plate { overflow: visible; } .hero-fig svg.fig { min-width: 0 !important; } .hero { padding-top: 36px; } .kicker { line-height: 1.6; } }
+
+/* ═══════════ design-taste audit fixes (P1/P2) ═══════════ */
+/* P1 contrast: muted text ≥ 4.5:1 on paper & white; darker text tints of blue/red */
+:root { --mute: #6c6860; --blueT: #3459c0; --redT: #b8323a; }
+.note.hook h5, .links a, .rel-chip:hover { color: var(--blueT); }
+.note.trap h5 { color: var(--redT); }
+svg .tiny { fill-opacity: 1; }
+
+/* P2 editorial rows over cards: a question is an indexed section, not a boxed card */
+.q {
+  background: transparent; border: 0; border-top: 1px solid var(--ink); border-radius: 0;
+  padding: 22px 0 64px; margin: 0;
+}
+.q + .q { border-top-color: var(--hair); }
+.q-id { background: transparent; color: var(--mag); font-size: 15px; padding: 0; letter-spacing: -.01em; }
+.q-title { margin: 0; font: 500 13px var(--mono); letter-spacing: .06em; }
+.ans.short { border: 0; border-left: 2px solid var(--mag); border-radius: 0; background: transparent; padding: 4px 0 4px 22px; }
+.plate { background: #fff; }
+.cls-h { margin-bottom: 8px; }
+
+/* P1 mobile: HTML widgets reflow instead of forcing 620px; plate label no longer overlaps controls */
+@media (max-width: 900px) {
+  .widget svg.fig { min-width: 0 !important; }
+  .plate.has-widget { overflow: visible; padding-top: 12px; }
+  .plate.has-widget .plate-tag { position: static; margin-bottom: 10px; }
+  .w-seg { flex-wrap: wrap; border-radius: 14px; }
+  .q-h { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 10px; align-items: center; }
+  .q-h .q-src { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+  .q-h .q-done { grid-column: 3; grid-row: 1; }
+  .q-title { flex-direction: column; gap: 2px; }
+  .q { padding-bottom: 48px; }
+}
+
+/* P2 targets ≥ 24px */
+.glow-plate .g-sw button { width: 24px; height: 24px; }
+.g-used a { min-height: 24px; min-width: 32px; display: inline-flex; align-items: center; justify-content: center; }
+.links a { padding: 4px 8px; }
+
+/* P2 skip link */
+.skip { position: absolute; left: 12px; top: -60px; z-index: 200; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 4px; font: 500 12px var(--mono); text-decoration: none; }
+.skip:focus { top: 10px; }
+.plate.glow-plate { background: var(--panel); }
+@media (max-width: 900px) {
+  .widget .w-svg { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .widget .w-svg svg.fig { min-width: 640px !important; }
+  .plate.has-widget .plate-hint { display: none; }
+  .plate.has-widget .plate-tag { white-space: normal; }
+}
