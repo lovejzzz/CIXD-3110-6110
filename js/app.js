@@ -323,6 +323,7 @@
           ${fig ? `<details class="lx-fig"><summary><span class="en">Show the drawing</span><span class="zh">展开示意图</span></summary><div class="lx-figbox">${fig}</div></details>` : ''}
           ${blk('lec_trap', 'lx-trap', 'Where students go wrong — and why', '学生容易错在哪，为什么')}
           ${blk('lec_ask', 'lx-ask', 'Check understanding', '检查理解')}
+          ${(window.LEC_ONE || {})[q.id] ? `<div class="lx lx-one"><div class="lx-k"><span class="en">In one sentence</span><span class="zh">一句话概括</span></div>${two(LEC_ONE[q.id][0], LEC_ONE[q.id][1])}</div>` : ''}
           ${blk('lec_bridge', 'lx-bridge', 'Bridge', '衔接')}
           ${!q.lec_why_en ? `<div class="lx lx-fallback">${two(q.short_en, q.short_zh)}</div>` : ''}
         </article>`;

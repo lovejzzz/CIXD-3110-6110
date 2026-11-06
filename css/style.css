@@ -989,3 +989,12 @@ body.lang-both .lp-r .zh { display: block; font-weight: 500; }
 .pname { border-bottom: 1.5px dotted var(--amber); cursor: help; }
 .pname:hover, .pname:focus-visible { background: rgba(217, 154, 30, .14); outline: none; }
 @media (max-width: 700px) { .lp { grid-template-columns: 1fr; } .lppl { padding: 18px 16px 4px; } }
+
+/* ── lecture: one-sentence takeaway ────────── */
+.lx-one { background: var(--ink, #1b1a17); border: 0; color: #f6f1e6; padding: 22px 26px 20px; position: relative; }
+.lx-one .lx-k { color: var(--amber); }
+.lx-one .bi { font-size: calc(var(--L) * 1.08); line-height: 1.5; }
+.lx-one .bi .en { font-family: var(--serif); color: #fbf7ee; }
+.lx-one .bi .zh { color: #d9d2c3; }
+.lx-one .bi > .zh { border-top-color: rgba(255,255,255,.18) !important; }
+.lx-one .term, .lx-one .pname { color: inherit; }
