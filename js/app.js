@@ -92,7 +92,6 @@
   </div>
   <div class="ans-wrap">
   ${q.kid_en ? `<section class="kid">
-    <h4><span class="kid-ico" aria-hidden="true"></span><span class="en">Explain it like I'm 12</span><span class="zh">像给 12 岁的孩子讲</span></h4>
     ${two(q.kid_en, q.kid_zh)}
   </section>` : ''}
   ${hasShort ? `<section class="ans short">

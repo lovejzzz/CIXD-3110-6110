@@ -63,7 +63,12 @@ defClass({
   intro_zh: '“模型就是一个文件，而文件就是它的数据。”我们把四个小型开放权重模型下载到笔记本上，给它们发同样的提示，看着答案各不相同，然后把每个模型一路追溯回它的数据来源。',
   qs: [
     {
-      id: '7.1', t_en: 'Local vs. hosted', t_zh: '本地 vs. 云端',
+      id: '7.1',
+      embeds: [{ src: 'cf/laptop-llm.html', h: 680,
+        name_en: 'Inside the laptop: where a local model lives', name_zh: '笔记本里面：本地模型住在哪',
+        hint_en: 'Pick a model size → Load (SSD → memory) → Run prompt · FP16 does not fit in 8 GB · turn Wi-Fi off: it still runs',
+        hint_zh: '选模型大小 → Load（硬盘 → 内存）→ Run prompt · FP16 放不进 8GB · 关掉 Wi-Fi 照样能跑' }],
+      t_en: 'Local vs. hosted', t_zh: '本地 vs. 云端',
       q_en: 'When the same prompt goes to a hosted model and to a model on your laptop, what changes about where it goes, what you can see, and what you can change?',
       q_zh: '同一个提示词分别发给云端托管模型和你笔记本上的模型时，它“去了哪里”、你“能看到什么”、你“能改变什么”有什么不同？',
       src: 'Class 7: Local vs. Hosted; Ollama',

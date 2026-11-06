@@ -506,6 +506,10 @@ His advice: it’s an [[c3_ironman]] — for now build more **augmentation** tha
     },
     {
       id: '3.5',
+      embeds: [{ src: 'cf/smart-speaker.html', h: 680,
+        name_en: 'One smart speaker, taken apart', name_zh: '把一台智能音箱拆开看',
+        hint_en: 'Drag to turn · See-through shows ~50 real parts · Wake → Ask sends your voice to a datacenter · Materials lights the magnet, copper, gold, plastic',
+        hint_zh: '拖动旋转 · 打开 See-through 看约 50 个真实零件 · 先 Wake 再 Ask，你的声音被送往数据中心 · Materials 点亮磁铁、铜、金、塑料' }],
       kid_en: `Asking a smart speaker “what time is it?” feels like magic — like a vending machine that answers. But think of the school lunch: before it reaches your tray, farmers grew it, trucks carried it, cooks made it, and someone washes the trays. One tiny question works the same way. It uses metals dug out of the ground (**material**), the work of many people — miners, factory workers, people who label data, even you, because your voice helps train it (**labor**) — and giant computers (**computing**). All three, every single time.`,
       kid_zh: `问智能音箱“现在几点？”感觉像魔法——像一台会说话的自动售货机。但想想学校的午饭：到你餐盘之前，有农民种菜、卡车运输、厨师做饭、有人洗盘子。一个小小的问题也是这样。它用到从地下挖出来的金属（**物质**），用到很多人的劳动——矿工、工厂工人、给数据贴标签的人，甚至还有你，因为你的声音也在帮它训练（**劳动**）——还用到巨大的计算机（**计算**）。每一次，三样同时都在。`,
       steps: [
