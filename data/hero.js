@@ -19,6 +19,6 @@ window.HERO = () => {
     { label: '1 · Web + extraction', sub: '网络与数据攫取', jump: '#c1', bars: { color: C.red, fill: C.redF, n: 3, rows: 2 },
       note: { en: 'URLs, requests, shells — and the economics of surveillance.', zh: 'URL、请求、shell——以及监视的经济学。' } }
   ];
-  const o = { W: 700, ox: 350, labelL: 205, labelR: 495, gap: 2.55, scale: 19, alternate: true, top: 14 };
-  return F.svg(700, F.stackH(L.length, o) - 10, F.stack(L, o), { label: 'the course as an exploded stack', cls: 'hero-svg' });
+  const o = { W: 650, ox: 322, labelL: 186, labelR: 458, gap: 2.55, scale: 19, alternate: true, top: 14 };
+  return F.svg(650, F.stackH(L.length, o) - 10, F.stack(L, o), { label: 'the course as an exploded stack', cls: 'hero-svg' });
 };

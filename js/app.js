@@ -41,13 +41,22 @@
   function nav() {
     return CL.map(c => `<a href="#c${c.n}" class="nav-c" data-c="${c.n}">
       <span class="nav-n">${c.n}</span><span class="nav-t"><span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></span>
-      <span class="nav-p" data-np="${c.n}"></span></a>`).join('');
+      <span class="nav-p" data-np="${c.n}"></span></a>`).join('') +
+      `<a href="#glossary" class="nav-c nav-g" data-c="glossary"><span class="nav-n">≡</span><span class="nav-t"><span class="en">Glossary</span><span class="zh">词汇表</span></span><span class="nav-p"></span></a>`;
   }
+
+  const qById = {}; CL.forEach(c => c.qs.forEach(q => { qById[q.id] = q; q._c = c; }));
+  const qAnchor = id => '#q' + id.replace('.', '-');
+  const two = (en, zh, cls = '') => `<div class="bi ${cls}"><div class="en">${md(en, 'en')}</div><div class="zh">${md(zh, 'zh')}</div></div>`;
 
   function card(c, q) {
     let fig = '';
     try { fig = q.fig ? q.fig() : ''; } catch (e) { console.error('figure error', q.id, e); fig = `<p class="err">figure error ${q.id}</p>`; }
-    const two = (en, zh, cls = '') => `<div class="bi ${cls}"><div class="en">${md(en, 'en')}</div><div class="zh">${md(zh, 'zh')}</div></div>`;
+    let widget = '';
+    try { widget = q.widget ? q.widget.html() : ''; } catch (e) { console.error('widget error', q.id, e); }
+    const hasShort = q.short_en || q.short_zh;
+    const rel = (q.rel || []).filter(id => qById[id]);
+    const links = q.links || [];
     return `<article class="q" id="q${q.id.replace(".", "-")}" data-id="${q.id}">
   <header class="q-h">
     <div class="q-id">${q.id}</div>
@@ -56,19 +65,42 @@
     <button class="q-done ${done.has(q.id) ? 'on' : ''}" data-done="${q.id}" aria-pressed="${done.has(q.id)}"><span class="box"></span><span class="en">Got it</span><span class="zh">懂了</span></button>
   </header>
   <div class="q-prompt"><p class="en">${esc(q.q_en)}</p><p class="zh">${esc(q.q_zh)}</p></div>
-  ${fig ? `<figure class="plate">
-    <div class="plate-tag"><span>FIG. ${q.id}</span><span class="plate-hint"><span class="en">hover the parts</span><span class="zh">悬停部件查看说明</span></span></div>
-    ${fig}
+  ${q.glow ? `<figure class="plate glow-plate" data-accent="ember">
+    <div class="g-cap"><span class="g-num">FIG. ${q.id} · <b class="live">INTERACTIVE</b></span><span class="g-name"><span class="en">${esc(q.glow.name_en || q.t_en)}</span><span class="zh">${esc(q.glow.name_zh || q.t_zh)}</span></span><span class="g-sw" role="radiogroup" aria-label="Glow colour"></span></div>
+    <div class="g-holder" data-glow="${q.id}"></div>
+    <div class="g-cap g-bottom"><span class="g-hint"><span class="en">${esc(q.glow.hint_en || '')}</span><span class="zh">${esc(q.glow.hint_zh || '')}</span></span><button class="g-replay" title="Reset & replay demo / 重置并演示">↻</button><span class="g-readout"></span></div>
     ${(q.cap_en || q.cap_zh) ? `<figcaption>${two(q.cap_en, q.cap_zh)}</figcaption>` : ''}
   </figure>` : ''}
-  <section class="ans">
-    <h4><span class="en">Answer</span><span class="zh">参考答案</span></h4>
+  ${!q.glow && (fig || widget) ? `<figure class="plate${widget ? ' has-widget' : ''}">
+    <div class="plate-tag"><span>FIG. ${q.id}${widget ? ' · <b class="live">INTERACTIVE</b>' : ''}</span><span class="plate-hint"><span class="en">${widget ? 'try the controls' : 'hover the parts'}</span><span class="zh">${widget ? '动手试一试' : '悬停部件查看说明'}</span></span></div>
+    ${widget ? `<div class="widget" data-widget="${q.id}">${widget}</div>` : fig}
+    ${(q.cap_en || q.cap_zh) ? `<figcaption>${two(q.cap_en, q.cap_zh)}</figcaption>` : ''}
+  </figure>` : ''}
+  <div class="recall-gate">
+    <p class="en">Recall mode — say your answer out loud first.</p><p class="zh">自测模式——先用自己的话说一遍。</p>
+    <button class="reveal-btn" data-reveal="${q.id}"><span class="en">Show answer</span><span class="zh">显示答案</span></button>
+  </div>
+  <div class="ans-wrap">
+  ${hasShort ? `<section class="ans short">
+    <h4><span class="en">Full-credit answer</span><span class="zh">得分版答案</span><i class="h4-note"><span class="en">what to write on the exam</span><span class="zh">考卷上写到这些就够</span></i></h4>
+    ${two(q.short_en, q.short_zh)}
+  </section>` : ''}
+  <details class="ans long" ${hasShort ? '' : 'open'}>
+    <summary><span class="en">${hasShort ? 'Full explanation' : 'Answer'}</span><span class="zh">${hasShort ? '完整讲解' : '参考答案'}</span><span class="chev"></span></summary>
     ${two(q.a_en, q.a_zh)}
-  </section>
+  </details>
   ${(q.hook_en || q.trap_en) ? `<div class="notes">
     ${q.hook_en ? `<div class="note hook"><h5><span class="en">Remember it in one line</span><span class="zh">一句话记住</span></h5>${two(q.hook_en, q.hook_zh)}</div>` : ''}
     ${q.trap_en ? `<div class="note trap"><h5><span class="en">Don't lose points</span><span class="zh">易错点</span></h5>${two(q.trap_en, q.trap_zh)}</div>` : ''}
   </div>` : ''}
+  ${(q.basis_en || links.length || rel.length) ? `<footer class="q-foot">
+    ${(q.basis_en || links.length) ? `<div class="basis"><h5><span class="en">Where this comes from</span><span class="zh">依据与出处</span></h5>
+      ${q.basis_en ? two(q.basis_en, q.basis_zh) : ''}
+      ${links.length ? `<div class="links">${links.map(l => `<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.t)} ↗</a>`).join('')}</div>` : ''}
+    </div>` : ''}
+    ${rel.length ? `<div class="rel"><h5><span class="en">Connects to</span><span class="zh">相关题目</span></h5>${rel.map(id => `<a href="${qAnchor(id)}" class="rel-chip"><b>${id}</b> <span class="en">${esc(qById[id].t_en)}</span><span class="zh">${esc(qById[id].t_zh)}</span></a>`).join('')}</div>` : ''}
+  </footer>` : ''}
+  </div>
 </article>`;
   }
 
@@ -89,6 +121,39 @@
   $('#nav').innerHTML = nav();
   $('#content').innerHTML = CL.map(section).join('');
   if (window.HERO) $('#hero-fig').innerHTML = window.HERO();
+
+  /* glow figures (lazy, per plate) */
+  if (window.GLOW) try { GLOW.init(CL); } catch (e) { console.error('glow init', e); }
+
+  /* mount interactive widgets */
+  CL.forEach(c => c.qs.forEach(q => {
+    if (!q.widget || !q.widget.mount) return;
+    const el = $(`[data-widget="${q.id}"]`);
+    try { el && q.widget.mount(el); } catch (e) { console.error('widget mount error', q.id, e); }
+  }));
+
+  /* ── glossary (built from TERMS + where each is used) ── */
+  const usedIn = {};
+  CL.forEach(c => c.qs.forEach(q => {
+    const txt = [q.a_en, q.short_en, q.a_zh, q.short_zh].join(' ');
+    (txt.match(/\[\[([^\]|]+)/g) || []).forEach(m => { const k = m.slice(2).trim(); (usedIn[k] = usedIn[k] || new Set()).add(q.id); });
+  }));
+  const gkeys = Object.keys(T).sort((a, b) => T[a].en.localeCompare(T[b].en));
+  $('#glossary-list').innerHTML = gkeys.map(k => {
+    const t = T[k], ids = [...(usedIn[k] || [])];
+    const hay = (t.en + ' ' + t.zh + ' ' + (t.d_en || '') + ' ' + (t.d_zh || '')).toLowerCase();
+    return `<div class="g-item" data-hay="${esc(hay)}">
+      <div class="g-h"><b>${esc(t.en)}</b><span class="zh">${esc(t.zh)}</span></div>
+      <div class="g-d"><p class="en">${esc(t.d_en || '')}</p><p class="zh">${esc(t.d_zh || '')}</p></div>
+      ${ids.length ? `<div class="g-used">${ids.map(id => `<a href="${qAnchor(id)}">${id}</a>`).join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+  $('#g-count').textContent = gkeys.length;
+  $('#g-search').addEventListener('input', e => {
+    const v = e.target.value.trim().toLowerCase(); let n = 0;
+    $$('.g-item').forEach(it => { const show = !v || it.dataset.hay.includes(v); it.hidden = !show; n += show; });
+    $('#g-count').textContent = n;
+  });
 
   /* ── language mode ───────────────────────────── */
   const setLang = m => {
@@ -166,13 +231,86 @@
   const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.25 });
   $$('svg.fig').forEach(s => io.observe(s));
   const navIO = new IntersectionObserver(es => es.forEach(en => {
-    if (en.isIntersecting) $$('.nav-c').forEach(a => a.classList.toggle('cur', a.dataset.c === en.target.id.slice(1)));
+    if (en.isIntersecting) $$('.nav-c').forEach(a => a.classList.toggle('cur', a.dataset.c === (en.target.id === 'glossary' ? 'glossary' : en.target.id.slice(1))));
   }), { rootMargin: '-40% 0px -55% 0px' });
-  $$('section.cls').forEach(s => navIO.observe(s));
+  $$('section.cls, #glossary').forEach(s => navIO.observe(s));
 
   /* hero layers jump */
   document.addEventListener('click', e => { const g = e.target.closest('[data-jump]'); if (g) location.hash = g.dataset.jump; });
   /* expand/collapse print */
   $('#print') && $('#print').addEventListener('click', () => print());
+
+  /* ── recall mode ─────────────────────────────── */
+  const setRecall = on => {
+    document.body.classList.toggle('recall', on);
+    $('#recall-toggle').setAttribute('aria-pressed', on);
+    $('#recall-toggle').classList.toggle('on', on);
+    if (!on) $$('.q.revealed').forEach(q => q.classList.remove('revealed'));
+    store.set('recall', on);
+  };
+  $('#recall-toggle').addEventListener('click', () => setRecall(!document.body.classList.contains('recall')));
+  setRecall(store.get('recall', false));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-reveal]'); if (!b) return;
+    b.closest('.q').classList.add('revealed');
+  });
+
+  /* ── flashcards ──────────────────────────────── */
+  const deck = []; CL.forEach(c => c.qs.forEach(q => deck.push(q)));
+  let fi = 0, flipped = false, onlyTodo = false;
+  const fc = $('#flash');
+  const cards = () => onlyTodo ? deck.filter(q => !done.has(q.id)) : deck;
+  function drawCard() {
+    const list = cards(); if (!list.length) { fi = 0; $('#fc-card').innerHTML = `<div class="fc-empty"><span class="en">Everything is marked “Got it”.</span><span class="zh">全部标记为“懂了”。</span></div>`; $('#fc-pos').textContent = '0/0'; return; }
+    fi = (fi + list.length) % list.length; const q = list[fi];
+    $('#fc-pos').textContent = `${fi + 1}/${list.length}`;
+    $('#fc-card').classList.toggle('flipped', flipped);
+    $('#fc-card').innerHTML = `
+      <div class="fc-face fc-front">
+        <div class="fc-meta"><b>${q.id}</b> <span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></div>
+        <p class="fc-q en">${esc(q.q_en)}</p><p class="fc-q zh">${esc(q.q_zh)}</p>
+        <p class="fc-hint"><span class="en">Answer out loud, then press space to flip.</span><span class="zh">先说出答案，再按空格翻面。</span></p>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-meta"><b>${q.id}</b> <span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></div>
+        ${q.hook_en ? `<div class="fc-hook">${two(q.hook_en, q.hook_zh)}</div>` : ''}
+        ${q.short_en ? two(q.short_en, q.short_zh) : ''}
+        <a class="fc-go" href="${qAnchor(q.id)}" data-fc-close><span class="en">Open full question →</span><span class="zh">打开完整题目 →</span></a>
+      </div>`;
+    $('#fc-know').classList.toggle('on', done.has(q.id));
+  }
+  const openFlash = () => { fc.hidden = false; document.body.classList.add('fc-open'); flipped = false; drawCard(); $('#fc-card').focus(); };
+  const closeFlash = () => { fc.hidden = true; document.body.classList.remove('fc-open'); };
+  $('#flash-open').addEventListener('click', openFlash);
+  fc.addEventListener('click', e => {
+    if (e.target === fc || e.target.closest('[data-fc-close]')) return closeFlash();
+    if (e.target.closest('#fc-prev')) { fi--; flipped = false; drawCard(); }
+    else if (e.target.closest('#fc-next')) { fi++; flipped = false; drawCard(); }
+    else if (e.target.closest('#fc-know')) {
+      const q = cards()[fi]; if (!q) return;
+      done.has(q.id) ? done.delete(q.id) : done.add(q.id); store.set('done', [...done]); progress();
+      $$(`[data-done="${q.id}"]`).forEach(b => b.classList.toggle('on', done.has(q.id)));
+      if (onlyTodo) { flipped = false; } drawCard();
+    }
+    else if (e.target.closest('#fc-todo')) { onlyTodo = !onlyTodo; e.target.closest('#fc-todo').classList.toggle('on', onlyTodo); fi = 0; flipped = false; drawCard(); }
+    else if (e.target.closest('#fc-shuffle')) { for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; } fi = 0; flipped = false; drawCard(); }
+    else if (e.target.closest('#fc-card') && !e.target.closest('a,.term')) { flipped = !flipped; $('#fc-card').classList.toggle('flipped', flipped); }
+  });
+  document.addEventListener('keydown', e => {
+    if (fc.hidden) return;
+    if (e.key === 'Escape') closeFlash();
+    else if (e.key === 'ArrowRight') { fi++; flipped = false; drawCard(); }
+    else if (e.key === 'ArrowLeft') { fi--; flipped = false; drawCard(); }
+    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipped = !flipped; $('#fc-card').classList.toggle('flipped', flipped); }
+  });
+
+  /* expand / collapse all explanations */
+  $('#expand-all') && $('#expand-all').addEventListener('click', e => {
+    const open = !e.currentTarget.classList.contains('on');
+    e.currentTarget.classList.toggle('on', open);
+    $$('details.ans.long').forEach(d => d.open = open);
+  });
+
+  /* deep links: open details when navigating to a question */
   window.__ready = true;
 })();

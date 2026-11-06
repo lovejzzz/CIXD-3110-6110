@@ -16,8 +16,8 @@ defTerms({
     d_en: 'The trained weights are downloadable, but the training data and full recipe are not released, and the license may restrict use (e.g. Llama 3.2 Community License).',
     d_zh: '训练好的权重可以下载，但训练数据和完整配方不公开，许可证还可能限制用途（例如 Llama 3.2 社区许可证）。' },
   c7_open_source: { en: 'Open source (AI)', zh: '开源（AI 模型）',
-    d_en: 'Everything needed to study and rebuild the model is released — weights, training data, code, recipe and logs — under an OSI-approved license. Example: Ai2’s OLMo 2 (Apache 2.0, Dolma data).',
-    d_zh: '研究和重建模型所需的一切都公开——权重、训练数据、代码、配方和日志——并采用 OSI 认可的许可证。例子：Ai2 的 OLMo 2（Apache 2.0，Dolma 数据）。' },
+    d_en: 'Everything needed to study and rebuild the model is released — weights, training data, code, recipe and logs — under an OSI-approved license. Example: Ai2’s OLMo 2 (Apache 2.0, open training data).',
+    d_zh: '研究和重建模型所需的一切都公开——权重、训练数据、代码、配方和日志——并采用 OSI 认可的许可证。例子：Ai2 的 OLMo 2（Apache 2.0，训练数据公开）。' },
   c7_license: { en: 'License', zh: '许可证',
     d_en: 'The legal terms that say what you may do with the weights: Apache 2.0 and MIT are permissive; Llama’s and Qwen’s research licenses add custom limits on use.',
     d_zh: '规定你能拿权重做什么的法律条款：Apache 2.0、MIT 很宽松；Llama 许可证和 Qwen 研究许可证则附加了自定义的使用限制。' },
@@ -67,6 +67,107 @@ defClass({
       q_en: 'When the same prompt goes to a hosted model and to a model on your laptop, what changes about where it goes, what you can see, and what you can change?',
       q_zh: '同一个提示词分别发给云端托管模型和你笔记本上的模型时，它“去了哪里”、你“能看到什么”、你“能改变什么”有什么不同？',
       src: 'Class 7: Local vs. Hosted; Ollama',
+      short_en: 'With a **hosted** model the prompt **leaves my laptop** and crosses the Internet to the company’s servers, where a hidden system prompt, filters and logging act on it; I **see only the output** and can change only the settings the interface offers. With a **local** model (Ollama) the prompt goes to `localhost` and **never leaves the machine**; I can **see the weights file, Modelfile, parameters and license** and **change all of it** (swap models, rewrite the system prompt, temperature, quantization). Trade-off: hosted is more capable; local gives privacy and control but is limited by my hardware.',
+      short_zh: '用**云端**模型时，提示词**离开我的电脑**，穿过互联网到达公司服务器，被隐藏的系统提示、过滤器和日志处理；我**只看得到输出**，只能改界面给的设置。用**本地**模型（Ollama）时，提示词发往 `localhost`，**从不离开这台电脑**；我能**看到权重文件、Modelfile、参数和许可证**，并且**全都能改**（换模型、改系统提示、温度、量化）。取舍：云端更强；本地有隐私和控制权，但受硬件限制。',
+      basis_en: 'Class 7’s “Local vs. Hosted” decision and the Ollama exercise. Checked against Ollama’s Modelfile docs for what a local model exposes (FROM, PARAMETER, TEMPLATE, SYSTEM, LICENSE). What happens on the hosted side (system prompts, logging, retention, training use) depends on each provider’s policy; the lecture slides were not available.',
+      basis_zh: '依据第 7 课“本地 vs. 云端”的决策讨论和 Ollama 练习。本地模型能看到什么，已对照 Ollama 的 Modelfile 文档核对（FROM、PARAMETER、TEMPLATE、SYSTEM、LICENSE）。云端那一侧（系统提示、日志、保存、是否用于训练）取决于各家政策；未能看到课堂讲义。',
+      links: [{ t: 'Ollama — download & model library', u: 'https://ollama.com/download' }, { t: 'Ollama — Modelfile reference', u: 'https://docs.ollama.com/modelfile' }],
+      rel: ['4.4', '8.1', '6.5'],
+      glow: {
+        name_en: 'Same prompt, two routes', name_zh: '同一个提示，两条路线',
+        hint_en: 'H hosted · L local · Enter sends (or click the laptop / servers / Ollama box)',
+        hint_zh: 'H 云端 · L 本地 · 回车发送（或点笔记本 / 服务器 / Ollama 盒子）',
+        aria: 'Isometric desk: a laptop, a small local Ollama box beside it, and a remote datacenter. Press H or L to choose the route and Enter to send the prompt.',
+        mount(stage, api) {
+          const K = api.iso.frame([[0, 0, 0], [470, 0, 0], [0, 300, 0], [470, 300, 0], [300, 20, 150], [30, 164, 104]]);
+          const { TOP, FRONT, box, path } = K;
+          const esc = api.iso.esc;
+          let s = box(0, 0, 0, 470, 300, 8, 14);
+          s += `<g transform="${TOP(0, 0, 8)}"><rect class="detail" x="8" y="8" width="454" height="284" rx="8"/>
+            <rect id="g71-zone" class="wire" x="18" y="150" width="240" height="138" rx="8" stroke-dasharray="5 4"/>
+            <text class="label label-en" x="28" y="166" font-size="9">YOUR MACHINE</text><text class="label-zh" x="28" y="178" font-size="9">你的电脑</text>
+            <text class="label label-en" x="300" y="166" font-size="8">THEIR SERVERS</text><text class="label-zh" x="300" y="177" font-size="8">他们的服务器</text>
+            <text class="label" x="300" y="190" font-size="6.5">? system prompt · ? filters · ? logging</text>
+            <text class="label label-en" x="236" y="191" font-size="7">INTERNET</text></g>`;
+          const hp = path([[160, 196, 9], [276, 196, 9], [276, 112, 9], [320, 112, 9], [320, 92, 9]]);
+          const lp = path([[160, 240, 9], [188, 240, 9]]);
+          s += `<path class="wire-under" d="${hp}"/><path id="g71-hw" class="wire" d="${hp}"/><path id="g71-hp" class="pulse" pathLength="1000" d="${hp}"/>`;
+          s += `<path class="wire-under" d="${lp}"/><path id="g71-lw" class="wire" d="${lp}"/><path id="g71-lp" class="pulse" pathLength="1000" d="${lp}"/>`;
+          // datacenter racks
+          let racks = '';
+          for (let i = 0; i < 3; i++) {
+            const x = 300 + i * 45;
+            racks += box(x, 20, 8, 40, 70, 140);
+            let f = api.iso.slits(12, 128, 9, 12, 36, false);
+            for (let k = 0; k < 13; k++) f += `<circle id="g71-led${i}-${k}" class="led" cx="7" cy="${12 + k * 9}" r="1.8"/>`;
+            racks += `<g transform="${FRONT(x, 90, 148)}">${f}</g>`;
+          }
+          s += `<g id="g71-dc" class="press" data-tip="c7_hosted">${racks}</g>`;
+          s += box(438, 44, 8, 24, 40, 26, 3);
+          s += `<g transform="${FRONT(438, 84, 34)}"><circle id="g71-log" class="led" cx="12" cy="9" r="2.6"/><text class="label" x="3" y="21" font-size="6">LOGS</text></g>`;
+          // router
+          s += box(266, 140, 8, 20, 20, 12, 3) + `<g transform="${FRONT(266, 160, 20)}"><circle id="g71-rt" class="led" cx="10" cy="6" r="2"/></g>`;
+          // local Ollama box
+          s += `<g id="g71-local" class="press" data-tip="c7_ollama">${box(188, 215, 8, 52, 48, 34, 5)}</g>`;
+          s += `<g transform="${FRONT(188, 263, 42)}"><circle id="g71-lled" class="led" cx="44" cy="8" r="2.2"/><text class="label-hi" x="6" y="12" font-size="7.5">OLLAMA</text><text class="label" x="6" y="23" font-size="6">.gguf 2.0 GB</text></g>`;
+          // laptop: screen then base
+          s += box(30, 164, 14, 130, 6, 90);
+          s += `<g transform="${FRONT(30, 170, 104)}"><rect id="g71-glass" class="glass" x="6" y="6" width="118" height="76" rx="2"/>
+            ${[0, 1, 2, 3, 4].map(k => `<text id="g71-l${k}" class="scr" x="11" y="${19 + k * 13}" font-size="7"></text>`).join('')}</g>`;
+          s += `<g id="g71-lap" class="press">${box(30, 170, 8, 130, 90, 6, 3)}<g transform="${TOP(30, 170, 14)}"><rect class="detail" x="8" y="6" width="114" height="50" rx="2"/>${api.iso.slits(16, 114, 8, 8, 54, true)}${api.iso.slits(16, 46, 10, 8, 122, false)}<rect class="detail" x="45" y="62" width="40" height="20" rx="2"/></g></g>`;
+          stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+          const $ = id => stage.querySelector('#' + id);
+          const st = { mode: 'hosted', sent: 0, logged: 0, last: null };
+          const lines = arr => arr.forEach((t, k) => { $('g71-l' + k).textContent = t || ''; });
+          function render() {
+            $('g71-hw').classList.toggle('hot', st.mode === 'hosted');
+            $('g71-lw').classList.toggle('hot', st.mode === 'local');
+            $('g71-zone').classList.toggle('hot', st.mode === 'local');
+            $('g71-log').classList.toggle('hot', st.logged > 0);
+            if (!st.last) lines(['$ prompt ready', `route: ${st.mode}`, 'press Enter']);
+            else if (st.last === 'hosted') lines(['> answer received', 'see: output only', 'system prompt: ?', 'model version: ?', `logged: yes (${st.logged})`]);
+            else lines(['> answer (wifi off ok)', 'weights llama3.2:3b', 'SYSTEM: editable', 'temp 0.7 · ctx 4096', 'license: on disk']);
+            $('g71-glass').classList.toggle('hot', !!st.last);
+            const h = st.mode === 'hosted';
+            api.say(h ? `hosted · leaves your machine · logged ${st.logged}` : `local · stays on localhost:11434 · all visible`,
+              h ? `云端 · 离开电脑 · 已记录 ${st.logged} 次` : `本地 · 留在 localhost · 全部可见`);
+          }
+          function setMode(m) { st.mode = m; render(); }
+          function send() {
+            st.sent++; api.flash($('g71-lap'), 220);
+            const m = st.mode;
+            api.replay($(m === 'hosted' ? 'g71-hp' : 'g71-lp'));
+            if (m === 'hosted') api.after(180, () => api.flash($('g71-rt').parentNode, 300));
+            api.after(m === 'hosted' ? 520 : 260, () => {
+              if (m === 'hosted') {
+                st.logged++;
+                const on = [];
+                for (let i = 0; i < 3; i++) for (let k = 0; k < 13; k++) if (Math.random() < 0.45) { const e = $(`g71-led${i}-${k}`); e.classList.add('hot'); on.push(e); }
+                api.flash($('g71-dc'), 380);
+                api.after(900, () => on.forEach(e => e.classList.remove('hot')));
+              } else {
+                $('g71-lled').classList.add('hot'); api.flash($('g71-local'), 380);
+              }
+              st.last = m; api.power(true); render();
+            });
+            render();
+          }
+          $('g71-lap').addEventListener('click', send);
+          $('g71-dc').addEventListener('click', () => { setMode('hosted'); send(); });
+          $('g71-local').addEventListener('click', () => { setMode('local'); send(); });
+          render();
+          return {
+            key: e => {
+              const k = e.key.toLowerCase();
+              if (k === 'h') { setMode('hosted'); return true; }
+              if (k === 'l') { setMode('local'); return true; }
+              if (e.key === 'Enter' || e.key === ' ') { send(); return true; }
+              return false;
+            },
+            demo: () => { api.after(200, send); api.after(1900, () => { setMode('local'); send(); }); }
+          };
+        }
+      },
       fig() {
         const C = F.C; let s = '';
         const tile = (cx, cy, S, o) => { F.setIso(S, cx, cy); return F.plate({ x: -(o.w || 2) / 2, y: -(o.d || 2) / 2, ...o }); };
@@ -77,8 +178,8 @@ defClass({
         s += F.g(tile(310, 92, 18, { w: 3.6, d: 2.6, t: 0.35, pattern: 'chips', density: 5 }) + F.text(310, 150, 'THEIR SERVERS', { cls: 'tiny' }), { tip: 'c7_hosted' });
         const hid = [['SYSTEM PROMPT', '看不到'], ['SAFETY FILTERS', '看不到'], ['LOGS · RETENTION', '可能被保存'], ['MODEL VERSION', '可能悄悄更换']];
         hid.forEach(([t, z], i) => s += F.rect(400, 44 + i * 26, 210, 22, { text: t + '  ✕', dash: '3 3', tcls: 'tiny', tcolor: C.mute, note: { en: t.toLowerCase() + ': decided by the company, mostly invisible to you.', zh: t + '：由公司决定，你基本看不到——' + z + '。' } }));
-        s += F.text(626, 66, 'SEE: output only', { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(626, 82, '只看到回答') +
-          F.text(626, 108, 'CHANGE: their options', { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(626, 124, '只能改界面给的选项');
+        s += F.text(634, 66, 'SEE: output only', { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(634, 82, '只看到回答') +
+          F.text(634, 108, 'CHANGE: their options', { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(634, 124, '只能改界面给的选项');
         s += F.line(20, 178, 740, 178, { dash: '3 4', stroke: C.mute, sw: 0.8 });
         // local lane
         s += F.text(20, 210, 'LOCAL', { cls: 'big', anchor: 'start', color: C.green }) + F.sub(80, 210, '本地：一切都留在这台电脑里');
@@ -88,8 +189,8 @@ defClass({
         s += F.g(tile(310, 290, 18, { w: 2.6, d: 2.6, t: 0.5, fill: C.greenF, side: '#d3eadb', pattern: 'dots', density: 5 }) + F.text(310, 343, 'OLLAMA + .GGUF', { cls: 'tiny' }), { tip: 'c7_ollama' });
         const vis = [['llama3.2:3b · 2.0 GB', 'c7_weights'], ['SYSTEM prompt · Modelfile', 'c7_modelfile_hint'], ['temperature · num_ctx', 'c7_modelfile_hint'], ['LICENSE · model card', 'c7_license']];
         vis.forEach(([t, k], i) => s += F.rect(400, 236 + i * 26, 210, 22, { text: t, tcls: 'tiny', fill: '#fff', stroke: C.green, tip: k }));
-        s += F.text(626, 262, 'SEE: the file, the', { anchor: 'start', cls: 'tiny', color: C.green }) + F.text(626, 276, 'prompt, the params', { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(626, 292, '看得到全部') +
-          F.text(626, 318, 'CHANGE: all of it', { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(626, 334, '全都能改');
+        s += F.text(634, 262, 'SEE: the file, the', { anchor: 'start', cls: 'tiny', color: C.green }) + F.text(634, 276, 'prompt, the params', { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(634, 292, '看得到全部') +
+          F.text(634, 318, 'CHANGE: all of it', { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(634, 334, '全都能改');
         return F.svg(760, 360, s, { label: 'hosted vs local model route' });
       },
       cap_en: 'Same prompt, two journeys. Hosted: it crosses the Internet into a black box you can only see the output of. Local: it never leaves the dashed line, and every layer is open to inspect and edit.',
@@ -118,6 +219,12 @@ defClass({
       q_en: 'What is the difference? Name one model you ran in each category and its license.',
       q_zh: '两者有什么区别？各举一个你运行过的模型，并说出它的许可证。',
       src: 'Hugging Face model cards & licenses; Ai2 OLMo',
+      short_en: '**Open weights** means the trained **weights are downloadable** to run and fine-tune, but the **training data and recipe are withheld**, often under a **custom license** with use limits. **Open source** means **weights, training data, code and recipe** are all released under an **OSI-approved license**, so you can study and rebuild the model. Open weights: `llama3.2:3b` (Meta, Llama 3.2 Community License). Open source: `olmo2:7b` (Ai2, Apache 2.0, with open training data, code and checkpoints).',
+      short_zh: '**开放权重**：训练好的**权重可以下载**、运行和微调，但**训练数据和配方不公开**，常附带有使用限制的**自定义许可证**。**开源**：**权重、训练数据、代码和配方**全部公开，采用 **OSI 认可的许可证**，可以研究并重建模型。开放权重例子：`llama3.2:3b`（Meta，Llama 3.2 社区许可证）。开源例子：`olmo2:7b`（Ai2，Apache 2.0，训练数据、代码和检查点都公开）。',
+      basis_en: 'Checked the Hugging Face model cards: Qwen2.5-3B lists the “qwen-research” license; OLMo-2-1124-7B states code and model are Apache 2.0 and that all code, checkpoints and training details are released, with its OLMo-Mix-1124 / Dolmino pretraining data published by Ai2. DeepSeek’s distilled Llama models ship with an MIT license although built on Meta’s Llama base (Simon Willison flags the mismatch).',
+      basis_zh: '已核对 Hugging Face 模型卡：Qwen2.5-3B 标注的是“qwen-research”许可证；OLMo-2-1124-7B 写明代码和模型为 Apache 2.0，并公开全部代码、检查点和训练细节，预训练数据 OLMo-Mix-1124 / Dolmino 由 Ai2 发布。DeepSeek 的 Llama 蒸馏版附 MIT 许可证，但底座是 Meta 的 Llama（Simon Willison 指出两者不太一致）。',
+      links: [{ t: 'Ai2 — OLMo 2', u: 'https://allenai.org/blog/olmo2' }, { t: 'Qwen2.5-3B model card', u: 'https://huggingface.co/Qwen/Qwen2.5-3B' }, { t: 'Hugging Face — model cards & licenses', u: 'https://huggingface.co/docs/hub/model-cards' }],
+      rel: ['7.4', '7.5', '8.2'],
       fig() {
         const C = F.C; let s = '';
         s += F.g(F.text(180, 30, 'OPEN WEIGHTS', { cls: 'big', color: C.amber }) + F.sub(180, 48, '开放权重 · 只给成品', { anchor: 'middle' }), { tip: 'c7_open_weights' });
@@ -140,7 +247,7 @@ defClass({
           F.rect(60, y, 240, 36, { text: 'custom · use limits', fill: '#fff', stroke: C.amber, tcls: 'tiny' }) +
           F.rect(460, y, 240, 36, { text: 'OSI · Apache 2.0', fill: '#fff', stroke: C.green, tcls: 'tiny' }), { tip: 'c7_license' });
         s += F.line(20, 318, 740, 318, { dash: '2 3', stroke: C.mute, sw: 0.6 });
-        s += F.text(180, 340, 'llama3.2:3b · qwen2.5:3b · deepseek-r1:8b', { cls: 'tiny' }) + F.text(580, 340, 'olmo2:7b  (Ai2 · Dolma data)', { cls: 'tiny' });
+        s += F.text(180, 340, 'llama3.2:3b · qwen2.5:3b · deepseek-r1:8b', { cls: 'tiny' }) + F.text(580, 340, 'olmo2:7b  (Ai2 · open data)', { cls: 'tiny' });
         s += F.sub(180, 357, '我们课上跑过的开放权重模型', { anchor: 'middle' }) + F.sub(580, 357, '我们课上跑过的真正开源模型', { anchor: 'middle' });
         return F.svg(760, 370, s, { label: 'open weights vs open source' });
       },
@@ -152,7 +259,7 @@ defClass({
 
 From class (via Ollama):
 - **Open weights:** \`llama3.2:3b\` — Meta, **Llama 3.2 Community License** (custom: acceptable-use policy, attribution, special terms above 700M monthly users). Also \`qwen2.5:3b\` (Alibaba, Qwen Research License for the 3B size) and \`deepseek-r1:8b\` (MIT-licensed distill, built on a Llama base).
-- **Open source:** \`olmo2:7b\` — Ai2’s OLMo 2, **Apache 2.0**, with its training corpus ([[c7_dolma]]), code and checkpoints all public.
+- **Open source:** \`olmo2:7b\` — Ai2’s OLMo 2, **Apache 2.0**, with its training data (OLMo-Mix and Dolmino, the successors of [[c7_dolma]]), code and checkpoints all public.
 
 So “open” on a model card can mean very different things — check what is actually released.`,
       a_zh: `**[[c7_open_weights]]**：实验室公开训练好的**权重**，你可以下载、运行、微调——但不公开**训练数据**和完整的**训练配方**，而且常常附带有使用限制的自定义[[c7_license]]。你拿到的是蛋糕，不是配方，也没有配料表。
@@ -161,7 +268,7 @@ So “open” on a model card can mean very different things — check what is a
 
 课上（通过 Ollama）跑过的例子：
 - **开放权重：**\`llama3.2:3b\`——Meta，**Llama 3.2 社区许可证**（自定义条款：可接受使用政策、署名要求、月活超过 7 亿需另行授权）。还有 \`qwen2.5:3b\`（阿里巴巴，3B 版本采用 Qwen 研究许可证）和 \`deepseek-r1:8b\`（MIT 许可的蒸馏模型，底座是 Llama）。
-- **开源：**\`olmo2:7b\`——Ai2 的 OLMo 2，**Apache 2.0**，训练语料（[[c7_dolma]]）、代码和检查点全部公开。
+- **开源：**\`olmo2:7b\`——Ai2 的 OLMo 2，**Apache 2.0**，训练数据（OLMo-Mix 和 Dolmino，[[c7_dolma]] 的后继版本）、代码和检查点全部公开。
 
 所以模型卡上写的“开放”可能意思大不相同——要看实际公开了什么。`,
       hook_en: 'Open weights = you get the cake. Open source = you get the cake, the recipe and the ingredients (Llama vs. OLMo).',
@@ -174,6 +281,72 @@ So “open” on a model card can mean very different things — check what is a
       q_en: 'What is quantization, and what do you gain and lose by running a smaller version of a model?',
       q_zh: '什么是量化？运行一个“更小版本”的模型，你得到了什么、失去了什么？',
       src: 'GGUF quantization explained; Ollama',
+      short_en: '**Quantization** stores each weight with **fewer bits** (16-bit → 8 or about 4) by **rounding it onto a coarser scale**. **Gain:** a much smaller file (Llama 3.2 3B: 6.4 GB → 2.0 GB at Q4_K_M) that **fits in a laptop’s memory** and runs **faster**, so the model can run locally. **Lose:** **precision** — a small error in every weight, which shows up as more mistakes in reasoning, math and long or detailed tasks (Q8 ≈ lossless, Q4 a good compromise, Q2 clearly worse).',
+      short_zh: '**量化**就是用**更少的位数**存每个权重（16 位 → 8 位或约 4 位），把它**四舍五入到更粗的刻度上**。**得到：**文件小得多（Llama 3.2 3B：6.4 GB → Q4_K_M 2.0 GB），**装得进笔记本内存**、运行**更快**，模型才能本地运行。**失去：****精度**——每个权重都有一点误差，表现为推理、数学和长而细的任务上更多错误（Q8 几乎无损，Q4 是不错的折中，Q2 明显变差）。',
+      basis_en: 'File sizes checked against the published GGUF files of Llama 3.2 3B Instruct on Hugging Face (F16 6.43 GB, Q8_0 3.42 GB, Q4_K_M 2.02 GB, Q2_K 1.36 GB). The quality ranking follows the course reading “GGUF quantization explained.”',
+      basis_zh: '文件大小已对照 Hugging Face 上 Llama 3.2 3B Instruct 的 GGUF 文件核对（F16 6.43 GB、Q8_0 3.42 GB、Q4_K_M 2.02 GB、Q2_K 1.36 GB）。质量排序依据课程读物《GGUF quantization explained》。',
+      links: [{ t: 'GGUF quantization explained (course reading)', u: 'https://dev.to/pat9000/gguf-quantization-explained-q4km-vs-q5km-vs-q8-which-to-pick-2026-31pl' }, { t: 'Llama 3.2 3B Instruct — GGUF files & sizes', u: 'https://huggingface.co/unsloth/Llama-3.2-3B-Instruct-GGUF' }],
+      rel: ['7.1', '8.2'],
+      widget: {
+        html() {
+          return `<div class="w-ctrl"><span class="w-seg">${['FP16', 'Q8_0', 'Q4_K_M', 'Q2_K'].map(k => `<button data-k="${k}" class="${k === 'Q4_K_M' ? 'on' : ''}">${k}</button>`).join('')}</span>
+            <span class="w-out"></span><span style="color:var(--mute)"><span class="en">Llama 3.2 3B · real GGUF sizes</span> <span class="zh">Llama 3.2 3B · 真实 GGUF 文件大小</span></span></div>
+            <div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const C = F.C;
+          const Q = {
+            FP16: { bits: 16, gb: 6.43, levels: 0, col: C.ink, f: '#fff', q_en: 'original', q_zh: '原始精度', d_en: 'Original 16-bit weights. The file alone is 6.4 GB — with the OS and apps also needing memory, it does not fit in an 8 GB laptop.', d_zh: '原始 16 位权重。光文件就 6.4 GB——加上系统和其他程序要占的内存，8 GB 的笔记本装不下。' },
+            Q8_0: { bits: 8, gb: 3.42, levels: 256, col: C.blue, f: C.blueF, q_en: 'near-lossless', q_zh: '几乎无损', d_en: '8 bits, 256 steps per block. Half the size, and answers are almost indistinguishable from FP16.', d_zh: '8 位，每块 256 个刻度。体积减半，回答和 FP16 几乎分不出差别。' },
+            Q4_K_M: { bits: 4.8, gb: 2.02, levels: 16, col: C.mag, f: C.magF, q_en: 'small loss', q_zh: '轻微损失', d_en: '~4–5 bits, 16 steps. Under a third of the size and much faster; slightly more mistakes on reasoning and long, detailed tasks. Ollama’s usual default.', d_zh: '约 4–5 位，16 个刻度。不到三分之一的体积、快得多；推理和长而细的任务上错误略多。Ollama 的常用默认值。' },
+            Q2_K: { bits: 2.6, gb: 1.36, levels: 4, col: C.red, f: C.redF, q_en: 'big loss', q_zh: '明显变差', d_en: '~2–3 bits, only 4 steps. Tiny and fast, but every weight is far off — output gets noticeably worse and incoherent.', d_zh: '约 2–3 位，只有 4 个刻度。又小又快，但每个权重都偏得厉害——输出明显变差、前言不搭后语。' }
+          };
+          const TRUE = 0.68359375;
+          const box = el.querySelector('.w-svg'), out = el.querySelector('.w-out'), rd = el.querySelector('.w-readout');
+          let cur = 'Q4_K_M';
+          function draw() {
+            const r = Q[cur]; let s = '';
+            // block: thickness ∝ bits
+            F.setIso(17, 95, 120);
+            s += F.g(F.plate({ x: -1.6, y: -1.6, w: 3.2, d: 3.2, t: r.bits / 16 * 2.2, fill: r.f, side: r.f, pattern: 'grid', density: 4, pc: r.col }), { tip: 'c7_quant' });
+            s += F.text(95, 200, cur, { cls: 'big', color: r.col }) + F.text(95, 218, (r.bits === 16 ? '16' : '≈' + r.bits) + ' BITS / WEIGHT', { cls: 'tiny', color: C.mute }) + F.sub(95, 234, '每个权重的位数', { anchor: 'middle' });
+            // ruler
+            const x0 = 225, x1 = 505, y = 112;
+            s += F.text((x0 + x1) / 2, 40, 'ONE WEIGHT ON THE RULER', { cls: 'tiny', color: C.mute }) + F.sub((x0 + x1) / 2, 56, '一个权重落在“尺子”上', { anchor: 'middle' });
+            s += F.line(x0, y, x1, y, { sw: 1.2 });
+            if (!r.levels) s += `<rect x="${x0}" y="${y - 6}" width="${x1 - x0}" height="12" fill="${C.ink}" opacity=".1"/>`;
+            else { const n = Math.min(r.levels, 64); for (let k = 0; k <= n; k++) { const x = x0 + (x1 - x0) * k / n; s += F.line(x, y - 6, x, y + 6, { sw: .7, stroke: r.col }); } }
+            const snap = r.levels ? Math.round(TRUE * r.levels) / r.levels : TRUE;
+            const xt = x0 + (x1 - x0) * TRUE, xs = x0 + (x1 - x0) * snap;
+            s += `<circle cx="${xt}" cy="${y}" r="4" fill="none" stroke="${C.mute}" stroke-width="1.2"/>` + `<circle cx="${xs}" cy="${y}" r="5" fill="${r.col}"/>`;
+            if (Math.abs(xs - xt) > 2) s += F.arrow(xt, y + 16, xs, y + 16, { stroke: r.col });
+            s += F.text(xs, y - 16, snap.toFixed(r.levels === 0 ? 8 : 4), { cls: 'mono', color: r.col });
+            s += F.text((x0 + x1) / 2, y + 40, `true 0.68359375 → error ${Math.abs(snap - TRUE).toFixed(5)}`, { cls: 'tiny', color: C.mute }) +
+              F.sub((x0 + x1) / 2, y + 56, r.levels ? `${r.levels} 个刻度${r.levels > 64 ? '（图中只画 64 个）' : ''}` : '几乎连续', { anchor: 'middle' });
+            // RAM bar
+            const rx = 548, rw = 190, ry = 92, GB = 8, os = 3;
+            s += F.text(rx, 40, 'LAPTOP RAM · 8 GB', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(rx, 56, '笔记本内存', { anchor: 'start' });
+            const used = Math.min(GB, os + r.gb), over = os + r.gb > GB;
+            s += `<rect x="${rx}" y="${ry}" width="${rw}" height="26" rx="4" fill="#fff" stroke="${C.ink}"/>`;
+            s += `<rect x="${rx}" y="${ry}" width="${rw * os / GB}" height="26" rx="4" fill="#ecebe6"/>` + F.text(rx + rw * os / GB / 2, ry + 15, 'OS+APPS', { cls: 'tiny', color: C.mute });
+            s += F.g(`<rect x="${rx + rw * os / GB}" y="${ry}" width="${rw * (used - os) / GB}" height="26" fill="${r.f}" stroke="${r.col}"/>` +
+              F.text(rx + rw * (os + (used - os) / 2) / GB, ry + 15, r.gb.toFixed(2) + ' GB', { cls: 'tiny', color: r.col }), { tip: 'c7_gguf' });
+            if (over) s += `<rect x="${rx + rw}" y="${ry}" width="${rw * (os + r.gb - GB) / GB}" height="26" fill="${C.redF}" stroke="${C.red}" stroke-dasharray="3 2"/>`;
+            s += F.text(rx, ry + 48, over ? '✗ DOES NOT FIT' : '✓ FITS', { anchor: 'start', cls: 'lt', color: over ? C.red : C.green }) + F.sub(rx, ry + 64, over ? '装不下：会卡死或无法运行' : '装得下：可以本地运行', { anchor: 'start' });
+            // quality
+            s += F.text(rx, 200, 'QUALITY KEPT', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(rx + 90, 200, '保留的质量', { anchor: 'start' });
+            ['FP16', 'Q8_0', 'Q4_K_M', 'Q2_K'].forEach((k, i) => { const on = k === cur; s += `<rect x="${rx + i * 48}" y="210" width="42" height="10" rx="2" fill="${on ? Q[k].col : '#ecebe6'}"/>` + F.text(rx + i * 48 + 21, 234, k, { cls: 'tiny', color: on ? Q[k].col : C.mute }); });
+            s += F.text(rx, 254, r.q_en.toUpperCase(), { anchor: 'start', cls: 'lt', color: r.col }) + F.sub(rx + 110, 254, r.q_zh, { anchor: 'start' });
+            box.innerHTML = F.svg(760, 268, s, { label: 'quantization explorer' });
+            out.textContent = `${r.gb.toFixed(2)} GB`;
+            rd.innerHTML = `<span class="en"><b>${cur}</b> · ${r.q_en}. ${r.d_en}</span> <span class="zh"><b>${cur}</b> · ${r.q_zh}。${r.d_zh}</span>`;
+          }
+          el.querySelectorAll('.w-seg button').forEach(b => b.addEventListener('click', () => {
+            cur = b.dataset.k; el.querySelectorAll('.w-seg button').forEach(x => x.classList.toggle('on', x === b)); draw();
+          }));
+          draw();
+        }
+      },
       fig() {
         const C = F.C; let s = '';
         const tile = (cx, cy, S, o) => { F.setIso(S, cx, cy); return F.plate({ x: -(o.w || 2) / 2, y: -(o.d || 2) / 2, ...o }); };
@@ -200,7 +373,7 @@ So “open” on a model card can mean very different things — check what is a
           g += `<rect x="560" y="${cy - 9}" width="${bw}" height="18" rx="3" fill="${r.f}" stroke="${r.col}"/>` + F.text(568 + bw, cy + 4, r.gb.toFixed(1) + ' GB', { anchor: 'start', cls: 'mono', color: r.col });
           s += F.g(g, { tip: i === 2 ? 'c7_gguf' : 'c7_quant' });
         });
-        s += F.text(390, 340, '← smaller · faster · fits in RAM          more precise →', { cls: 'tiny', color: C.mute });
+        s += F.text(260, 340, '← smaller · faster · fits in RAM', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.text(520, 340, 'more precise →', { anchor: 'end', cls: 'tiny', color: C.mute });
         return F.svg(760, 355, s, { label: 'quantization bit depth vs size' });
       },
       cap_en: 'Quantization rounds every weight onto a coarser ruler. At 4 bits a weight can land on only 16 positions instead of thousands — the file is a third of the size, and each number is a little off.',
@@ -243,6 +416,12 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
       q_en: 'What is each one supposed to disclose?',
       q_zh: '这两种文档各自应该披露什么？',
       src: 'Mitchell et al., Model Cards; Gebru et al., Datasheets for Datasets',
+      short_en: 'A **model card** (Mitchell et al., 2019) discloses the **model**: who made it and its license, **intended and out-of-scope uses**, its training data, **evaluation results broken down across groups**, and **limitations, biases and ethical considerations**. A **dataset card / datasheet** (Gebru et al.) discloses the **data**: **motivation** (why, by whom, funded by whom), **composition** (what’s in it, any personal data), **collection process** and consent, preprocessing, recommended uses, distribution and maintenance.',
+      short_zh: '**模型卡**（Mitchell 等人，2019）披露的是**模型**：谁做的、许可证、**预期用途与不适用场景**、训练数据、**按人群分组的评估结果**，以及**局限、偏见和伦理考量**。**数据集卡 / 数据表**（Gebru 等人）披露的是**数据**：**动机**（为什么做、谁做的、谁出资）、**组成**（里面有什么、是否含个人信息）、**采集过程**与是否同意、预处理、推荐用途、分发与维护。',
+      basis_en: 'Checked against Mitchell et al., “Model Cards for Model Reporting” (sections: model details, intended use, factors, metrics, evaluation data, training data, quantitative analyses, ethical considerations, caveats & recommendations) and Gebru et al., “Datasheets for Datasets” (motivation, composition, collection process, preprocessing/cleaning/labeling, uses, distribution, maintenance).',
+      basis_zh: '已对照 Mitchell 等人《Model Cards for Model Reporting》（模型细节、预期用途、影响因素、指标、评估数据、训练数据、定量分析、伦理考量、注意事项与建议）和 Gebru 等人《Datasheets for Datasets》（动机、组成、采集过程、预处理/清洗/标注、用途、分发、维护）核对。',
+      links: [{ t: 'Mitchell et al. — Model Cards for Model Reporting', u: 'https://arxiv.org/abs/1810.03993' }, { t: 'Gebru et al. — Datasheets for Datasets', u: 'https://arxiv.org/abs/1803.09010' }, { t: 'Hugging Face — dataset cards & viewer', u: 'https://huggingface.co/docs/hub/datasets-cards' }],
+      rel: ['7.5', '7.2'],
       fig() {
         const C = F.C; let s = '';
         const card = (x, title, zh, col, fill, tip, rows) => {
@@ -324,6 +503,12 @@ In class we read real cards on Hugging Face. What a card leaves out — “train
       q_en: 'Common Crawl, C4, FineWeb, Dolma: how do these relate, and how do you trace a model back to its data?',
       q_zh: 'Common Crawl、C4、FineWeb、Dolma 之间是什么关系？你如何把一个模型追溯回它的数据？',
       src: 'Class 7; WaPo C4 search; Have I Been Trained',
+      short_en: '**Common Crawl** is the **raw web scrape** (monthly snapshots since 2008). **C4, FineWeb and Dolma are filtered, deduplicated cuts of it**: C4 (Google, built to train T5), FineWeb (Hugging Face, ~15 trillion tokens from 96 snapshots), Dolma (Ai2, Common Crawl mixed with code, papers, books and Wikipedia, for OLMo). To **trace a model back**: model card → its training-data section → the **dataset card** → the dataset viewer → search the corpus itself (Washington Post C4 search, Have I Been Trained).',
+      short_zh: '**Common Crawl** 是**原始网页抓取**（2008 年起每月快照）。**C4、FineWeb、Dolma 都是从它过滤、去重切出来的**：C4（谷歌，为训练 T5）、FineWeb（Hugging Face，来自 96 份快照、约 15 万亿 token）、Dolma（Ai2，Common Crawl 再混入代码、论文、书和维基百科，用于 OLMo）。**追溯模型**：模型卡 → “训练数据”一节 → **数据集卡** → 数据集查看器 → 直接搜索语料（《华盛顿邮报》C4 搜索、Have I Been Trained）。',
+      basis_en: 'Checked: FineWeb paper (15T tokens from 96 Common Crawl snapshots); Dolma README (v1.6 sources: Common Crawl, The Stack, C4, Reddit, peS2o, Project Gutenberg, Wikipedia/Wikibooks; ODC-BY license). C4 is T5’s cleaned Common Crawl (Raffel et al.). Note: OLMo 2 itself was trained on Dolma’s successors, OLMo-Mix-1124 and Dolmino-Mix-1124.',
+      basis_zh: '已核对：FineWeb 论文（来自 96 份 Common Crawl 快照，15 万亿 token）；Dolma 说明文档（v1.6 来源：Common Crawl、The Stack、C4、Reddit、peS2o、古登堡计划、维基百科/维基教科书；ODC-BY 许可）。C4 是 T5 使用的清洗版 Common Crawl（Raffel 等人）。注意：OLMo 2 本身用的是 Dolma 的后继版本 OLMo-Mix-1124 和 Dolmino-Mix-1124。',
+      links: [{ t: 'FineWeb dataset (Hugging Face)', u: 'https://huggingface.co/datasets/HuggingFaceFW/fineweb' }, { t: 'Dolma dataset (Ai2)', u: 'https://huggingface.co/datasets/allenai/dolma' }, { t: 'Washington Post — the websites inside C4', u: 'https://www.washingtonpost.com/technology/interactive/2023/ai-chatbot-learning/' }],
+      rel: ['7.4', '2.5', '1.1'],
       fig() {
         const C = F.C; let s = '';
         const tile = (cx, cy, S, o) => { F.setIso(S, cx, cy); return F.plate({ x: -(o.w || 2) / 2, y: -(o.d || 2) / 2, ...o }); };

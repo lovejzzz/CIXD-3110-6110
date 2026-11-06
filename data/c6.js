@@ -52,8 +52,8 @@ defTerms({
     d_en: 'The rules for what an agent may do on its own, what must stop for human approval, and what gets recorded — e.g. allow / ask / deny rules and permission modes in Claude Code.',
     d_zh: '规定智能体哪些事可以自己做、哪些必须停下来等人批准、哪些要记录下来的规则——例如 Claude Code 中的 allow / ask / deny 规则和权限模式。' },
   c6_perm_modes: { en: 'Permission modes', zh: '权限模式',
-    d_en: 'Claude Code presets: default (ask the first time a tool is used), acceptEdits (auto-approve file edits), plan (read-only, no changes), bypassPermissions (ask nothing — only in a sandbox).',
-    d_zh: 'Claude Code 的预设：default（每种工具第一次使用时询问）、acceptEdits（自动批准文件修改）、plan（只读，不做任何改动）、bypassPermissions（什么都不问——只适合沙盒）。' },
+    d_en: 'Claude Code presets (checked against its docs): plan (read and propose only), default / manual (reads run; edits, shell and network ask), acceptEdits (file edits and common file commands in the project run), auto (everything runs after a background classifier check), dontAsk (anything that would ask is denied), bypassPermissions (asks nothing — sandboxes only). Deny rules apply in every mode.',
+    d_zh: 'Claude Code 的预设（已对照官方文档）：plan（只读、只提方案）、default / manual（读操作直接跑；改文件、终端、联网要问）、acceptEdits（项目内改文件和常见文件命令自动执行）、auto（全部执行，但先经后台分类器检查）、dontAsk（凡是需要询问的一律拒绝）、bypassPermissions（什么都不问——只用于沙盒）。拒绝规则在所有模式下都有效。' },
   c6_audit: { en: 'Log / audit trail', zh: '日志 / 审计记录',
     d_en: 'The record of what the agent actually did — transcript, tool calls and arguments, diffs, cost. It makes delegation reviewable and reversible.',
     d_zh: '智能体实际做了什么的记录——对话记录、工具调用及参数、文件改动、花费。它让“委托”可以被检查、可以被撤销。' },
@@ -121,6 +121,12 @@ So: chatbot = conversation; agent = delegation.`,
 - **对路径的自主权**——你给的是目标而不是脚本；模型自己计划、挑选工具、判断何时完成。（如果步骤是写死在代码里的，Anthropic 把它叫作[[c6_workflow]]，而不是智能体。）
 
 一句话：聊天机器人是对话；智能体是委托。`,
+      short_en: `A chatbot answers one prompt at a time and cannot act — the human decides every next step. Anthropic defines an **agent** as a system where the LLM **dynamically directs its own process and tool use**: in practice an LLM **using tools in a loop, based on feedback from its environment**. So the difference is tools (it can act), the loop (it reads real results and decides the next step) and autonomy over the path (you give a goal; it plans and decides when it’s done). Fixed, coded steps are a *workflow*, not an agent.`,
+      short_zh: `聊天机器人一次回答一个提示，不能行动——下一步做什么都由人决定。Anthropic 把**智能体**定义为：由 LLM **动态决定自己的流程和工具使用**的系统，实际就是**根据环境反馈、在循环中使用工具**的 LLM。区别在于工具（能行动）、循环（读取真实结果并自己决定下一步）和对路径的自主权（你给目标，它来计划并判断何时完成）。步骤写死在代码里的叫*工作流*，不是智能体。`,
+      basis_en: `Anthropic, “Building Effective AI Agents”: agents are systems where LLMs dynamically direct their own processes and tool usage; workflows follow predefined code paths. Agno’s “5 Levels” adds that without tools an LLM can reason but not act. Both are in the course glossary.`,
+      basis_zh: `Anthropic《Building Effective AI Agents》：智能体是由 LLM 动态决定自身流程与工具使用的系统；工作流则沿预先写好的代码路径运行。Agno 的“5 个层级”补充：没有工具，LLM 只能推理、不能行动。两者都收录在课程词汇表中。`,
+      links: [{ t: 'Anthropic — Building Effective AI Agents', u: 'https://www.anthropic.com/engineering/building-effective-agents' }],
+      rel: ['6.2', '6.3', '3.4'],
       hook_en: 'Chatbot: you are the loop. Agent: the model runs the loop — tools + feedback + its own decisions.',
       hook_zh: '聊天机器人：你是循环；智能体：模型自己跑循环——工具 + 反馈 + 自主决定。',
       trap_en: '“It’s smarter” or “it uses a bigger model” is wrong. The difference is tools + a loop with environmental feedback + the model choosing its own steps.',
@@ -132,21 +138,46 @@ So: chatbot = conversation; agent = delegation.`,
       q_zh: '什么是 harness（如 Hermes、Claude Code）？它是如何使用模型的？',
       src: 'Pan et al., Natural-Language Agent Harnesses; Hermes docs',
       fig() {
-        const C = F.C;
-        const L = [
-          { label: 'Context · what it sees', sub: '上下文：系统提示 文件 历史', tip: 'c6_context', pattern: 'hatch', density: 5, fill: '#fff' },
-          { label: 'Tools · what it may call', sub: '工具：读写文件 终端 搜索 MCP', tip: 'c6_tools', bars: { color: C.blue, fill: C.blueF, n: 3, rows: 2 } },
-          { label: 'Permissions', sub: '权限：哪些要先问人', tip: 'c6_permission', bars: { color: C.amber, fill: C.amberF, n: 2, rows: 2 } },
-          { label: 'Model · the core', sub: '模型：只负责“想”和“提议”', note: { en: 'The only part that is the model. Swap Claude for a local Ollama model and the harness stays the same.', zh: '唯一属于“模型”的部分。把 Claude 换成本地 Ollama 模型，harness 依然不变。' }, fill: C.magF, side: '#efd2e2', pattern: 'diag', pc: C.mag, density: 4 },
-          { label: 'State · memory & files', sub: '状态：记忆 待办 存在哪', note: { en: 'Where state lives between turns: memory files, CLAUDE.md, a Kanban board, the files on disk.', zh: '轮与轮之间状态存在哪里：记忆文件、CLAUDE.md、看板、磁盘上的文件。' }, pattern: 'grid', density: 5 },
-          { label: 'Validation · recovery', sub: '校验与恢复：测试 重试', note: { en: 'When checks run (tests, linters) and what happens on failure (retry, roll back, ask).', zh: '何时运行检查（测试、语法检查），失败后怎么办（重试、回滚、询问）。' }, bars: { color: C.green, fill: C.greenF, n: 3, rows: 1 } },
-          { label: 'Stop rules', sub: '停止条件：何时结束', note: { en: 'When execution ends: goal met, budget or turn limit hit, or a human says stop.', zh: '何时结束执行：目标达成、预算或轮数用完，或人喊停。' }, pattern: 'dots', density: 7 }
-        ];
-        const o = { alternate: true, gap: 2.7 };
-        return F.svg(760, F.stackH(L.length, o), F.stack(L, o), { label: 'exploded view of an agent harness' });
+        const C = F.C; let s = '';
+        // harness boundary
+        s += F.rect(24, 38, 560, 300, { rx: 18, fill: '#fbfbf9', dash: '6 4', stroke: C.mag, tip: 'c6_harness' });
+        s += F.text(40, 28, 'HARNESS = EVERYTHING INSIDE THE DASHED LINE', { anchor: 'start', cls: 'lt', color: C.mag }) + F.sub(392, 28, 'harness = 虚线里的一切');
+        const box = (x, y, w, en, zh, o = {}) => F.g(F.rect(x, y, w, 46, { fill: o.fill || '#fff', stroke: o.stroke || C.ink, rx: 6 }) +
+          F.text(x + w / 2, y + 19, en, { cls: 'tiny', color: o.stroke || C.ink }) + F.sub(x + w / 2, y + 35, zh, { anchor: 'middle' }), { tip: o.tip, note: o.note });
+        s += box(52, 70, 150, 'CONTEXT', '上下文：它看到什么', { tip: 'c6_context' });
+        s += box(52, 270, 150, 'STATE · MEMORY', '状态：记忆 待办 文件', { note: { en: 'Where state lives between turns: memory files, CLAUDE.md, a task board, the files on disk.', zh: '轮与轮之间状态存在哪：记忆文件、CLAUDE.md、任务看板、磁盘上的文件。' } });
+        s += box(52, 170, 150, 'STOP RULES', '停止条件：何时结束', { note: { en: 'Goal met, turn or budget limit reached, or a human says stop.', zh: '目标达成、轮数或预算用完，或人喊停。' }, stroke: C.mute });
+        s += box(404, 70, 156, 'PERMISSIONS', '权限：要不要先问人', { fill: C.amberF, stroke: C.amber, tip: 'c6_permission' });
+        s += box(404, 170, 156, 'TOOLS · EXECUTE', '工具：真正执行', { fill: C.blueF, stroke: C.blue, tip: 'c6_tools' });
+        s += box(404, 270, 156, 'VALIDATION', '校验与恢复：测试 重试', { fill: C.greenF, stroke: C.green, note: { en: 'Run checks (tests, linters); on failure retry, roll back or ask.', zh: '运行检查（测试、语法检查）；失败就重试、回滚或询问。' } });
+        // model
+        s += F.circle(303, 192, 50, { text: 'MODEL', fill: C.magF, stroke: C.mag, tcolor: C.mag, note: { en: 'The only part that is the model. It reads the context and proposes text or a tool call — it never executes anything itself. Swap Claude for a local Ollama model and the harness stays.', zh: '唯一属于“模型”的部分。它读上下文、提议文字或工具调用——自己从不执行任何东西。把 Claude 换成本地 Ollama 模型，harness 不变。' } });
+        s += F.sub(303, 258, '只负责“提议”', { anchor: 'middle' });
+        // the loop
+        s += F.path('M202,93 C250,93 270,120 283,146', { arrow: true });
+        s += F.text(236, 82, '1 assemble', { cls: 'tiny', color: C.mute });
+        s += F.path('M335,153 C350,115 370,93 402,93', { arrow: true, stroke: C.mag });
+        s += F.text(372, 140, '2 tool_use', { cls: 'tiny', color: C.mag, anchor: 'start' });
+        s += F.arrow(482, 116, 482, 168);
+        s += F.text(492, 146, '3 allowed?', { cls: 'tiny', color: C.amber, anchor: 'start' });
+        s += F.path('M560,186 H636', { arrow: true, stroke: C.blue });
+        s += F.path('M636,204 H562', { arrow: true, stroke: C.blue });
+        s += F.arrow(482, 216, 482, 268);
+        s += F.text(492, 248, '5 check', { cls: 'tiny', color: C.green, anchor: 'start' });
+        s += F.path('M404,293 H204', { arrow: true });
+        s += F.text(300, 286, '6 save result', { cls: 'tiny', color: C.mute });
+        s += F.arrow(127, 270, 127, 218);
+        s += F.arrow(127, 168, 127, 118);
+        s += F.text(170, 146, '7 next turn', { cls: 'tiny', color: C.mute });
+        s += F.path('M262,214 C230,220 214,206 204,196', { arrow: true, dash: '3 3', stroke: C.mute });
+        // world outside
+        s += F.g(F.rect(640, 150, 104, 92, { rx: 8, fill: '#f3f2ee' }) + F.text(692, 178, 'THE WORLD', { cls: 'tiny' }) + F.text(692, 198, 'files · shell', { cls: 'tiny', color: C.mute }) + F.text(692, 214, 'web · APIs', { cls: 'tiny', color: C.mute }) + F.sub(692, 232, '外部世界', { anchor: 'middle' }),
+          { note: { en: 'Outside the harness: what the tools actually touch.', zh: 'harness 之外：工具真正动到的东西。' } });
+        s += F.text(612, 176, '4 run', { cls: 'tiny', color: C.blue });
+        return F.svg(760, 350, s, { label: 'agent harness loop around a model' });
       },
-      cap_en: 'Pull a harness apart and the model is just one layer in the middle. Everything above and below it — context, tools, permissions, state, checks, stop rules — is the harness.',
-      cap_zh: '把 harness 拆开，模型只是中间的一层。它上下的一切——上下文、工具、权限、状态、校验、停止条件——都属于 harness。',
+      cap_en: 'The model sits in the middle and only proposes. Everything inside the dashed line is the harness, running the numbered loop: assemble context → tool_use → permission check → run it in the world → validate → save state → next turn, until a stop rule fires.',
+      cap_zh: '模型在中间，只负责提议。虚线里的一切都是 harness，按编号跑循环：组装上下文 → 提出工具调用 → 检查权限 → 在外部世界执行 → 校验 → 保存状态 → 下一轮，直到触发停止条件。',
       a_en: `A [[c6_harness]] is **the software around a model that turns it into an agent**. Pan et al. define it as the external execution system that decides:
 - **what the model sees** (the [[c6_context]]: system prompt, files, history, tool results),
 - **which tools it may call**, and under what [[c6_permission]],
@@ -167,6 +198,12 @@ So: chatbot = conversation; agent = delegation.`,
 [[c6_hermes]]和[[c6_claude_code]]都是 harness，它们本身都*不是*模型：Claude Code 包裹的是 Claude 模型；Hermes 既可以包裹云端模型，也可以通过 Ollama 包裹本地模型。
 
 **它怎样使用模型：**循环调用。harness 组装好上下文发给模型 → 模型回复文字或一个[[c6_tool_call]] → harness 检查权限、执行工具、把结果再喂回去 → 重复，直到触发停止条件。模型只负责*提议*；harness 负责*执行、记忆和把关*。所以同一个模型放在不同的 harness 里，表现会非常不同。`,
+      short_en: `A **harness** is the software around a model that turns it into an agent. Pan et al. define it as the external execution system that decides **what the model sees, which tools it may call, where state is stored, when validation runs, how failures are recovered, and when execution stops**. Hermes and Claude Code are harnesses, not models. It uses the model **in a loop**: build the context → the model proposes text or a tool call → the harness checks permission, runs the tool, feeds the result back → repeat until a stop rule fires.`,
+      short_zh: `**Harness** 是包在模型外面、把模型变成智能体的软件。Pan 等人把它定义为外部执行系统，由它决定**模型看到什么、能调用哪些工具、状态存在哪里、何时校验、失败后如何恢复、何时停止**。Hermes 和 Claude Code 都是 harness，不是模型。它**循环地**使用模型：组装上下文 → 模型提议文字或工具调用 → harness 检查权限、执行工具、把结果喂回去 → 重复，直到触发停止条件。`,
+      basis_en: `Pan et al., “Natural-Language Agent Harnesses” (arXiv 2603.25723) — the harness definition is in the course glossary. Hermes Agent docs (can drive hosted or local Ollama models) and Claude Code docs for the two examples.`,
+      basis_zh: `Pan 等人《Natural-Language Agent Harnesses》（arXiv 2603.25723）——harness 的定义收录在课程词汇表中。两个例子分别依据 Hermes Agent 文档（可驱动云端或本地 Ollama 模型）和 Claude Code 文档。`,
+      links: [{ t: 'Pan et al. — Natural-Language Agent Harnesses', u: 'https://arxiv.org/abs/2603.25723' }, { t: 'Hermes Agent — Security & approvals', u: 'https://hermes-agent.nousresearch.com/docs/user-guide/security' }],
+      rel: ['6.1', '5.2', '6.5'],
       hook_en: 'Model = engine. Harness = the car around it: steering (context), wheels (tools), brakes (permissions), dashboard (logs), and the rule for when to park (stop).',
       hook_zh: '模型是发动机，harness 是整辆车：方向盘（上下文）、车轮（工具）、刹车（权限）、仪表盘（日志），以及什么时候停车（停止条件）。',
       trap_en: 'Don’t say “Hermes is a model.” Hermes and Claude Code are harnesses that call a model. Explain the loop: context → model → tool call → execute → result back.',
@@ -205,8 +242,101 @@ So: chatbot = conversation; agent = delegation.`,
         s += F.line(20, 318, 750, 318, { stroke: C.hair || '#ddd', sw: 0.6, dash: '2 3' }) + m.svg + F.sub(30, 370, '一次工具调用：模型只“开单子”，真正执行的是 harness', { anchor: 'start' });
         return F.svg(760, 385, s, { label: 'MCP N times M vs N plus M' });
       },
-      cap_en: 'Top: before a standard, every assistant needed its own connector for every service. With MCP, each assistant speaks the protocol once and each service is wrapped once. Bottom: the anatomy of a single tool call.',
-      cap_zh: '上：没有标准之前，每个助手都要为每个服务写自己的连接器。有了 MCP，每个助手只需支持一次协议，每个服务只需封装一次。下：一次工具调用的结构。',
+      glow: {
+        id: 'g6-3', name_en: 'Tool calls through an MCP hub', name_zh: '经由 MCP 枢纽的工具调用',
+        hint_en: 'Click a server (or 1–4) to make a tool call · click a client (C) to switch · M toggles MCP on/off',
+        hint_zh: '点服务器（或 1–4）发起工具调用 · 点客户端（C）切换 · M 键开关 MCP',
+        aria: 'Isometric diagram: three AI clients on the left, four tool servers on the right, an MCP hub in the middle. Click a server to send a tool call and watch the result come back; press M to compare with no shared protocol.',
+        css: `[data-fig="g6-3"] .press.latched text { fill: var(--panel); }`,
+        mount(stage, api) {
+          const PW = 430, PD = 300, PH = 8;
+          const K = api.iso.frame([[0, 0, 0], [PW, 0, 0], [0, PD, 0], [PW, PD, 0], [0, 0, 60]]);
+          const { TOP, FRONT, box, path } = K;
+          const CL = ['CLAUDE CODE', 'HERMES', 'CHAT APP'];
+          const SV = [['FILES', '文件'], ['GITHUB', '代码库'], ['CALENDAR', '日历'], ['NOTES VAULT', '笔记库']];
+          const cP = i => [18, 36 + i * 88], sP = j => [334, 18 + j * 68], HB = [180, 112];
+          const cOut = i => { const [x, y] = cP(i); return [x + 80, y + 28]; };
+          const sIn = j => { const [x, y] = sP(j); return [x, y + 24]; };
+          const hL = [HB[0], HB[1] + 36], hR = [HB[0] + 72, HB[1] + 36];
+          const st = { mcp: true, client: 0, busy: false, active: -1, phase: 'idle', calls: 0 };
+          const wire = (a, b, za = 16, zb = 14) => path([[a[0], a[1], za], [a[0] + 22, a[1], PH + 2], [b[0] - 22, b[1], PH + 2], [b[0], b[1], zb]]);
+          const rev = (a, b, za, zb) => path([[b[0], b[1], zb], [b[0] - 22, b[1], PH + 2], [a[0] + 22, a[1], PH + 2], [a[0], a[1], za]]);
+          const $ = id => stage.querySelector('#' + id);
+          function draw() {
+            let s = box(0, 0, 0, PW, PD, PH, 12);
+            s += `<g transform="${TOP(0, 0, PH)}"><rect class="detail" x="8" y="8" width="${PW - 16}" height="${PD - 16}" rx="8"/></g>`;
+            let wires = '';
+            const W = (id, d, hot) => `<path class="wire-under" d="${d}"/><path id="${id}" class="wire${hot ? ' hot' : ''}" d="${d}"/>`;
+            const Pl = (id, d) => `<path id="${id}" class="pulse" pathLength="1000" d="${d}"/>`;
+            if (st.mcp) {
+              CL.forEach((_, i) => { const d = wire(cOut(i), hL, 16, 20); wires += W(`g63-wc${i}`, d, i === st.client && st.busy) + Pl(`g63-pc${i}`, d) + Pl(`g63-rc${i}`, rev(cOut(i), hL, 16, 20)); });
+              SV.forEach((_, j) => { const d = wire(hR, sIn(j), 20, 14); wires += W(`g63-ws${j}`, d, j === st.active && st.busy) + Pl(`g63-ps${j}`, d) + Pl(`g63-rs${j}`, rev(hR, sIn(j), 20, 14)); });
+            } else {
+              CL.forEach((_, i) => SV.forEach((_, j) => { const d = wire(cOut(i), sIn(j), 16, 14); wires += W(`g63-w${i}${j}`, d, i === st.client && j === st.active && st.busy) + Pl(`g63-p${i}${j}`, d) + Pl(`g63-r${i}${j}`, rev(cOut(i), sIn(j), 16, 14)); }));
+            }
+            s += wires;
+            // clients
+            CL.forEach((n, i) => {
+              const [x, y] = cP(i), on = i === st.client;
+              const txt = !on ? '' : st.phase === 'call' ? `tool_use{${SV[st.active][0].toLowerCase().split(' ')[0]}}` : st.phase === 'done' ? 'tool_result ✓' : 'ready ▍';
+              s += `<g class="press" data-cl="${i}">${box(x, y, PH, 80, 56, 22, 4)}</g>`;
+              s += `<g transform="${TOP(x, y, PH + 22)}"><text class="${on ? 'label-hi' : 'label'}" x="6" y="13" font-size="8.5">${n}</text><rect class="glass${on ? ' hot' : ''}" x="6" y="20" width="68" height="26" rx="2"/>` +
+                `<text class="scr" x="10" y="37" font-size="7.5">${txt}</text></g>`;
+            });
+            // hub
+            if (st.mcp) {
+              s += `<g class="press latched" id="g63-hub">${box(HB[0], HB[1], PH, 72, 72, 26, 10)}</g>`;
+              s += `<g transform="${TOP(HB[0], HB[1], PH + 26)}"><text x="18" y="34" font-size="13" style="font-weight:600;fill:var(--panel)">MCP</text><text x="10" y="50" font-size="6" style="fill:var(--panel)">one protocol</text></g>`;
+            } else {
+              s += `<g class="press" id="g63-hub"><g transform="${TOP(HB[0], HB[1], PH)}"><rect class="detail" width="72" height="72" rx="10" stroke-dasharray="4 3" fill="transparent"/>` +
+                `<text class="label" x="8" y="34" font-size="7">MCP OFF</text><text class="label" x="8" y="46" font-size="6">custom glue</text></g></g>`;
+            }
+            // servers
+            SV.forEach(([n, z], j) => {
+              const [x, y] = sP(j), lit = j === st.active && st.phase !== 'idle';
+              s += `<g class="press" data-sv="${j}" id="g63-sv${j}">${box(x, y, PH, 88, 48, 18, 3)}</g>`;
+              s += `<g transform="${TOP(x, y, PH + 18)}"><circle class="led${lit ? ' hot' : ''}"${lit ? ' filter="url(#soft)"' : ''} cx="10" cy="15" r="3.4"/>` +
+                `<text class="${lit ? 'label-hi' : 'label'}" x="19" y="18" font-size="8.5">${n}</text><text class="label-zh" x="19" y="32" font-size="8">${z}</text></g>`;
+            });
+            stage.innerHTML = s;
+            const conn = st.mcp ? '3 + 4 = 7 connections' : '3 × 4 = 12 custom connectors';
+            const connZ = st.mcp ? '3 + 4 = 7 条连接' : '3 × 4 = 12 个定制对接';
+            const ev = st.phase === 'call' ? ` · tool_call → ${SV[st.active][0].toLowerCase()}` : st.phase === 'done' ? ` · tool_result ← ${SV[st.active][0].toLowerCase()}` : '';
+            const evZ = st.phase === 'call' ? ` · 调用 → ${SV[st.active][1]}` : st.phase === 'done' ? ` · 结果 ← ${SV[st.active][1]}` : '';
+            api.say(`${st.mcp ? 'with mcp' : 'no standard'} · ${conn}${ev}`, `${st.mcp ? '有 MCP' : '无标准'} · ${connZ}${evZ}`);
+            api.power(st.mcp);
+          }
+          function call(j) {
+            if (st.busy) return;
+            st.busy = true; st.active = j; st.phase = 'call'; st.calls++;
+            const i = st.client; draw();
+            const seq = st.mcp ? [[`g63-pc${i}`, 0], [`g63-ps${j}`, 430], [null, 860], [`g63-rs${j}`, 1200], [`g63-rc${i}`, 1630]]
+              : [[`g63-p${i}${j}`, 0], [null, 520], [`g63-r${i}${j}`, 860]];
+            seq.forEach(([id, t]) => api.after(t, () => { if (id) api.replay($(id)); else { api.flash($(`g63-sv${j}`), 520); } }));
+            const end = st.mcp ? 2250 : 1500;
+            api.after(st.mcp ? 1150 : 800, () => { st.phase = 'done'; draw(); });
+            api.after(end, () => { st.busy = false; draw(); });
+          }
+          stage.addEventListener('click', e => {
+            const sv = e.target.closest('[data-sv]'), cl = e.target.closest('[data-cl]'), hub = e.target.closest('#g63-hub');
+            if (sv) call(+sv.dataset.sv);
+            else if (cl && !st.busy) { st.client = +cl.dataset.cl; st.phase = 'idle'; draw(); }
+            else if (hub && !st.busy) { st.mcp = !st.mcp; st.phase = 'idle'; draw(); }
+          });
+          draw();
+          return {
+            key: e => {
+              if (/^[1-4]$/.test(e.key)) { call(+e.key - 1); return true; }
+              if (e.key === 'c' || e.key === 'C') { if (!st.busy) { st.client = (st.client + 1) % 3; st.phase = 'idle'; draw(); } return true; }
+              if (e.key === 'm' || e.key === 'M') { if (!st.busy) { st.mcp = !st.mcp; st.phase = 'idle'; draw(); } return true; }
+              return false;
+            },
+            demo: () => { api.after(300, () => call(0)); }
+          };
+        }
+      },
+      cap_en: 'Click a server and a tool_call travels from the client through the MCP hub; the tool_result comes back the same way. Switch MCP off and every client needs its own wire to every server: 3 × 4 = 12 instead of 3 + 4 = 7.',
+      cap_zh: '点一个服务器，tool_call 就从客户端经 MCP 枢纽发出，tool_result 沿原路返回。关掉 MCP，每个客户端都要和每个服务器单独连线：3 × 4 = 12 条，而不是 3 + 4 = 7 条。',
       a_en: `**Tool call:** the model cannot run code or open a website by itself. When it decides it needs one of its [[c6_tools]], it outputs a structured request — a *tool_use* block with the tool’s **name** and **JSON arguments** (e.g. \`read_file{path:"notes.md"}\`). The [[c6_harness]] executes it and returns a *tool_result*, which the model reads before deciding the next step. That is a [[c6_tool_call]]: the model writes the order; the software fills it.
 
 **What MCP solves:** before [[c6_mcp]], every AI application had to build a custom integration for every tool or data source — the [[c6_nxm]] (3 assistants × 4 services = 12 connectors), fragile and duplicated. MCP is an **open standard** — “USB-C for AI” — for how an AI app (an [[c6_mcp_client]]) discovers and calls the tools, resources and prompts offered by an [[c6_mcp_server]]. Each assistant implements the protocol once, each service is wrapped once, and anything can plug into anything: N × M becomes **N + M**.
@@ -217,6 +347,12 @@ So: chatbot = conversation; agent = delegation.`,
 **MCP 解决了什么：**在[[c6_mcp]]出现之前，每个 AI 应用都要为每个工具或数据源单独写对接——这就是[[c6_nxm]]（3 个助手 × 4 个服务 = 12 个连接器），既脆弱又重复。MCP 是一个**开放标准**——“AI 的 USB-C”——规定 AI 应用（[[c6_mcp_client]]）如何发现并调用[[c6_mcp_server]]提供的工具、资源和提示模板。每个助手只实现一次协议，每个服务只封装一次，任何东西都能插到任何东西上：N × M 变成了 **N + M**。
 
 （课程读物的提醒：接入一个服务器也等于多开了一扇门——工具描述里可能藏着[[c6_injection]]。）`,
+      short_en: `A **tool call** is a structured request the model writes — a tool name plus JSON arguments (a *tool_use* block). The model never runs it; the **harness executes it and returns a tool_result**, which the model reads before its next step. **MCP** (Model Context Protocol) is an **open standard** for connecting AI apps (clients) to tools and data (servers). It solves the **N × M integration problem**: instead of every assistant building a custom connector for every service, each implements the protocol once — N + M.`,
+      short_zh: `**工具调用**是模型写出的结构化请求——工具名加 JSON 参数（一个 *tool_use* 块）。模型从不自己执行；**由 harness 执行并返回 tool_result**，模型读完再决定下一步。**MCP**（模型上下文协议）是把 AI 应用（客户端）连到工具和数据（服务器）的**开放标准**。它解决 **N × M 对接问题**：不再让每个助手为每个服务写定制连接器，而是各自实现一次协议——变成 N + M。`,
+      basis_en: `Anthropic, “Introducing the Model Context Protocol” (2024): each new data source previously needed its own custom implementation; MCP replaces fragmented integrations with one protocol. MCP specification, Tools (name + JSON-schema input; results returned to the client). MCP is now stewarded by the Agentic AI Foundation.`,
+      basis_zh: `Anthropic《Introducing the Model Context Protocol》（2024）：过去每接一个新数据源都要单独实现；MCP 用一个协议取代零散的对接。MCP 规范 Tools 部分（名称 + JSON schema 参数，结果返回给客户端）。MCP 现由 Agentic AI Foundation 托管。`,
+      links: [{ t: 'Anthropic — Introducing MCP', u: 'https://www.anthropic.com/news/model-context-protocol' }, { t: 'MCP spec — Tools', u: 'https://modelcontextprotocol.io/specification/2025-06-18/server/tools' }],
+      rel: ['6.4', '6.2'],
       hook_en: 'Tool call = the model writes a request, the harness runs it. MCP = one plug shape for every tool: N × M → N + M.',
       hook_zh: '工具调用 = 模型写请求，harness 去执行。MCP = 所有工具统一一种插头：N × M → N + M。',
       trap_en: 'Don’t say the model “runs” the tool or that MCP is a model/app. MCP is a protocol (a standard), between clients and servers.',
@@ -228,25 +364,34 @@ So: chatbot = conversation; agent = delegation.`,
       q_zh: '什么是“技能（skill）”？它和“MCP 服务器”有什么不同？',
       src: 'Anthropic, “Skills explained”; agentskills.io',
       fig() {
-        const C = F.C;
-        const L = [
-          { label: 'Name + description', sub: '名称+描述：始终在上下文里', tip: 'c6_progressive', pattern: 'hatch', density: 4, fill: '#fff' },
-          { label: 'SKILL.md body', sub: '正文步骤：相关时才读', note: { en: 'The instructions: how to do the task, in the order to do it, with examples. Read only when the skill is relevant.', zh: '具体做法：步骤、顺序、示例。只有当技能相关时才读取。' }, fill: C.magF, side: '#efd2e2', pattern: 'diag', pc: C.mag, density: 4 },
-          { label: 'Scripts + references', sub: '脚本与资料：需要时才打开', note: { en: 'Optional files — a Python script, a template, a style guide — opened or run only when needed.', zh: '可选文件——Python 脚本、模板、风格指南——需要时才打开或运行。' }, pattern: 'chips', density: 5 }
-        ];
-        const o = { gap: 3, ox: 150, scale: 17, side: 'r', labelR: 265, top: 62 };
-        let s = F.text(150, 24, 'SKILL = A FOLDER', { cls: 'big', color: C.mag }) + F.sub(150, 42, '技能 = 一个文件夹 · 教它“怎么做”', { anchor: 'middle' });
-        s += F.g(F.stack(L, o), { tip: 'c6_skill' });
-        s += F.line(500, 20, 500, 320, { dash: '3 4', stroke: C.mute, sw: 0.8 });
-        s += F.text(630, 24, 'MCP = A RUNNING SERVER', { cls: 'big', color: C.blue }) + F.sub(630, 42, 'MCP = 运行中的服务器 · 让它“能连上”', { anchor: 'middle' });
-        s += F.rect(540, 62, 180, 40, { text: 'AGENT · CLIENT', tip: 'c6_mcp_client' });
-        s += F.arrow(630, 102, 630, 146, { both: true }) + F.text(640, 128, 'protocol', { anchor: 'start', cls: 'tiny', color: C.mute });
-        s += F.rect(540, 148, 180, 54, { text: 'MCP SERVER\n(separate process)', fill: C.blueF, stroke: C.blue, tip: 'c6_mcp_server' });
-        s += F.arrow(630, 202, 630, 238, { both: true });
-        s += F.rect(540, 240, 180, 40, { text: 'GITHUB · DB · API', fill: '#f3f2ee', note: { en: 'The outside system it reaches: data and actions the agent could not touch otherwise.', zh: '它连到的外部系统：没有它，智能体根本碰不到这些数据和操作。' } });
-        s += F.text(150, 318, 'KNOW-HOW', { cls: 'lt', color: C.mag }) + F.sub(150, 334, '会做：程序性知识', { anchor: 'middle' });
-        s += F.text(630, 318, 'ACCESS', { cls: 'lt', color: C.blue }) + F.sub(630, 334, '能连：工具与数据', { anchor: 'middle' });
-        return F.svg(760, 345, s, { label: 'skill folder vs MCP server' });
+        const C = F.C; let s = '';
+        s += F.text(200, 24, 'SKILL = A FOLDER OF KNOW-HOW', { cls: 'big', color: C.mag }) + F.sub(200, 42, '技能 = 一个装着“怎么做”的文件夹', { anchor: 'middle' });
+        // folder tree
+        const tree = [[0, 'report-style/', C.ink], [1, 'SKILL.md', C.mag], [1, 'scripts/build_docx.py', C.ink], [1, 'reference/house-style.md', C.ink]];
+        let t = '';
+        tree.forEach(([lv, n, c], i) => { const y = 72 + i * 22, x = 30 + lv * 18; if (lv) t += F.path(`M${x - 11},${y - 15} V${y - 4} H${x - 3}`, { stroke: C.mute, sw: 0.8 }); t += F.text(x, y, n, { anchor: 'start', cls: 'mono', color: c }); });
+        s += F.g(t, { tip: 'c6_skill' });
+        // SKILL.md card with levels
+        const X = 30, Y = 168;
+        s += F.rect(X, Y, 300, 150, { rx: 4 });
+        s += F.g(F.rect(X + 8, Y + 8, 284, 40, { fill: C.magF, stroke: C.mag, rx: 3 }) + F.text(X + 18, Y + 23, 'name: report-style', { anchor: 'start', cls: 'tiny', color: C.mag }) + F.text(X + 18, Y + 38, 'description: use for course reports…', { anchor: 'start', cls: 'tiny', color: C.mag }), { tip: 'c6_progressive' });
+        let body = ''; for (let i = 0; i < 5; i++) body += F.line(X + 18, Y + 64 + i * 15, X + 18 + [240, 200, 260, 180, 220][i], Y + 64 + i * 15, { stroke: '#bbb', sw: 3 });
+        s += F.g(body, { note: { en: 'The instructions: steps, order, examples. Read only when the task matches the description.', zh: '具体做法：步骤、顺序、示例。只有任务和描述对上时才读。' } });
+        // level brackets
+        const lv = (y1, y2, n, en, zh, col, w) => F.path(`M342,${y1} h8 V${y2} h-8`, { stroke: col }) + F.text(360, (y1 + y2) / 2 - 2, n + '  ' + en, { anchor: 'start', cls: 'tiny', color: col }) + F.sub(360, (y1 + y2) / 2 + 13, zh) +
+          `<rect x="360" y="${(y1 + y2) / 2 + 20}" width="${w}" height="4" rx="2" fill="${col}"/>`;
+        s += lv(Y + 8, Y + 48, 'L1', 'ALWAYS IN CONTEXT', '始终加载：几十个词', C.mag, 8);
+        s += lv(Y + 56, Y + 140, 'L2', 'READ WHEN RELEVANT', '相关时才读：正文', C.ink, 40);
+        s += lv(58, 138, 'L3', 'OPENED ONLY IF NEEDED', '需要时才打开：脚本 资料', C.mute, 70);
+        s += F.line(530, 20, 530, 330, { dash: '3 4', stroke: C.mute, sw: 0.8 });
+        s += F.text(646, 24, 'MCP = A RUNNING SERVER', { cls: 'big', color: C.blue }) + F.sub(646, 42, 'MCP = 运行中的服务器 · 让它“能连上”', { anchor: 'middle' });
+        s += F.rect(560, 64, 172, 40, { text: 'AGENT · CLIENT', tip: 'c6_mcp_client' });
+        s += F.arrow(646, 104, 646, 146, { both: true }) + F.text(656, 128, 'protocol', { anchor: 'start', cls: 'tiny', color: C.mute });
+        s += F.rect(560, 148, 172, 54, { text: 'MCP SERVER\n(separate process)', fill: C.blueF, stroke: C.blue, tip: 'c6_mcp_server' });
+        s += F.arrow(646, 202, 646, 238, { both: true });
+        s += F.rect(560, 240, 172, 40, { text: 'GITHUB · DB · API', fill: '#f3f2ee', note: { en: 'The outside system it reaches: data and actions the agent could not touch otherwise.', zh: '它连到的外部系统：没有它，智能体根本碰不到这些数据和操作。' } });
+        s += F.text(200, 338, 'KNOW-HOW · text the model reads', { cls: 'tiny', color: C.mag }) + F.text(646, 312, 'ACCESS · software the harness calls', { cls: 'tiny', color: C.blue }) + F.sub(646, 328, '能连：工具与数据', { anchor: 'middle' });
+        return F.svg(760, 350, s, { label: 'skill folder with progressive disclosure vs MCP server' });
       },
       cap_en: 'A skill is a folder of instructions the agent reads in layers, only as deep as it needs. An MCP server is a separate program the agent talks to over a protocol to reach an outside system.',
       cap_zh: '技能是一个装着说明的文件夹，智能体按需一层层往下读。MCP 服务器是一个独立程序，智能体通过协议和它对话，从而接触外部系统。',
@@ -270,6 +415,12 @@ Anthropic’s summary: MCP connects the agent to data; skills teach it what to d
 - **成本：**技能在被用到之前几乎不占上下文；每个 MCP 工具的描述一开始就要加载。
 
 Anthropic 的总结：MCP 把智能体连到数据上；技能教它拿这些数据做什么。两者可以配合——比如 kepano 的 *obsidian-skills* 和 *mcp-obsidian* 服务器。`,
+      short_en: `A **skill** is a **folder of know-how**: a SKILL.md file (name, description, step-by-step instructions) plus optional scripts and reference files. It loads by **progressive disclosure** — only the name and description sit in context; the instructions are read when the task matches, extra files only when needed. An **MCP server** is a **separately running program** that gives the agent **access** to new tools and data over a protocol. Skill = *how to do it* (text the model reads); MCP = *what it can reach* (software the harness calls).`,
+      short_zh: `**技能**是一个**装着“做事方法”的文件夹**：一个 SKILL.md（名称、描述、分步说明），外加可选的脚本和参考文件。它按**渐进式加载**——上下文里只放名称和描述；任务对上了才读说明，需要时才打开附加文件。**MCP 服务器**是一个**独立运行的程序**，通过协议给智能体提供新的工具和数据**访问**。技能 = *怎么做*（模型读的文字）；MCP = *能碰到什么*（harness 调用的软件）。`,
+      basis_en: `Anthropic, “Equipping agents for the real world with Agent Skills” and “Skills explained” (skills = folders with SKILL.md, progressive disclosure; MCP connects data, skills teach what to do with it); open spec at agentskills.io. Course example: kepano’s obsidian-skills vs. the mcp-obsidian server.`,
+      basis_zh: `Anthropic《Equipping agents for the real world with Agent Skills》与《Skills explained》（技能 = 带 SKILL.md 的文件夹，渐进加载；MCP 连接数据，技能教它拿数据做什么）；开放规范见 agentskills.io。课程例子：kepano 的 obsidian-skills 与 mcp-obsidian 服务器。`,
+      links: [{ t: 'Anthropic — Agent Skills (engineering)', u: 'https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills' }, { t: 'Agent Skills spec', u: 'https://agentskills.io/specification' }],
+      rel: ['6.3', '5.3'],
       hook_en: 'Skill = a recipe card (know-how). MCP server = a new appliance plugged into the kitchen (access).',
       hook_zh: '技能 = 一张菜谱（会做）；MCP 服务器 = 厨房里新插上的一台电器（能用）。',
       trap_en: 'Say both halves: what a skill IS (folder + SKILL.md, loaded progressively) and the contrast (instructions vs. a running server that provides tools/data).',
@@ -300,8 +451,81 @@ Anthropic 的总结：MCP 把智能体连到数据上；技能教它拿这些数
           { tip: 'c6_partial_autonomy' });
         return F.svg(760, 345, s, { label: 'three tiers of agent permission' });
       },
-      cap_en: 'The three tiers sort every action by risk. Where you draw the lines sets the product’s position on Karpathy’s autonomy slider.',
-      cap_zh: '三个层级按风险给每个操作分类。线画在哪里，就决定了产品在卡帕西“自主度滑杆”上的位置。',
+      widget: {
+        html() {
+          const modes = [['plan', 'plan'], ['default', 'default · manual'], ['acceptEdits', 'acceptEdits'], ['auto', 'auto'], ['bypassPermissions', 'bypassPermissions']];
+          return `<div class="w-ctrl"><span class="en">Claude Code permission mode</span><span class="zh">Claude Code 权限模式</span>
+            <span class="w-seg" data-g65-seg>${modes.map(([k, t]) => `<button data-mode="${k}"${k === 'default' ? ' class="on"' : ''}>${t}</button>`).join('')}</span></div>
+            <div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const C = F.C;
+          const ACT = [
+            ['read', 'read files', '读文件'], ['search', 'search the codebase', '搜索代码库'], ['edit', 'edit a file', '修改文件'],
+            ['rm', 'delete a file in the project', '删除项目内文件'], ['test', 'run tests (shell)', '跑测试（终端命令）'],
+            ['install', 'npm install (network)', '安装依赖（联网）'], ['push', 'git push to GitHub', '推送到 GitHub']
+          ];
+          // run = no prompt · ask = stops for you · block = blocked (plan) · chk = runs after a classifier check
+          const M = {
+            plan: { read: 'run', search: 'run', edit: 'block', rm: 'block', test: 'ask', install: 'ask', push: 'ask', pos: 0.08 },
+            default: { read: 'run', search: 'run', edit: 'ask', rm: 'ask', test: 'ask', install: 'ask', push: 'ask', pos: 0.28 },
+            acceptEdits: { read: 'run', search: 'run', edit: 'run', rm: 'run', test: 'ask', install: 'ask', push: 'ask', pos: 0.5 },
+            auto: { read: 'run', search: 'run', edit: 'chk', rm: 'chk', test: 'chk', install: 'chk', push: 'chk', pos: 0.74 },
+            bypassPermissions: { read: 'run', search: 'run', edit: 'run', rm: 'run', test: 'run', install: 'run', push: 'run', pos: 0.95 }
+          };
+          const SAY = {
+            plan: ['Plan mode: it may only read and propose. Nothing changes until you approve the plan — safest, but it can’t finish anything alone.', '计划模式：只能读和提方案。你批准计划之前什么都不会改——最安全，但它自己什么也做不完。'],
+            default: ['Default (manual): reads run freely; every edit, shell command and network action stops for you. Safe — but click “yes” 40 times and you stop reading the prompts (approval fatigue).', '默认（手动）：读操作随便跑；每次改文件、跑命令、联网都要停下来问你。安全——但点 40 次“同意”之后，你就不再认真看了（审批疲劳）。'],
+            acceptEdits: ['Accept edits: file edits and common file commands inside the project run on their own (reversible with git); shell and network still ask. A common middle ground.', '自动接受修改：项目内的改文件、常见文件命令自动执行（用 git 可撤销）；终端命令和联网仍要问。常见的折中。'],
+            auto: ['Auto: everything runs, but a background classifier reviews each action and blocks risky ones. Fast — you are trusting a second model to be the checkpoint.', '自动：所有操作都会执行，但后台分类器逐个审查并拦下危险操作。很快——相当于把“关卡”交给了另一个模型。'],
+            bypassPermissions: ['Bypass: asks nothing. Only for a throwaway sandbox or container — one bad command or prompt injection now runs with your authority. Deny rules still hold.', '跳过权限：什么都不问。只适合一次性的沙盒或容器——一条坏命令或一次提示注入就会以你的身份执行。拒绝规则仍然有效。']
+          };
+          const svgEl = el.querySelector('.w-svg'), out = el.querySelector('.w-readout');
+          function render(mode) {
+            const m = M[mode]; let s = '';
+            const cols = [
+              { x: 18, t: 'RUNS WITHOUT ASKING', zh: '无需询问 · 直接执行', c: C.green, f: C.greenF, tip: 'c6_permission' },
+              { x: 266, t: 'STOPS FOR APPROVAL', zh: '停下来 · 等你批准', c: C.amber, f: C.amberF, tip: 'c6_permission' },
+              { x: 514, t: 'LOGGED AFTERWARD', zh: '事后记录 · 可审计', c: C.blue, f: C.blueF, tip: 'c6_audit' }
+            ];
+            cols.forEach(cl => { s += F.g(F.rect(cl.x, 14, 228, 44, { fill: cl.f, stroke: cl.c, rx: 6 }) + F.text(cl.x + 114, 32, cl.t, { cls: 'lt', color: cl.c }) + F.sub(cl.x + 114, 49, cl.zh, { anchor: 'middle' }), { tip: cl.tip }); });
+            const runs = ACT.filter(a => m[a[0]] === 'run' || m[a[0]] === 'chk'), asks = ACT.filter(a => m[a[0]] === 'ask' || m[a[0]] === 'block');
+            const row = (x, i, a, kind) => {
+              const y = 68 + i * 34, blk = kind === 'block', chk = kind === 'chk';
+              return F.rect(x, y, 228, 28, { rx: 3, dash: blk ? '4 3' : null, stroke: blk ? C.mute : C.ink }) +
+                F.text(x + 10, y + 14, a[1], { anchor: 'start', cls: 'mono', color: blk ? C.mute : C.ink }) +
+                (blk ? F.text(x + 218, y + 14, 'BLOCKED', { anchor: 'end', cls: 'tiny', color: C.mute }) : '') +
+                (chk ? F.text(x + 218, y + 14, 'CHECKED', { anchor: 'end', cls: 'tiny', color: C.mag }) : '');
+            };
+            runs.forEach((a, i) => s += row(18, i, a, m[a[0]]));
+            asks.forEach((a, i) => s += row(266, i, a, m[a[0]]));
+            if (!asks.length) s += F.text(380, 90, '(nothing — it never stops)', { cls: 'tiny', color: C.mute });
+            // log column
+            const log = [...runs.map(a => '✓ ' + a[1]), ...asks.filter(a => m[a[0]] === 'ask').map(a => '? ' + a[1] + ' → you'), '+ transcript · diffs · cost'];
+            s += F.rect(514, 68, 228, Math.max(log.length * 22 + 14, 60), { fill: '#fbfbf9', stroke: C.blue, rx: 3, tip: 'c6_audit' });
+            log.forEach((l, i) => s += F.text(524, 86 + i * 22, l.length > 34 ? l.slice(0, 33) + '…' : l, { anchor: 'start', cls: 'tiny', color: l[0] === '?' ? C.amber : l[0] === '+' ? C.blue : C.ink }));
+            // deny rule strip
+            s += F.g(F.rect(18, 316, 724, 30, { fill: C.redF, stroke: C.red, rx: 4 }) +
+              F.text(30, 331, 'DENY RULE · rm -rf ~  → blocked in EVERY mode, even bypass', { anchor: 'start', cls: 'tiny', color: C.red }) +
+              F.sub(730, 335, '拒绝规则：任何模式下都拦截', { anchor: 'end' }), { note: { en: 'Deny rules and protected paths are the floor no mode removes (Hermes has a similar always-on hardline blocklist).', zh: '拒绝规则和受保护路径是任何模式都拿不掉的底线（Hermes 也有类似的“硬性黑名单”）。' } });
+            // autonomy slider
+            const x0 = 70, x1 = 690, px = x0 + (x1 - x0) * m.pos;
+            s += F.g(F.line(x0, 380, x1, 380, { sw: 2 }) + `<line x1="${x0}" y1="380" x2="${px}" y2="380" stroke="${C.mag}" stroke-width="3"/>` +
+              `<circle cx="${px}" cy="380" r="8" fill="#fff" stroke="${C.mag}" stroke-width="2"/>` +
+              F.text(x0, 404, 'HUMAN VERIFIES EVERYTHING', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.text(x1, 404, 'AI ACTS ALONE', { anchor: 'end', cls: 'tiny', color: C.mute }) +
+              F.sub(x0, 420, '人逐一把关', { anchor: 'start' }) + F.sub(x1, 420, 'AI 独自行动', { anchor: 'end' }) +
+              F.text(px, 362, mode, { cls: 'tiny', color: C.mag }), { tip: 'c6_partial_autonomy' });
+            svgEl.innerHTML = F.svg(760, 430, s, { label: 'permission tiers for the selected mode' });
+            out.innerHTML = `<p class="en" style="margin:0 0 4px">${SAY[mode][0]}</p><p class="zh" style="margin:0">${SAY[mode][1]}</p>`;
+          }
+          el.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+            el.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('on', x === b)); render(b.dataset.mode);
+          }));
+          render('default');
+        }
+      },
+      cap_en: 'Pick a Claude Code permission mode and watch the same seven actions re-sort between “runs”, “asks” and the log. Each mode is a point on Karpathy’s autonomy slider; the deny rule at the bottom holds in every mode.',
+      cap_zh: '选一个 Claude Code 权限模式，看同样七个操作在“直接执行”“停下询问”和日志之间重新分类。每种模式都是卡帕西自主度滑杆上的一个点；底部的拒绝规则在所有模式下都有效。',
       a_en: `Every agent action falls into one of three tiers of the [[c6_permission]]:
 - **Runs without asking** — safe, reversible, read-only actions (read a file, search, run tests).
 - **Stops for approval** — irreversible, external or costly actions (delete or overwrite files, run shell commands, send email, push code, spend money). Claude Code exposes this as allow / ask / deny rules and [[c6_perm_modes]]; Hermes asks before dangerous terminal commands and can run in a sandbox.
@@ -324,6 +548,12 @@ The model is roughly the same in every product; the permission model is what mak
 - **随时间建立信任。**这就是卡帕西说的[[c6_partial_autonomy]]——一根自主度滑杆：一开始把 AI 拴得短一些，让“生成 → 验证”保持快速，等信任建立后再逐步放权。
 
 各个产品用的模型大同小异；真正让一个产品*好用*又*安全*、另一个不行的，是权限模型。它就是人与机器之间的“委托合同”。`,
+      short_en: `Every action falls into three tiers: **runs without asking** (safe, reversible — read, search), **stops for approval** (irreversible, external or costly — edit/delete files, shell commands, push, send, spend) and **logged afterward** (transcript, tool calls, diffs, cost) so it can be reviewed and undone. It is **the central design decision** because the agent acts **with your authority**: the line sets the trade-off between usefulness and safety (too many prompts → approval fatigue; too few → one mistake or prompt injection does real damage), who is accountable, and how autonomy grows with trust — Karpathy’s **autonomy slider**.`,
+      short_zh: `每个操作都落在三个层级：**无需询问**（安全、可撤销——读、搜索）、**停下等批准**（不可撤销、对外、花钱——改删文件、终端命令、推送、发送、付款）、**事后记录**（对话、工具调用、文件改动、花费），以便检查和撤销。它是**最核心的设计决策**，因为智能体是**以你的身份**行动：这条线决定了有用与安全的取舍（问太多 → 审批疲劳；问太少 → 一次失误或提示注入就造成真实损失）、责任归属，以及自主权如何随信任增长——卡帕西的**自主度滑杆**。`,
+      basis_en: `Checked against Claude Code’s permission-mode docs (plan, default/manual, acceptEdits, auto, dontAsk, bypassPermissions; deny rules hold in every mode) and Hermes Agent’s security docs (approval modes manual / smart / off; approve once / session / always; an always-on hardline blocklist; container sandboxes; a session database of executed commands). Autonomy slider: Karpathy, Software 3.0.`,
+      basis_zh: `已对照 Claude Code 权限模式文档（plan、default/manual、acceptEdits、auto、dontAsk、bypassPermissions；拒绝规则在所有模式下有效）和 Hermes Agent 安全文档（审批模式 manual / smart / off；允许一次 / 本会话 / 永久；始终生效的硬性黑名单；容器沙盒；记录已执行命令的会话数据库）。自主度滑杆：卡帕西《Software 3.0》。`,
+      links: [{ t: 'Claude Code — permission modes', u: 'https://code.claude.com/docs/en/permission-modes' }, { t: 'Hermes Agent — Security', u: 'https://hermes-agent.nousresearch.com/docs/user-guide/security' }, { t: 'Karpathy on Software 3.0', u: 'https://www.latent.space/p/s3' }],
+      rel: ['3.4', '6.2', '9.3'],
       hook_en: 'Reversible → just do it. Irreversible → ask. Everything → log. Where you draw those lines IS the product.',
       hook_zh: '可撤销 → 直接做；不可撤销 → 先问；所有操作 → 记录。线画在哪里，产品就是什么样。',
       trap_en: 'Give concrete examples for each tier AND argue “why central”: the agent acts with your authority, so the line sets safety, usefulness, accountability and trust.',

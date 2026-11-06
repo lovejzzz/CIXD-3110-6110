@@ -13,6 +13,24 @@
 </head>
 <body class="lang-both">
 <div id="tip" role="tooltip"></div>
+<div id="flash" class="flash" hidden>
+  <div class="fc-box" role="dialog" aria-label="Flashcards">
+    <div class="fc-top">
+      <span class="fc-title"><span class="en">Flashcards</span><span class="zh">闪卡</span></span>
+      <span id="fc-pos" class="fc-pos"></span>
+      <button id="fc-todo" class="fc-btn"><span class="en">Only not-yet</span><span class="zh">只看没懂的</span></button>
+      <button id="fc-shuffle" class="fc-btn"><span class="en">Shuffle</span><span class="zh">打乱</span></button>
+      <button class="fc-btn fc-x" data-fc-close aria-label="Close">✕</button>
+    </div>
+    <div id="fc-card" class="fc-card" tabindex="0"></div>
+    <div class="fc-bottom">
+      <button id="fc-prev" class="fc-btn">← <span class="en">Prev</span><span class="zh">上一张</span></button>
+      <button id="fc-know" class="fc-btn fc-know"><span class="box"></span><span class="en">Got it</span><span class="zh">懂了</span></button>
+      <button id="fc-next" class="fc-btn"><span class="en">Next</span><span class="zh">下一张</span> →</button>
+    </div>
+    <p class="fc-keys"><span class="en">← → navigate · space flip · esc close</span><span class="zh">← → 翻页 · 空格翻面 · esc 关闭</span></p>
+  </div>
+</div>
 
 <header class="top">
   <a class="brand" href="#top">
@@ -20,6 +38,11 @@
     <span>CIXD 3110/6110 · <b>Midterm Field Guide</b></span>
   </a>
   <div class="top-r">
+    <div class="tools">
+      <button id="recall-toggle" class="tool" aria-pressed="false" title="Hide answers until you reveal them / 先遮住答案"><span class="sw"></span><span class="en">Recall mode</span><span class="zh">自测模式</span></button>
+      <button id="flash-open" class="tool" title="Flashcards / 闪卡"><span class="ico">▤</span><span class="en">Flashcards</span><span class="zh">闪卡</span></button>
+      <button id="expand-all" class="tool tool-sm" title="Expand all explanations / 展开全部讲解"><span class="ico">↕</span><span class="en">Expand all</span><span class="zh">全部展开</span></button>
+    </div>
     <div class="prog" title="Questions marked “Got it” / 已标记“懂了”的题目">
       <div class="prog-track"><div id="prog-bar"></div></div><span id="prog-n">0/0</span>
     </div>
@@ -52,15 +75,28 @@
       <figure class="hero-fig plate" id="hero-fig"></figure>
     </section>
     <div id="content"></div>
+    <section class="cls glossary" id="glossary">
+      <div class="cls-h">
+        <div class="cls-n">≡<small>INDEX</small></div>
+        <div>
+          <h2><span class="en">Glossary</span><span class="zh">词汇表</span></h2>
+          <div class="bi intro"><div class="en"><p>Every term that has a tooltip, in one place. Numbers link to the questions that use it.</p></div><div class="zh"><p>所有带解释的术语都在这里。后面的编号可以跳到用到它的题目。</p></div></div>
+          <label class="g-search"><input id="g-search" type="search" placeholder="Search terms · 搜索术语（中英皆可）" autocomplete="off"><span id="g-count"></span></label>
+        </div>
+      </div>
+      <div id="glossary-list"></div>
+    </section>
     <footer class="foot">
       <p>Study companion for CIXD/CDES 3110/6110 Experimental Tools and Technology, Fall 2026. Answers are explanations to learn from — the exam asks you to write in your own words.</p>
       <p>CIXD/CDES 3110/6110 期中复习辅助材料。答案用于理解与学习——考试要求用自己的话写出来。</p>
+      <p class="made-with"><a href="https://iso-glow.vercel.app" target="_blank" rel="noopener">Made with ISO-GLOW ↗</a></p>
     </footer>
   </main>
 </div>
 
 <script src="js/registry.js"></script>
 <script src="js/figs.js"></script>
+<script src="js/glow.js"></script>
 <script src="data/c1.js"></script>
 <script src="data/c2.js"></script>
 <script src="data/c3.js"></script>

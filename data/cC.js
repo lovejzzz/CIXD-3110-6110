@@ -23,19 +23,66 @@ defClass({
       q_zh: '在你的创作实践中，这些技术和概念在哪里最能引起共鸣？请从积极和消极两方面描述。',
       src: 'Whole course',
       fig() {
-        const L = [
-          { label: 'Share · publish', sub: '＋秒级上线　－作品被抓取', note: { en: '+ Deploying from a repository puts work online in minutes. − Anything public can be scraped into the next training corpus (Common Crawl, C4).', zh: '＋ 从仓库部署，几分钟就上线。－ 公开的东西都可能被抓进下一个训练语料（Common Crawl、C4）。' }, pattern: 'grid', density: 4, fill: '#fff' },
-          { label: 'Make · prototype', sub: '＋智能体写代码　－去技能化', tip: 'cC_deskill', fill: F.C.magF, side: '#efd2e2', pattern: 'diag', density: 3, pc: F.C.mag },
-          { label: 'Ideate', sub: '＋更多方向　－想法同质化', tip: 'cC_homog', bars: { color: F.C.blue, fill: F.C.blueF, n: 3, rows: 2 } },
-          { label: 'Organize · plan', sub: '＋看板笔记库　－被结构牵着走', note: { en: '+ Kanban boards and a vault of plain files make my process visible to me and to an agent. − The tool’s structure can start to shape what I think a project is.', zh: '＋ 看板和纯文本笔记库让流程对我和智能体都可见。－ 工具的结构可能开始左右我对项目的理解。' }, pattern: 'hatch', density: 5, fill: '#fff' },
-          { label: 'Research', sub: '＋本地保隐私　－引用不可靠', note: { en: '+ A local model keeps sensitive research on my laptop. − Answers sound sure but citations can be wrong; I still have to check sources.', zh: '＋ 本地模型让敏感的研究留在我的电脑上。－ 回答听起来很肯定，但引用可能是错的；我仍须核对来源。' }, pattern: 'dots', density: 7 }
+        const C = F.C;
+        const ST = [
+          { en: 'RESEARCH', zh: '研究', p: ['local = private', '本地运行保隐私'], m: ['shaky citations', '引用不可靠'],
+            pn: { en: 'A local model keeps sensitive research on my laptop.', zh: '本地模型让敏感研究留在自己电脑上。' },
+            mn: { en: 'Answers sound sure but citations can be wrong — check the sources.', zh: '回答听起来很肯定，引用却可能是错的——要核对来源。' } },
+          { en: 'ORGANIZE', zh: '整理', p: ['boards + files', '看板 + 纯文本库'], m: ['tool steers you', '被工具结构牵着走'],
+            pn: { en: 'A Kanban board and a vault of plain files make the process visible to me and to an agent.', zh: '看板和纯文本笔记库让流程对我和智能体都可见。' },
+            mn: { en: 'The tool’s structure can start to shape what I think a project is.', zh: '工具的结构可能开始左右我对项目的理解。' } },
+          { en: 'IDEATE', zh: '构思', p: ['more directions', '更多方向'], m: ['ideas homogenize', '想法同质化'], mtip: 'cC_homog',
+            pn: { en: 'A model can push out many directions quickly.', zh: '模型能很快给出很多方向。' } },
+          { en: 'MAKE', zh: '制作', p: ['fast prototypes', '智能体快速做出'], m: ['de-skilling', '去技能化'], mtip: 'cC_deskill', hot: true,
+            pn: { en: 'An agent harness takes a sketch to a working, deployed page in an afternoon.', zh: '借助智能体框架，一个下午就从草图做到可运行、已上线的页面。' } },
+          { en: 'SHARE', zh: '发布', p: ['live in minutes', '几分钟就上线'], m: ['gets scraped', '被抓进训练语料'],
+            pn: { en: 'Push to GitHub, Vercel deploys it.', zh: '推送到 GitHub，Vercel 自动部署。' },
+            mn: { en: 'Anything public can end up in the next Common Crawl / C4.', zh: '公开的东西都可能进入下一个 Common Crawl / C4。' } }
         ];
-        const o = { alternate: true, gap: 2.8 };
-        let s = F.stack(L, o);
-        return F.svg(760, F.stackH(L.length, o), s, { label: 'a design practice taken apart, with pros and cons per layer' });
+        let s = F.text(380, 22, 'YOUR PRACTICE, MAPPED', { cls: 'lt' }) + F.sub(380, 38, '把你的创作实践画成一条线', { anchor: 'middle' });
+        const y0 = 176, x0 = 84, dx = 148, cw = 132;
+        s += F.arrow(30, y0, 736, y0, { sw: 1.2 });
+        ST.forEach((t, i) => {
+          const x = x0 + i * dx, col = t.hot ? C.mag : C.ink;
+          // + card above
+          s += F.line(x, y0 - 14, x, 120, { stroke: C.green, sw: .8, dash: '2 3' });
+          s += F.rect(x - cw / 2, 70, cw, 50, { fill: C.greenF, stroke: C.green, rx: 6, note: t.pn, tip: t.ptip });
+          s += F.text(x - cw / 2 + 9, 88, '+ ' + t.p[0], { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(x - cw / 2 + 9, 108, t.p[1]);
+          // − card below
+          s += F.line(x, y0 + 14, x, 232, { stroke: C.red, sw: .8, dash: '2 3' });
+          s += F.rect(x - cw / 2, 232, cw, 50, { fill: C.redF, stroke: C.red, rx: 6, note: t.mn, tip: t.mtip });
+          s += F.text(x - cw / 2 + 9, 250, '− ' + t.m[0], { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(x - cw / 2 + 9, 270, t.m[1]);
+          // stage node
+          s += `<circle cx="${x}" cy="${y0}" r="${t.hot ? 13 : 9}" fill="${t.hot ? C.magF : '#fff'}" stroke="${col}" stroke-width="${t.hot ? 2 : 1.2}"/>`;
+          s += F.text(x + 16, y0 + 2 - 12, t.en, { anchor: 'start', cls: 'tiny', color: col }) + F.sub(x + 16, y0 + 2 + 12, t.zh, { cls: t.hot ? '' : '' });
+        });
+        const hx = x0 + 3 * dx;
+        s += F.rect(hx - 70, 300, 140, 24, { fill: C.mag, stroke: C.mag, rx: 12 });
+        s += F.text(hx, 314, 'RESONATES MOST', { cls: 'tiny', color: '#fff' }) + F.sub(hx, 342, '共鸣最强 · 写一个具体时刻', { anchor: 'middle', color: C.mag });
+        s += F.text(30, 314, 'draw yours: 5 stages · 1 gain + 1 cost each', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(30, 330, '画你自己的：每个阶段一收获一代价');
+        return F.svg(760, 352, s, { label: 'a sample practice mapped as stages, each with one gain and one cost' });
       },
-      cap_en: 'A sample practice taken apart into its stages. Each layer carries one gain (＋) and one cost (－) tied to a course concept. Build the same drawing for your own practice before you write.',
-      cap_zh: '把一个示范性的创作实践按阶段拆开。每一层都有一项收获（＋）和一项代价（－），并对应某个课程概念。动笔之前，先为你自己的实践画出同样的图。',
+      cap_en: 'A sample practice laid out as the stages it moves through. Every stage carries one gain (+) and one cost (−) tied to a course concept; one stage is circled as where it resonates most. Draw the same line for your own practice before you write.',
+      cap_zh: '把一个示范性的创作实践画成它经过的几个阶段。每个阶段都有一项收获（＋）和一项代价（－），并对应某个课程概念；圈出共鸣最强的那一个。动笔之前，先为你自己的实践画出同样的一条线。',
+      short_en: `*Fill-in template — replace every ___ with your own experience.*
+1. My practice is ___ (what you make, with what, for whom).
+2. These technologies resonate most in my **___ stage**, e.g. this term when I ___ (a real moment, a real tool).
+3. **Positive:** ___ — tie it to 2 course concepts (e.g. local vs. hosted models, the autonomy slider, file over app, rubric-first evaluation).
+4. **Negative:** ___ — tie it to 2 concepts (e.g. de-skilling, homogenization, surveillance capitalism, hidden labor in Crawford & Joler).
+5. **So I will** ___ (one concrete rule for how you’ll use them).`,
+      short_zh: `*填空模板——把每个 ___ 换成你自己的经历。*
+1. 我的创作实践是 ___（做什么、用什么、给谁）。
+2. 这些技术在我的 **___ 阶段**最能引起共鸣，比如本学期我 ___ 的时候（一个真实时刻、一个真实工具）。
+3. **积极面：**___ ——对应 2 个课程概念（如本地与托管模型、自主性滑块、file over app、先写评分标准）。
+4. **消极面：**___ ——对应 2 个概念（如去技能化、同质化、监视资本主义、Crawford 与 Joler 揭示的隐藏劳动）。
+5. **所以我会** ___（一条具体的使用原则）。`,
+      basis_en: `There is no single source — the exam asks for your own practice in your own words. The negatives draw on readings in the course database: a CHI 2025 paper on de-skilling and cognitive offloading in AI-assisted design, and ACM research on how AI-generated ideas affect creativity and diversity.`,
+      basis_zh: `这道题没有唯一出处——考试要的是你自己的实践、用你自己的话。消极面参考了课程资料库里的读物：CHI 2025 关于 AI 辅助设计中去技能化与认知卸载的论文，以及 ACM 关于 AI 想法如何影响创造力与多样性的研究。`,
+      links: [
+        { t: 'CHI 2025 — De-skilling and cognitive offloading in AI-assisted design', u: 'https://dl.acm.org/doi/10.1145/3706599.3719931' },
+        { t: 'ACM — How AI ideas affect creativity, diversity, and evolution', u: 'https://dl.acm.org/doi/full/10.1145/3715928.3737481' }
+      ],
+      rel: ['1.1', '3.4', '5.5'],
       a_en: `*Model answer — adapt it to your own practice; the exam wants YOUR experience in your own words.*
 
 **Structure (4 short paragraphs):** 1) name your [[cC_practice]] in one sentence; 2) the place it resonates most, with a concrete moment from this term; 3) the positive side, tied to 2–3 course concepts; 4) the negative side, tied to 2–3 concepts — and what you will do about it.

@@ -79,52 +79,74 @@ defClass({
   qs: [
     {
       id: '3.1', t_en: 'Neural network', t_zh: '神经网络',
+      short_en: `Each neuron holds an [[c3_activation]] (a number 0–1); a layer is a column of them. One layer **takes all the activations of the layer before it, multiplies each by a [[c3_weight]], adds them up with a [[c3_bias]], and squashes the sum** (sigmoid/ReLU) into its own activations: a′ = σ(W·a + b). So each layer **re-describes** the previous one at a more abstract level (pixels → edges → strokes → “7”), and learning means adjusting the weights.`,
+      short_zh: `每个神经元装着一个[[c3_activation]]（0–1 的数），一层就是一列神经元。一层会**取前一层所有的激活值，各乘一个[[c3_weight]]，加起来再加上[[c3_bias]]，然后“压缩”**（sigmoid/ReLU）成自己的激活值：a′ = σ(W·a + b)。所以每一层都在更抽象的层次上**重新描述**前一层（像素 → 边缘 → 笔画 → “7”），而“学习”就是调整权重。`,
+      basis_en: `3Blue1Brown, “But what is a neural network?”: a neuron is “a thing that holds a number” (0–1); each connection has a weight, a bias is added to the weighted sum, and a sigmoid squashes it; in matrix form the next layer = σ(W·a + b). Checked against the 3Blue1Brown lesson page. TensorFlow Playground shows the same idea visually.`,
+      basis_zh: `3Blue1Brown《神经网络是什么？》：神经元是“装着一个数字的东西”（0–1）；每条连接有一个权重，加权和再加上偏置，然后用 sigmoid 压缩；写成矩阵就是下一层 = σ(W·a + b)。已对照 3Blue1Brown 课程页面核实。TensorFlow Playground 用可视化方式展示了同一个原理。`,
+      links: [{ t: '3Blue1Brown — But what is a neural network?', u: 'https://www.3blue1brown.com/lessons/neural-networks' }, { t: 'TensorFlow Playground', u: 'https://playground.tensorflow.org/' }],
+      rel: ['3.3', '8.3', '8.2'],
       q_en: 'Layers, weights, activations: in your own words, what does one layer do to the layer before it?',
       q_zh: '层、权重、激活值：用你自己的话说，一层对它前面那一层做了什么？',
       src: '3Blue1Brown; TensorFlow Playground',
       fig() {
-        const S = 18, n = 4, gap = 3.2;
-        const L = [
-          { label: 'Output layer', sub: '输出层：是哪个数字？', tip: 'c3_layer', pattern: null, fill: '#fff', nodes: 3, hiNode: 1 },
-          { label: 'Hidden layer 2', sub: '隐藏层 2：组合成部件', tip: 'c3_activation', pattern: null, fill: '#fff', nodes: 4 },
-          { label: 'Hidden layer 1', sub: '隐藏层 1：边缘、笔画', tip: 'c3_activation', pattern: null, fill: '#fff', nodes: 4 },
-          { label: 'Input layer · pixels', sub: '输入层：像素亮度', tip: 'c3_neuron', pattern: 'grid', density: 6, fill: '#fff' }
-        ];
-        const W = 4;
-        const pts = k => {
-          const m = L[k].nodes; if (!m) return [];
-          return Array.from({ length: m }, (_, i) => [W * (i + 1) / (m + 1), W / 2]);
-        };
-        L.forEach((Ly, k) => {
-          const zb = (n - 2 - k) * gap; // z of layer below
-          Ly.extra = z => {
-            let e = '';
-            const me = pts(k);
-            const below = k === n - 1 ? [] : (L[k + 1].nodes ? pts(k + 1) : [[0.8, 2], [1.6, 1.2], [2.4, 2.8], [3.2, 2]]);
-            if (below.length) me.forEach(([x, y], i) => below.forEach(([bx, by], j) => {
-              const a = F.iso(x, y, z + 0.18), b = F.iso(bx, by, zb + 0.18);
-              const pos = (i + j) % 3 !== 0;
-              e += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${pos ? F.C.blue : F.C.red}" stroke-width="${0.4 + ((i * 3 + j) % 4) * 0.35}" opacity=".55"/>`;
-            }));
-            me.forEach(([x, y], i) => {
-              const p = F.iso(x, y, z + 0.18); const on = k === 0 ? i === Ly.hiNode : (i + k) % 2 === 0;
-              e += `<ellipse cx="${p[0]}" cy="${p[1]}" rx="7" ry="4" fill="${on ? F.C.mag : '#fff'}" stroke="${F.C.ink}" stroke-width="1"/>`;
-            });
-            return e;
-          };
+        let s = '';
+        const C = F.C;
+        // input: 7x7 pixel grid of a hand-drawn "7"
+        const seven = ['1111111', '0000011', '0000110', '0001100', '0011000', '0010000', '0110000'];
+        const gx = 30, gy = 92, cs = 13;
+        let g = '';
+        seven.forEach((row, r) => [...row].forEach((v, c) => {
+          g += `<rect x="${gx + c * cs}" y="${gy + r * cs}" width="${cs - 1}" height="${cs - 1}" fill="${v === '1' ? C.ink : '#fff'}" stroke="#cfcbc2" stroke-width=".6"/>`;
+        }));
+        s += F.g(g, { tip: 'c3_neuron', note: { en: 'Input layer: each pixel’s brightness (0–1) is one neuron’s activation.', zh: '输入层：每个像素的亮度（0–1）就是一个神经元的激活值。' } });
+        s += F.text(gx + 45, gy - 16, 'INPUT · PIXELS', { cls: 'lt' }) + F.sub(gx + 45, gy - 2, '输入层：像素亮度', { anchor: 'middle' });
+        // columns of neurons
+        const colX = [210, 330, 450], colN = [6, 6, 10];
+        const ys = (n, top, bot) => Array.from({ length: n }, (_, i) => top + (bot - top) * (i + 0.5) / n);
+        const cols = colX.map((x, k) => ys(colN[k], 70, 320).map(y => [x, y]));
+        const lit = [[0, 2, 4], [1, 3], [7]];
+        // edges from grid to col 0 (a few)
+        let e = '';
+        const gridPts = [0, 1.5, 3, 4.5, 6].map(r => [gx + 7 * cs + 2, gy + r * cs + 6]);
+        gridPts.forEach(([x, y], i) => cols[0].forEach(([bx, by], j) => {
+          const pos = (i + j) % 3 !== 0;
+          e += `<line x1="${x}" y1="${y}" x2="${bx}" y2="${by}" stroke="${pos ? C.blue : C.red}" stroke-width="${0.3 + ((i + j) % 3) * 0.25}" opacity=".35"/>`;
+        }));
+        for (let k = 0; k < 2; k++) cols[k].forEach(([x, y], i) => cols[k + 1].forEach(([bx, by], j) => {
+          const pos = (i * 2 + j) % 3 !== 0;
+          e += `<line x1="${x}" y1="${y}" x2="${bx}" y2="${by}" stroke="${pos ? C.blue : C.red}" stroke-width="${0.3 + ((i * 3 + j) % 4) * 0.3}" opacity=".45"/>`;
+        }));
+        s += F.g(e, { tip: 'c3_weight' });
+        const names = [['HIDDEN 1', '隐藏层 1：笔画、边缘'], ['HIDDEN 2', '隐藏层 2：组合成部件'], ['OUTPUT', '输出层：是哪个数字？']];
+        cols.forEach((col, k) => {
+          let n = '';
+          col.forEach(([x, y], i) => {
+            const on = lit[k].includes(i);
+            n += `<circle cx="${x}" cy="${y}" r="${k === 2 ? 8 : 10}" fill="${on ? C.mag : '#fff'}" stroke="${C.ink}" stroke-width="1.1"/>`;
+            if (k === 2) n += F.text(x + 20, y, String(i), { anchor: 'start', cls: 'tiny', color: on ? C.mag : C.mute });
+          });
+          s += F.g(n, { tip: k === 2 ? 'c3_layer' : 'c3_activation' });
+          s += F.text(colX[k], 40, names[k][0], { cls: 'lt' }) + F.sub(colX[k], 56, names[k][1], { anchor: 'middle' });
         });
-        const o = { gap, scale: S, alternate: true, W: 760 };
-        let s = F.stack(L, o);
-        s += F.g(F.rect(20, 20, 210, 74, { fill: '#1b1b1a', stroke: '#1b1b1a', rx: 6 }) +
-          F.text(125, 46, 'a′ = σ( W·a + b )', { cls: 'big', color: '#f3f2ee' }) +
-          F.text(125, 72, 'weights · bias · squash', { cls: 'tiny', color: '#aaa' }),
-          { note: { en: 'Each new activation = squash(weighted sum of ALL previous activations + bias). W is the weight matrix, b the biases, σ a function like sigmoid or ReLU.', zh: '每个新激活值 = 压缩（上一层所有激活值的加权和 + 偏置）。W 是权重矩阵，b 是偏置，σ 是 sigmoid 或 ReLU 之类的函数。' } });
-        s += F.g(F.line(600, 40, 630, 40, { stroke: F.C.blue, sw: 2 }) + F.text(638, 44, '+ weight', { anchor: 'start', cls: 'tiny', color: F.C.blue }) +
-          F.line(600, 60, 630, 60, { stroke: F.C.red, sw: 2 }) + F.text(638, 64, '− weight', { anchor: 'start', cls: 'tiny', color: F.C.red }), { tip: 'c3_weight' });
-        return F.svg(760, F.stackH(4, { gap, scale: S }), s, { label: 'exploded neural network layers' });
+        // zoom on one neuron of hidden 2
+        const [zx, zy] = cols[1][1];
+        s += `<circle cx="${zx}" cy="${zy}" r="15" fill="none" stroke="${C.mag}" stroke-width="1.2" stroke-dasharray="3 2"/>`;
+        s += F.path(`M${zx + 15},${zy - 4} C${zx + 80},${zy - 60} 520,90 556,96`, { stroke: C.mag, dash: '3 3' });
+        const X = 556, Y = 70;
+        let z = F.rect(X, Y, 190, 196, { fill: '#fff', stroke: C.mag, rx: 8 });
+        z += F.text(X + 12, Y + 18, 'ONE NEURON, ZOOMED', { anchor: 'start', cls: 'tiny', color: C.mag });
+        [['a₁ × w₁', C.blue], ['a₂ × w₂', C.blue], ['a₃ × w₃', C.red], ['…  × wₙ', C.ink]].forEach(([t, c], i) => z += F.text(X + 14, Y + 44 + i * 19, t, { anchor: 'start', cls: 'mono', color: c }));
+        z += F.line(X + 12, Y + 118, X + 178, Y + 118, { stroke: C.ink, sw: .8 });
+        z += F.text(X + 14, Y + 136, 'Σ + b  (bias)', { anchor: 'start', cls: 'mono' });
+        z += F.text(X + 14, Y + 158, 'σ( … ) → a′', { anchor: 'start', cls: 'mono', color: C.mag });
+        z += F.text(X + 14, Y + 180, 'squash to 0–1 = activation', { anchor: 'start', cls: 'tiny', color: C.mute });
+        s += F.g(z, { note: { en: 'Each new activation = squash(weighted sum of ALL previous activations + bias): a′ = σ(W·a + b).', zh: '每个新激活值 = 压缩（上一层所有激活值的加权和 + 偏置）：a′ = σ(W·a + b)。' } });
+        s += F.g(F.line(570, 300, 596, 300, { stroke: C.blue, sw: 2 }) + F.text(602, 304, '+ weight excites', { anchor: 'start', cls: 'tiny', color: C.blue }) +
+          F.line(570, 318, 596, 318, { stroke: C.red, sw: 2 }) + F.text(602, 322, '− weight inhibits', { anchor: 'start', cls: 'tiny', color: C.red }), { tip: 'c3_weight' });
+        return F.svg(760, 340, s, { label: 'neural network layers with one neuron zoomed' });
       },
-      cap_en: 'A digit-recognizing network pulled apart into its layers. Every line is a weight (blue excites, red inhibits); every dot is a neuron holding an activation. Magenta dots are “lit up.”',
-      cap_zh: '把一个识别手写数字的网络按层拆开。每条线都是一个权重（蓝色促进，红色抑制）；每个点都是一个装着激活值的神经元。品红色的点表示“被点亮”。',
+      cap_en: 'A digit-recognizing network, left to right. Every line is a weight (blue excites, red inhibits); every circle is a neuron holding an activation; magenta = “lit up.” The zoom shows the one calculation every neuron repeats.',
+      cap_zh: '一个识别手写数字的网络，从左到右。每条线是一个权重（蓝色促进，红色抑制）；每个圆是一个装着激活值的神经元；品红色表示“被点亮”。放大框展示的是每个神经元都在重复的那一个计算。',
       a_en: `In 3Blue1Brown’s picture, a [[c3_neuron]] is just something that holds a number — its [[c3_activation]]. A [[c3_layer]] is a column of these numbers, and the network is a chain of layers from input (pixel brightness) to output (which digit it is).
 
 **What one layer does to the layer before it:** every neuron in the new layer **looks at all the activations of the previous layer, multiplies each by a [[c3_weight]], adds them up, adds a [[c3_bias]], and squashes the result** through a function like [[c3_relu]]. That number is its own activation. (As a formula: a′ = σ(W·a + b).)
@@ -142,6 +164,81 @@ In my own words: each layer **re-describes** the layer before it. Weights decide
     },
     {
       id: '3.2', t_en: 'Token / tokenizer', t_zh: '词元 / 分词器',
+      short_en: `A [[c3_token]] is **a chunk of text — a word, part of a word, punctuation or a space — that the [[c3_tokenizer]] maps to an integer ID** from a fixed [[c3_vocab]]. The model sees your sentence as tokens because **a neural network only takes numbers from a fixed, finite list**; sub-word pieces can spell any word (new words, names, typos, other languages) without an endless word list. That’s also why limits and prices are counted in tokens.`,
+      short_zh: `[[c3_token]]是**一小段文本——一个词、词的一部分、标点或空格——由[[c3_tokenizer]]按照固定的[[c3_vocab]]映射成一个整数编号**。模型把句子看成词元，是因为**神经网络只能接收来自一个固定、有限列表的数字**；子词碎片可以拼出任何词（新词、人名、错别字、其他语言），而不需要一张无穷无尽的单词表。这也是上限和价格按词元计算的原因。`,
+      basis_en: `Follows the tokenizer playground used in class (e.g. Tiktokenizer, listed in the course resources): text is split into sub-word tokens by a byte-pair-encoding vocabulary and each token becomes an ID. The live demo above uses the open-source gpt-tokenizer library (OpenAI’s o200k vocabulary) when it can load; otherwise a simplified offline splitter.`,
+      basis_zh: `依据课上使用的分词器演示（例如课程资源里列出的 Tiktokenizer）：文本由字节对编码（BPE）词表切成子词词元，每个词元变成一个编号。上面的实时演示在能加载时使用开源的 gpt-tokenizer 库（OpenAI 的 o200k 词表），否则使用简化的离线切分器。`,
+      links: [{ t: 'Tiktokenizer (course resource)', u: 'https://tiktokenizer.com/' }],
+      rel: ['3.3', '4.4'],
+      widget: {
+        html() {
+          return `<div class="w-ctrl"><input type="text" class="w32-in" value="Unbelievably, ChatGPT can’t count r’s in strawberry!" aria-label="Text to tokenize / 要切分的文字">
+            <span class="w-seg w32-ex"><button data-t="Unbelievably, ChatGPT can’t count r’s in strawberry!">EN</button><button data-t="我明天要辅导一个学生的期中考试。">中文</button><button data-t="def count_r(word): return word.count('r')">code</button><button data-t="antidisestablishmentarianism 🍓🍓">rare</button></span>
+            <span class="w32-badge w-out"></span></div><div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const inp = el.querySelector('.w32-in'), badge = el.querySelector('.w32-badge'), box = el.querySelector('.w-svg'), out = el.querySelector('.w-readout');
+          let enc = null, tried = false;
+          const C = F.C;
+          const cols = [[C.blueF, C.blue], [C.greenF, C.green], [C.amberF, C.amber], [C.redF, C.red], [C.magF, C.mag]];
+          const cjk = ch => /[　-〿㐀-鿿＀-￯]/.test(ch);
+          const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.codePointAt(0)) % 99991; return h; };
+          function toy(text) { // simplified offline splitter (illustrative)
+            const raw = text.match(/\s?[A-Za-z]+|\s?\d{1,3}|[㐀-鿿]|\s?[^\sA-Za-z\d㐀-鿿]|\s+/gu) || [];
+            const out = [];
+            raw.forEach(t => {
+              const lead = /^\s/.test(t) && t.trim() ? ' ' : '', w = lead ? t.slice(1) : t;
+              if (/^[A-Za-z]+$/.test(w) && w.length > 6) {
+                const parts = w.match(/.{1,4}/g); parts.forEach((p, i) => out.push((i ? '' : lead) + p));
+              } else out.push(t);
+            });
+            return out.map(p => ({ p, id: hash(p) }));
+          }
+          function real(text) {
+            const ids = enc.encode(text);
+            return ids.map(id => { let p = enc.decode([id]); if (p.includes('�')) p = '⟨byte⟩'; return { p, id }; });
+          }
+          function chipW(p) { let w = 0; for (const ch of p) w += cjk(ch) ? 13 : 7.4; return Math.max(22, w + 14); }
+          function render() {
+            const text = inp.value;
+            let toks = [];
+            try { toks = enc ? real(text) : toy(text); } catch (e) { toks = toy(text); }
+            const MAX = 60; const shown = toks.slice(0, MAX);
+            let x = 14, y = 26, s = '';
+            shown.forEach((t, i) => {
+              const label = t.p.replace(/\n/g, '↵').replace(/ /g, '·');
+              const w = chipW(label);
+              if (x + w > 746) { x = 14; y += 62; }
+              const [f, c] = cols[i % 5];
+              s += F.rect(x, y, w, 28, { fill: f, stroke: c, rx: 4, text: label, tcls: 'mono', tcolor: C.ink, note: { en: `token #${i + 1} · ID ${t.id}`, zh: `第 ${i + 1} 个词元 · 编号 ${t.id}` } });
+              s += F.text(x + w / 2, y + 44, String(t.id), { cls: 'tiny', color: C.mute });
+              x += w + 6;
+            });
+            if (toks.length > MAX) s += F.text(746, y + 44, `+${toks.length - MAX} more`, { anchor: 'end', cls: 'tiny', color: C.mag });
+            const H = y + 64;
+            s += F.text(14, H + 4, 'IDS → the only thing the model sees', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(14, H + 20, '编号 → 模型唯一能看到的东西');
+            box.innerHTML = F.svg(760, H + 30, s, { label: 'live tokenization' });
+            const words = (text.match(/[A-Za-z0-9’']+/g) || []).length + [...text].filter(cjk).length;
+            const chars = [...text].length;
+            const ratio = words ? (toks.length / words).toFixed(2) : '—';
+            out.innerHTML = `<span class="en"><b>${toks.length}</b> tokens · <b>${words}</b> words · <b>${chars}</b> characters · ${ratio} tokens per word. Try Chinese, code or a rare word and watch the count change.</span> <span class="zh"><b>${toks.length}</b> 个词元 · <b>${words}</b> 个词（汉字按字计）· <b>${chars}</b> 个字符 · 每词约 ${ratio} 个词元。试试中文、代码或生僻词，看看数量怎么变。</span>`;
+            badge.innerHTML = enc ? `<span class="en">● real GPT tokenizer (o200k)</span><span class="zh"> 真实 GPT 分词器</span>` : `<span class="en">○ offline demo splitter</span><span class="zh"> 离线示意切分器</span>`;
+          }
+          function load() {
+            if (tried) return; tried = true;
+            badge.innerHTML = '<span class="en">loading real tokenizer…</span><span class="zh"> 正在加载真实分词器…</span>';
+            import('https://cdn.jsdelivr.net/npm/gpt-tokenizer@4/+esm').then(m => {
+              if (m && typeof m.encode === 'function' && typeof m.decode === 'function') { enc = m; }
+              render();
+            }).catch(() => render());
+          }
+          inp.addEventListener('input', render);
+          inp.addEventListener('focus', load);
+          el.querySelector('.w32-ex').addEventListener('click', e => { const b = e.target.closest('button[data-t]'); if (!b) return; inp.value = b.dataset.t; el.querySelectorAll('.w32-ex button').forEach(x => x.classList.toggle('on', x === b)); render(); load(); });
+          render();
+          if ('IntersectionObserver' in window) { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '300px' }); io.observe(el); } else load();
+        }
+      },
       q_en: 'What is a token, and why does the model see your sentence as tokens rather than words?',
       q_zh: '什么是词元（token）？为什么模型把你的句子看成词元，而不是单词？',
       src: 'tokenizer playground',
@@ -167,8 +264,8 @@ In my own words: each layer **re-describes** the layer before it. Weights decide
         s += F.g(F.rect(470, 248, 270, 50, { fill: '#1b1b1a', rx: 6 }) + F.text(605, 270, '18 tokens  ≈  8 words', { cls: 'mono', color: '#f3f2ee' }) + F.text(605, 288, 'limits & prices count tokens', { cls: 'tiny', color: '#aaa' }), { tip: 'c3_context' });
         return F.svg(760, 310, s, { label: 'a sentence split into tokens' });
       },
-      cap_en: 'A tokenizer cuts the sentence into chunks from its fixed vocabulary and swaps each chunk for a number. Notice “strawberry” never appears as letters — which is why models are bad at counting r’s. (IDs are illustrative.)',
-      cap_zh: '分词器用它固定的词表把句子切成小块，再把每块换成一个编号。注意 “strawberry” 从来没有以字母的形式出现——这就是模型数不清里面有几个 r 的原因。（编号为示意。）',
+      cap_en: 'A tokenizer cuts the sentence into chunks from its fixed vocabulary and swaps each chunk for a number. Notice “strawberry” never appears as letters — which is why models are bad at counting r’s. (Type your own text above — IDs are real when the GPT tokenizer loads.)',
+      cap_zh: '分词器用它固定的词表把句子切成小块，再把每块换成一个编号。注意 “strawberry” 从来没有以字母的形式出现——这就是模型数不清里面有几个 r 的原因。（可以在上方输入自己的文字——真实 GPT 分词器加载后编号为真实编号。）',
       a_en: `A [[c3_token]] is the basic unit a language model reads and writes: a chunk of text — sometimes a whole word (“ count”), sometimes part of a word (“Un” + “believ” + “ably”), a punctuation mark, or a word with its leading space. A [[c3_tokenizer]] splits text using a fixed [[c3_vocab|vocabulary]] learned from data, and replaces each token with an **integer ID**. The model never sees letters or words — only this list of numbers (which it then turns into embeddings).
 
 **Why tokens rather than words:**
@@ -192,6 +289,12 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
     },
     {
       id: '3.3', t_en: 'Embedding', t_zh: '嵌入',
+      short_en: `An [[c3_embedding]] is **a vector — a long list of numbers — that places a token or word as a point in a high-dimensional space**, learned during training from the contexts the word appears in. Two words being close means **the model has seen them used in similar contexts** (similar usage, usually similar meaning — “you shall know a word by the company it keeps”); directions can also encode relations (man→woman ≈ king→queen).`,
+      short_zh: `[[c3_embedding]]是**一个向量——一长串数字——把一个词元或单词放到高维空间中的某个点上**，它是在训练中从这个词出现的语境里学出来的。两个词距离近，意味着**模型见过它们在相似的语境中被使用**（用法相似，通常意思也相近——“观其伴，知其词”）；方向也能编码关系（man→woman ≈ king→queen）。`,
+      basis_en: `Follows Google’s Embedding Projector (the class activity): it projects ~200–768-dimensional word vectors down to 3D with PCA/t-SNE/UMAP so nearest neighbours become visible. “Close = used alike” is the distributional idea (J.R. Firth).`,
+      basis_zh: `依据课上使用的 Google Embedding Projector：它用 PCA/t-SNE/UMAP 把约 200–768 维的词向量投影到 3 维，让“最近邻”变得可见。“近＝用法相似”就是分布假说（J.R. 弗斯）。`,
+      links: [{ t: 'Embedding Projector', u: 'https://projector.tensorflow.org/' }],
+      rel: ['3.2', '3.1', '7.5'],
       q_en: 'What is an embedding, and what does it mean that two words are close in that space?',
       q_zh: '什么是嵌入（embedding）？两个词在那个空间里“距离近”意味着什么？',
       src: 'Embedding Projector',
@@ -199,7 +302,7 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
         let s = '';
         // axes
         s += F.line(60, 300, 720, 300, { stroke: '#cfcbc2' }) + F.line(60, 300, 60, 30, { stroke: '#cfcbc2' });
-        s += F.text(720, 318, 'dimension 1', { anchor: 'end', cls: 'tiny', color: F.C.mute }) + F.text(66, 40, 'dimension 2  (of ~768)', { anchor: 'start', cls: 'tiny', color: F.C.mute });
+        s += F.text(720, 318, 'dimension 1', { anchor: 'end', cls: 'tiny', color: F.C.mute }) + F.text(66, 22, 'dimension 2  (of ~768)', { anchor: 'start', cls: 'tiny', color: F.C.mute });
         const clusters = [
           { c: F.C.blue, f: F.C.blueF, en: 'ANIMALS', zh: '动物', pts: [['dog', 140, 90], ['puppy', 172, 70], ['cat', 120, 128], ['kitten', 160, 140]] },
           { c: F.C.green, f: F.C.greenF, en: 'MUSIC', zh: '音乐', pts: [['jazz', 500, 90], ['piano', 540, 120], ['saxophone', 470, 135], ['blues', 540, 74]] },
@@ -210,7 +313,7 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
           const xs = cl.pts.map(p => p[1]), ys = cl.pts.map(p => p[2]);
           const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
           g += `<ellipse cx="${cx}" cy="${cy}" rx="${(Math.max(...xs) - Math.min(...xs)) / 2 + 48}" ry="${(Math.max(...ys) - Math.min(...ys)) / 2 + 26}" fill="${cl.f}" stroke="${cl.c}" stroke-dasharray="3 3" opacity=".8"/>`;
-          cl.pts.forEach(([w, x, y]) => g += `<circle cx="${x}" cy="${y}" r="3.5" fill="${cl.c}"/>` + F.text(x + 7, y - 6, w, { anchor: 'start', cls: 'mono', color: F.C.ink }));
+          cl.pts.forEach(([w, x, y]) => g += `<circle cx="${x}" cy="${y}" r="3.5" fill="${cl.c}"/>` + (w === 'dog' ? F.text(x - 8, y + 4, w, { anchor: 'end', cls: 'mono', color: F.C.ink }) : F.text(x + 7, y - 6, w, { anchor: 'start', cls: 'mono', color: F.C.ink })));
           g += F.text(cx, cy + (Math.max(...ys) - Math.min(...ys)) / 2 + 42, cl.en, { cls: 'tiny', color: cl.c }) + F.sub(cx, cy + (Math.max(...ys) - Math.min(...ys)) / 2 + 56, cl.zh, { anchor: 'middle' });
           s += F.g(g, { note: { en: `A neighborhood: these words appear in similar sentences, so training pushed their vectors together.`, zh: `一个“街区”：这些词出现在相似的句子里，所以训练把它们的向量推到了一起。` } });
         });
@@ -244,6 +347,76 @@ Directions also matter: the step from *man* to *woman* roughly equals the step f
     },
     {
       id: '3.4', t_en: 'Autonomy slider', t_zh: '自主性滑块',
+      short_en: `Karpathy (Software 3.0) says good AI apps offer **partial autonomy with an [[c3_slider]]: what moves is the split of control between human and AI** — how big a chunk the AI does per step and how much the human must verify (Cursor: tab-complete → edit selection → edit file → agent on the whole repo; Perplexity: search → research → deep research). His advice: keep the AI “on a leash” and the [[c3_gen_verify]] fast. **My setting:** [name a level + a task + why — e.g. low/middle for design work, because taste and accuracy are hard to verify in big chunks].`,
+      short_zh: `卡帕西（软件 3.0）认为，好的 AI 应用提供**带[[c3_slider]]的部分自主：移动的是人和 AI 之间控制权的分配**——AI 每一步做多大一块、人需要验证多少（Cursor：Tab 补全 → 改选中部分 → 改整个文件 → 智能体改整个仓库；Perplexity：搜索 → 研究 → 深度研究）。他的建议：给 AI “拴上绳子”，让[[c3_gen_verify]]保持快速。**我的设定：**[写出一个档位 + 一项任务 + 理由——例如设计工作设在偏低/中间，因为品味和准确性很难大块验证]。`,
+      basis_en: `Karpathy, “Software Is Changing (Again)”, YC AI Startup School 2025 (annotated by Latent Space). The course glossary defines the autonomy slider as a user-selectable level of AI autonomy, with Cursor, Perplexity and Tesla Autopilot as examples, and the generation–verification loop as “verification made easy, generation kept on a tight leash.” The Latent Space notes are paywalled, so this follows the course glossary and widely published talk notes.`,
+      basis_zh: `卡帕西《Software Is Changing (Again)》，YC AI Startup School 2025（Latent Space 有带注释的整理）。课程词汇表把自主性滑块定义为“用户可选的 AI 自主程度”，例子是 Cursor、Perplexity 和特斯拉 Autopilot；把生成—验证循环定义为“让验证变容易、把生成拴紧”。Latent Space 的笔记需付费，所以这里依据课程词汇表和公开的演讲笔记。`,
+      links: [{ t: 'Latent Space — Karpathy on Software 3.0', u: 'https://www.latent.space/p/s3' }],
+      rel: ['6.5', '6.1'],
+      widget: {
+        html() {
+          return `<div class="w-ctrl"><span class="w-seg w34-p"><button data-p="0" class="on">Cursor</button><button data-p="1">Perplexity</button><button data-p="2">Tesla</button><button data-p="3"><span class="en">Your work</span><span class="zh"> 你的工作</span></button></span>
+            <label><span class="en">autonomy</span><span class="zh">自主性</span> <input type="range" class="w34-r" min="0" max="3" step="1" value="1"></label><span class="w-out w34-v"></span></div><div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const C = F.C;
+          const P = [
+            { name: 'CURSOR', stops: [
+              ['TAB COMPLETE', 'Tab 补全', .1, 'finishes the line you are typing', '补全你正在打的这一行', 'glance at a few characters', '扫一眼几个字符'],
+              ['EDIT SELECTION', '改选中代码', .3, 'rewrites the lines you selected', '重写你选中的几行', 'review a small diff', '检查一小段改动'],
+              ['EDIT FILE', '改整个文件', .6, 'changes a whole file', '修改整个文件', 'read a long diff carefully', '仔细读一大段改动'],
+              ['AGENT · REPO', '智能体改整个仓库', .9, 'plans and edits across the repo, runs commands', '跨仓库规划修改、运行命令', 'trust tests + spot-check; hard to review', '靠测试 + 抽查；很难完整审阅']] },
+            { name: 'PERPLEXITY', stops: [
+              ['SEARCH', '搜索', .2, 'answers with a few sources', '给出带少量来源的回答', 'open the sources', '点开来源核对'],
+              ['RESEARCH', '研究', .55, 'runs several searches, writes a summary', '多轮搜索并写出摘要', 'check key claims', '核对关键论断'],
+              ['DEEP RESEARCH', '深度研究', .85, 'works for minutes, writes a long report', '运行数分钟，写出长报告', 'verifying everything is costly', '全部核实代价很高']] },
+            { name: 'TESLA AUTOPILOT', stops: [
+              ['DRIVER', '人驾驶', 0, 'nothing', '什么都不做', 'you drive', '你自己开'],
+              ['LANE ASSIST', '车道辅助', .3, 'keeps the lane', '保持车道', 'hands on, eyes on road', '手扶方向盘、眼看路'],
+              ['AUTOPILOT', '自动驾驶', .65, 'steers and brakes on highways', '在高速上转向和刹车', 'supervise, ready to take over', '监督，随时接管'],
+              ['FULL SELF-DRIVING', '完全自动', .95, 'drives the whole trip', '开完全程', 'almost nothing — the risk moves to the machine', '几乎不用——风险转给了机器']] },
+            { name: 'YOUR WORK', stops: [
+              ['ASK ONLY', '只提问', .1, 'explains; you do the work', '只解释，活由你干', 'nothing to verify but understanding', '只需确认自己理解'],
+              ['SUGGEST', '给建议', .3, 'offers options and edits', '提供选项和修改建议', 'pick and adapt each one', '逐个挑选、改写'],
+              ['DRAFT IN PIECES', '分块起草', .55, 'drafts sections you request', '按你的要求起草段落', 'read every piece before keeping it', '每块都读过再保留'],
+              ['WHOLE DRAFT', '整篇起草', .75, 'writes the whole thing', '写出整篇', 'review a big output — easy to miss errors', '审阅一大块输出——容易漏错'],
+              ['ACTS FOR YOU', '代你执行', .95, 'publishes / sends / submits on its own', '自行发布、发送、提交', 'you see it only afterward', '你事后才看到']] }
+          ];
+          const seg = el.querySelector('.w34-p'), r = el.querySelector('.w34-r'), v = el.querySelector('.w34-v'), box = el.querySelector('.w-svg'), out = el.querySelector('.w-readout');
+          let pi = 0;
+          function render() {
+            const p = P[pi], k = +r.value, st = p.stops[k];
+            const x0 = 50, x1 = 710, y = 70;
+            let s = F.text(x0, 30, p.name, { anchor: 'start', cls: 'lt' });
+            s += `<rect x="${x0}" y="${y - 3}" width="${x1 - x0}" height="6" rx="3" fill="#ecebe6" stroke="${C.ink}" stroke-width="1"/>`;
+            const kx = x0 + (x1 - x0) * k / (p.stops.length - 1);
+            s += `<rect x="${x0}" y="${y - 3}" width="${kx - x0}" height="6" rx="3" fill="${C.mag}"/>`;
+            p.stops.forEach((sp, i) => {
+              const x = x0 + (x1 - x0) * i / (p.stops.length - 1), a = i === 0 ? 'start' : i === p.stops.length - 1 ? 'end' : 'middle';
+              s += `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="${C.ink}"/>` + F.text(x, y + 26, sp[0], { cls: 'tiny', anchor: a, color: i === k ? C.mag : C.ink }) + F.sub(x, y + 41, sp[1], { anchor: a });
+            });
+            s += `<circle cx="${kx}" cy="${y}" r="11" fill="#fff" stroke="${C.mag}" stroke-width="2"/><circle cx="${kx}" cy="${y}" r="3.5" fill="${C.mag}"/>`;
+            // control split bar
+            const by = 150, bw = x1 - x0, ai = st[2];
+            s += F.text(x0, by - 10, 'WHO HOLDS CONTROL', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(x0 + 140, by - 10, '控制权在谁手里');
+            s += F.g(`<rect x="${x0}" y="${by}" width="${bw * (1 - ai)}" height="22" fill="${C.blueF}" stroke="${C.blue}"/>` + F.text(x0 + 8, by + 15, `HUMAN ${Math.round((1 - ai) * 100)}%`, { anchor: 'start', cls: 'tiny', color: C.blue }), { tip: 'c3_gen_verify' });
+            s += F.g(`<rect x="${x0 + bw * (1 - ai)}" y="${by}" width="${bw * ai}" height="22" fill="${C.magF}" stroke="${C.mag}"/>` + F.text(x1 - 8, by + 15, `AI ${Math.round(ai * 100)}%`, { anchor: 'end', cls: 'tiny', color: C.mag }), { tip: 'c3_slider' });
+            // two cards
+            const cy = 196;
+            s += F.rect(x0, cy, 320, 70, { fill: '#fff', stroke: C.mag, rx: 6 }) + F.text(x0 + 12, cy + 18, 'THE AI DOES', { anchor: 'start', cls: 'tiny', color: C.mag }) + F.text(x0 + 12, cy + 40, st[3], { anchor: 'start', cls: 'mono' }) + F.sub(x0 + 12, cy + 58, st[4]);
+            s += F.rect(x1 - 320, cy, 320, 70, { fill: '#fff', stroke: C.blue, rx: 6 }) + F.text(x1 - 308, cy + 18, 'YOU VERIFY', { anchor: 'start', cls: 'tiny', color: C.blue }) + F.text(x1 - 308, cy + 40, st[5], { anchor: 'start', cls: 'mono' }) + F.sub(x1 - 308, cy + 58, st[6]);
+            box.innerHTML = F.svg(760, 282, s, { label: 'autonomy slider' });
+            v.textContent = `${st[0]} · ${st[1]}`;
+            const risk = ai < .35 ? ['low risk, slow', '风险低，但慢'] : ai < .7 ? ['balanced', '较平衡'] : ['fast, but big unchecked chunks', '快，但大块内容没人检查'];
+            out.innerHTML = pi === 3
+              ? `<span class="en">Where would you set it for your own work? At “${st[0].toLowerCase()}” the AI ${st[3]} and you ${st[5]} — ${risk[0]}. Pick a level and say why: what is easy or hard to verify in your work?</span> <span class="zh">你会把自己工作的滑块设在哪？在“${st[1]}”这一档，AI ${st[4]}，你${st[6]}——${risk[1]}。选一个档位并说明理由：你的工作里，什么容易验证、什么难验证？</span>`
+              : `<span class="en">Moving right gives the AI a bigger chunk per step and leaves you less to verify — ${risk[0]}.</span> <span class="zh">往右移，AI 每一步承担的更多，留给你验证的更少——${risk[1]}。</span>`;
+          }
+          seg.addEventListener('click', e => { const b = e.target.closest('button[data-p]'); if (!b) return; pi = +b.dataset.p; seg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); r.max = P[pi].stops.length - 1; r.value = Math.min(+r.value, +r.max); render(); });
+          r.addEventListener('input', render);
+          render();
+        }
+      },
       q_en: 'Karpathy\'s idea: what moves along the slider, and where would you set it for your own work right now?',
       q_zh: '卡帕西的想法：滑块上移动的是什么？就你目前的工作而言，你会把它设在哪里？',
       src: '',
@@ -293,6 +466,12 @@ His advice: it’s an [[c3_ironman]] — for now build more **augmentation** tha
     },
     {
       id: '3.5', t_en: 'Infrastructure as physical', t_zh: '基础设施是物质的',
+      short_en: `In [[c3_anatomy]], Crawford & Joler trace one Amazon Echo request and show it is three systems working **at the same time**: a **material system** (minerals mined, energy, shipping, e-waste — [[c3_extractivism]]), a **form of labor** (miners, factory workers, data labelers, and users whose speech trains it — [[c3_digital_labor]]), and a **computing system** (data, models, cloud servers). “At once” means every second of convenience consumes the earth and hidden human work as well as computation — the clean interface hides the first two.`,
+      short_zh: `在[[c3_anatomy]]中，克劳福德与约勒追踪一次亚马逊 Echo 请求，指出它是**同时运转**的三个系统：**物质系统**（开采的矿物、能源、运输、电子垃圾——[[c3_extractivism]]）、**一种劳动形式**（矿工、工厂工人、数据标注员，以及用说话训练它的用户——[[c3_digital_labor]]），以及**计算系统**（数据、模型、云服务器）。“同时”意味着每一秒的便利都在消耗地球资源和隐形的人类劳动，而不只是计算——干净的界面把前两者藏了起来。`,
+      basis_en: `Crawford & Joler, Anatomy of an AI System (2018, anatomyof.ai), as summarized in the course glossary: extractivism (materials, labor and data), digital labor (from mining to data labeling to waste cleanup, after Fuchs), and the fractal pyramid of value extraction. The essay page itself could not be opened in this session.`,
+      basis_zh: `克劳福德与约勒《AI 系统解剖图》（2018，anatomyof.ai），依据课程词汇表的总结：攫取主义（材料、劳动和数据）、数字劳动（沿用福克斯：从采矿到数据标注再到垃圾处理），以及价值攫取的分形金字塔。本次未能打开原文网页。`,
+      links: [{ t: 'Crawford & Joler — Anatomy of an AI System', u: 'https://anatomyof.ai/' }],
+      rel: ['1.1', '7.5', '1.2'],
       q_en: 'From Crawford & Joler: what does it mean that an AI system is a material system, a form of labor, and a computing system at once?',
       q_zh: '根据克劳福德与约勒：说一个 AI 系统同时是“物质系统”“一种劳动形式”和“计算系统”，是什么意思？',
       src: '',

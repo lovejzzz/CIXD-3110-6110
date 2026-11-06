@@ -53,36 +53,51 @@ defClass({
       q_zh: '赖特对“层级”的定义，并举一个你每天使用的软件中的例子。',
       src: 'Wright, Informatica, ch. 1',
       fig() {
-        F.setIso(19, 300, 235);
-        const lv = [
-          { w: 10, label: 'DRIVE  /', sub: '磁盘（根）', note: { en: 'The root: the most inclusive category. Everything lives inside it.', zh: '根目录：最大的类，所有东西都在它里面。' } },
-          { w: 7.2, label: 'USERS / SKYX', sub: '用户文件夹', note: { en: 'A narrower category nested inside the root.', zh: '嵌在根目录里的较小类别。' } },
-          { w: 4.8, label: 'DOCUMENTS', sub: '文稿', note: { en: 'Each folder has exactly one parent.', zh: '每个文件夹只有一个上级。' } },
-          { w: 2.6, label: 'MIDTERM', sub: '期中', note: { en: 'Narrower still.', zh: '更小一层。' } },
-          { w: 1.1, label: 'ANSWERS.PDF', sub: '文件：唯一的位置', note: { en: 'The leaf: the item has ONE address: /Users/skyx/Documents/Midterm/answers.pdf', zh: '叶子节点：这个文件只有一个地址：/Users/skyx/Documents/Midterm/answers.pdf' } }
-        ];
+        // a real tree: one root, every node has exactly one parent; the path to the file is highlighted
+        const N = {
+          root: [380, 44, 'DRIVE /', 1], apps: [190, 116, 'Applications', 0], users: [380, 116, 'Users', 1], sys: [570, 116, 'System', 0],
+          skyx: [300, 188, 'skyx', 1], guest: [460, 188, 'Guest', 0],
+          docs: [220, 260, 'Documents', 1], music: [380, 260, 'Music', 0],
+          mid: [220, 332, 'Midterm', 1], file: [220, 404, 'answers.pdf', 2]
+        };
+        const E = [['root', 'apps'], ['root', 'users'], ['root', 'sys'], ['users', 'skyx'], ['users', 'guest'], ['skyx', 'docs'], ['skyx', 'music'], ['docs', 'mid'], ['mid', 'file']];
         let s = '';
-        lv.forEach((L, i) => {
-          const off = (10 - L.w) / 2, z = i * 2.6;
-          const fill = i === 4 ? F.C.magF : '#fff';
-          let b = F.plate({ x: off, y: off, z, w: L.w, d: L.w, t: 0.2, fill, side: i === 4 ? '#efd2e2' : '#f3f2ee', pattern: i === 0 ? 'grid' : null, density: 8 });
-          const left = i % 2 === 0;
-          const a = left ? F.iso(off, off + L.w * 0.5, z + 0.2) : F.iso(off + L.w * 0.5, off, z + 0.2);
-          const lx = left ? 120 : 520;
-          b += F.label(a, lx, L.label, { color: i === 4 ? F.C.mag : F.C.ink }) + F.sub(left ? lx - 8 : lx + 8, a[1] + 17, L.sub, { anchor: left ? 'end' : 'start' });
-          s += F.g(b, { note: L.note, ex: Math.round(i * 2.4 * 19 * 0.8) });
+        E.forEach(([a, b]) => {
+          const A = N[a], B = N[b], on = A[3] && B[3];
+          s += F.line(A[0], A[1] + 13, B[0], B[1] - 13, { stroke: on ? F.C.mag : F.C.ink, sw: on ? 1.8 : 1 });
         });
-        s += F.text(620, 440, 'MORE INCLUSIVE ↓   ·   NARROWER ↑', { cls: 'tiny', color: F.C.mute });
-        return F.svg(760, 452, s, { label: 'nested hierarchy of folders' });
+        Object.entries(N).forEach(([k, [x, y, t, on]]) => {
+          const w = Math.max(70, t.length * 8.2 + 26);
+          s += F.rect(x - w / 2, y - 13, w, 26, { rx: 13, text: t, tcls: 'mono', fill: on === 2 ? F.C.magF : '#fff', stroke: on ? F.C.mag : F.C.ink, sw: on ? 1.5 : 1.1, tcolor: on ? F.C.mag : F.C.ink,
+            note: k === 'root' ? { en: 'The root: the most inclusive category — everything is inside it.', zh: '根：最大的类，一切都在它里面。' }
+              : k === 'file' ? { en: 'The leaf has ONE address. Moving it means taking it out of one box and putting it in another.', zh: '叶子只有一个地址。要“移动”它，就得把它从一个盒子拿出来放进另一个。' }
+              : { en: 'Each folder sits inside exactly one parent.', zh: '每个文件夹只属于一个上级。' } });
+        });
+        // inclusiveness axis
+        s += F.g(F.arrow(40, 404, 40, 50) + F.text(52, 56, 'MORE INCLUSIVE', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.sub(52, 72, '更大、更包容') +
+          F.text(52, 398, 'NARROWER', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.sub(52, 384, '更小、更具体'), { tip: 'c2_hierarchy' });
+        // the single path
+        s += F.g(F.rect(430, 330, 310, 70, { fill: '#fff', stroke: F.C.mute, rx: 8 }) +
+          F.text(446, 350, 'ONE THING · ONE PATH', { anchor: 'start', cls: 'tiny', color: F.C.mag }) + F.sub(600, 350, '每样东西只有一条路径') +
+          F.text(446, 378, '/Users/skyx/Documents/Midterm/answers.pdf', { anchor: 'start', cls: 'tiny', color: F.C.ink }),
+          { note: { en: 'The path IS the hierarchy written as text: each slash steps one level down.', zh: '路径就是写成文字的层级：每个斜杠往下走一层。' } });
+        s += F.text(580, 44, 'TOP-DOWN', { cls: 'lt' }) + F.sub(580, 60, '自上而下', { anchor: 'middle' });
+        return F.svg(760, 424, s, { label: 'a file system drawn as a tree' });
       },
-      cap_en: 'A file system drawn as nested plates: each layer is contained by the one below it. Inclusiveness decides the order, and every file has exactly one path.',
-      cap_zh: '把文件系统画成嵌套的板：每一层都被下面那层包含。“包含关系”决定顺序，每个文件只有一条路径。',
+      cap_en: 'Your file system is a hierarchy you use every day: one root, each folder inside exactly one parent, and each file reachable by exactly one path (magenta).',
+      cap_zh: '文件系统就是你每天在用的层级：一个根，每个文件夹只属于一个上级，每个文件只有一条路径（洋红色）。',
       a_en: `Wright defines a [[c2_hierarchy]] as a **top-down** system that orders things by **inclusiveness**: broad categories contain narrower ones, which contain narrower ones still, like a tree with one trunk. Every item has one proper place, and the structure is fixed from above — it is how institutions, armies, churches and libraries keep control and make knowledge findable. (Our course glossary: “the ordering of concepts by inclusiveness, used with categorization to control and apply association.”)
 
 **Everyday software example:** the **file system** in Finder or Explorer. Drive → Users → Documents → Midterm → answers.pdf. Each folder sits inside exactly one parent, and each file has exactly one path. Other examples: a website’s main menu → submenu → page; a company org chart in Slack; Settings → Privacy → Location Services on a phone.`,
       a_zh: `赖特把[[c2_hierarchy]]定义为一种**自上而下**、按**包含关系**排列事物的系统：大类包含小类，小类再包含更小的类，就像一棵只有一个树干的树。每个东西都有一个“正确”的位置，结构由上方固定下来——机构、军队、教会和图书馆都靠它维持控制、让知识可被找到。（课程词汇表：“按包含关系排列概念，并与分类结合，用来控制和运用联想。”）
 
 **日常软件中的例子：****文件系统**（访达或资源管理器）。磁盘 → 用户 → 文稿 → 期中 → answers.pdf。每个文件夹只属于一个上级文件夹，每个文件只有一条路径。其他例子：网站的主菜单 → 子菜单 → 页面；Slack 里的公司组织架构；手机里的 设置 → 隐私 → 定位服务。`,
+      short_en: `Wright: a [[c2_hierarchy]] is a **top-down** structure that orders things by **inclusiveness** — broad categories contain narrower ones, like a tree, so **each item has one place**. Everyday example: my computer’s file system — Drive → Users → Documents → Midterm → answers.pdf; every folder has one parent and every file one path.`,
+      short_zh: `赖特：[[c2_hierarchy]]是一种**自上而下**、按**包含关系**排列事物的结构——大类包含小类，像一棵树，所以**每样东西只有一个位置**。日常例子：电脑的文件系统——磁盘 → 用户 → 文稿 → 期中 → answers.pdf；每个文件夹只有一个上级，每个文件只有一条路径。`,
+      basis_en: `Alex Wright, *Informatica: Mastering Information through the Ages* (Cornell, 2023 — the book first published as *Glut*), ch. 1 “Networks and Hierarchies”, assigned for Class 2. The wording “ordering of concepts by inclusiveness” is from the course glossary. The chapter text itself was not available to check line by line.`,
+      basis_zh: `亚历克斯·赖特《Informatica: Mastering Information through the Ages》（康奈尔，2023；即先前出版的《Glut》）第 1 章“网络与层级”，为第 2 课指定阅读。“按包含关系排列概念”的说法来自课程词汇表。章节原文无法逐句核对。`,
+      links: [{ t: 'Glut / Informatica — book summary (Wikipedia)', u: 'https://en.wikipedia.org/wiki/Glut:_Mastering_Information_Through_the_Ages' }],
+      rel: ['2.2', '2.5', '5.4'],
       hook_en: 'Hierarchy = boxes inside boxes, ordered by inclusiveness, one place per thing.',
       hook_zh: '层级＝盒子套盒子，按包含关系排序，每样东西只有一个位置。',
       trap_en: 'Use Wright’s key word “inclusiveness” (or top-down / tree), and give a concrete software example with its actual levels.',
@@ -108,7 +123,7 @@ defClass({
         n += N.map((p, i) => F.circle(p[0], p[1], i === 3 ? 13 : 8, { fill: i === 3 ? F.C.blueF : '#fff', stroke: F.C.blue })).join('');
         s += F.g(n + F.text(605, 290, 'NETWORK', { cls: 'lt', color: F.C.blue }) + F.sub(605, 306, '网络：自下而上 · 点对点', { anchor: 'middle' }), { tip: 'c2_network' });
         // hub callout
-        s += F.g(F.label([623, 140], 740, '') + F.text(735, 120, 'HUB', { anchor: 'end', cls: 'tiny', color: F.C.mag }) + F.sub(735, 158, '涌现的中心', { anchor: 'end' }),
+        s += F.g(F.label([623, 140], 724, '') + F.text(728, 158, 'HUB', { anchor: 'start', cls: 'tiny', color: F.C.mag }) + F.sub(728, 174, '枢纽'),
           { note: { en: 'A hub: a node many others link to. Rank nodes by links and a hierarchy appears inside the network (PageRank, follower counts).', zh: '枢纽：很多节点都连向它。按链接数给节点排名，网络内部就长出了层级（PageRank、粉丝数）。' } });
         // arrows between
         s += F.g(F.path('M290,120 C360,80 430,80 490,110', { stroke: F.C.mag, arrow: true }) + F.text(390, 70, 'hierarchies spawn networks', { cls: 'tiny', color: F.C.mag }) + F.sub(390, 86, '机构催生交叉联系', { anchor: 'middle' }),
@@ -133,6 +148,12 @@ So the history of information is a back-and-forth between the two, and neither e
 - **层级催生网络。**任何正式的树状结构都会长出横向联系：图书馆目录加上“参见”，组织靠非正式人际关系运转，文件夹之间又被超链接和标签连起来。
 
 所以信息的历史就是两者之间的来回往复，谁都不会彻底获胜。`,
+      short_en: `Wright: a [[c2_network]] is a **bottom-up**, distributed web of peer-to-peer links with **no single top**; a hierarchy is a top-down tree. They **give rise to each other**: networks grow hubs and rankings that harden into new hierarchies (links on the Web → Google’s ranking), and every hierarchy sprouts side-connections that form networks (“see also” cross-references, informal ties in an org chart).`,
+      short_zh: `赖特：[[c2_network]]是一种**自下而上**、点对点相连的分布式结构，**没有唯一的顶端**；层级则是自上而下的树。两者**相互催生**：网络会长出枢纽和排名，固化成新的层级（网页链接 → 谷歌排名）；而任何层级都会长出横向联系，形成网络（目录里的“参见”、组织架构中的非正式关系）。`,
+      basis_en: `Wright, *Informatica / Glut*, ch. 1. Checked against a summary of the book: Wright argues the two forms have always coexisted in tension (“percolating for eons”) rather than one replacing the other — the exam’s “give rise to each other”. The two-direction examples are illustrations, not quotations.`,
+      basis_zh: `赖特《Informatica / Glut》第 1 章。已对照该书摘要核对：赖特认为两种形式一直并存、彼此拉扯，而不是一个取代另一个——这就是考题里的“相互催生”。两个方向的例子是说明用的，不是原文引用。`,
+      links: [{ t: 'Glut / Informatica — book summary (Wikipedia)', u: 'https://en.wikipedia.org/wiki/Glut:_Mastering_Information_Through_the_Ages' }],
+      rel: ['2.1', '2.4', '5.4'],
       hook_en: 'Network = bottom-up links, no top. Hierarchy = top-down tree. Each keeps growing out of the other.',
       hook_zh: '网络＝自下而上的连接、没有顶端；层级＝自上而下的树。两者不断从对方之中长出来。',
       trap_en: 'Don’t frame it as “networks replaced hierarchies.” Give one example in EACH direction.',
@@ -146,33 +167,33 @@ So the history of information is a back-and-forth between the two, and neither e
       fig() {
         let s = '';
         const ranks = [
-          { y: 50, r: 'UNIQUE BEGINNER', zh: '起始类', nodes: [['PLANT', '植物']] },
-          { y: 115, r: 'LIFE-FORM', zh: '生活型', nodes: [['TREE', '树'], ['GRASS', '草'], ['VINE', '藤']] },
-          { y: 180, r: 'GENERIC', zh: '属级 · 基本层级', nodes: [['OAK', '橡树'], ['PINE', '松树'], ['MAPLE', '枫树']], hi: true },
-          { y: 245, r: 'SPECIFIC', zh: '种级', nodes: [['WHITE OAK', '白橡'], ['RED OAK', '红橡']] },
-          { y: 310, r: 'VARIETAL', zh: '变种', nodes: [['…', '']] }
+          { y: 46, r: 'UNIQUE BEGINNER', zh: '起始类', nodes: [['PLANT', '植物']] },
+          { y: 124, r: 'LIFE-FORM', zh: '生活型', nodes: [['TREE', '树'], ['GRASS', '草'], ['VINE', '藤']] },
+          { y: 202, r: 'GENERIC', zh: '属级 · 基本层级', nodes: [['OAK', '橡树'], ['PINE', '松树'], ['MAPLE', '枫树']], hi: true },
+          { y: 280, r: 'SPECIFIC', zh: '种级', nodes: [['WHITE OAK', '白橡'], ['RED OAK', '红橡']] },
+          { y: 358, r: 'VARIETAL', zh: '变种', nodes: [['…', '']] }
         ];
         const X = { 1: [470], 3: [340, 470, 600], 2: [420, 520] };
-        // band highlight for basic level
-        s += F.g(`<rect x="200" y="152" width="550" height="56" rx="8" fill="${F.C.magF}"/>` +
-          F.text(212, 203, 'BASIC LEVEL', { anchor: 'start', cls: 'tiny', color: F.C.mag }), { tip: 'c2_basic_level' });
+        s += F.g(`<rect x="200" y="176" width="550" height="62" rx="8" fill="${F.C.magF}"/>` +
+          F.text(212, 230, 'BASIC LEVEL', { anchor: 'start', cls: 'tiny', color: F.C.mag }), { tip: 'c2_basic_level' });
         const pos = ranks.map(R => (R.nodes.length === 1 ? X[1] : X[R.nodes.length]));
-        // edges
-        s += F.line(470, 62, 340, 103) + F.line(470, 62, 470, 103) + F.line(470, 62, 600, 103);
-        s += F.line(340, 127, 340, 168) + F.line(340, 127, 470, 168) + F.line(340, 127, 600, 168, { dash: '3 3' });
-        s += F.line(340, 192, 420, 233) + F.line(340, 192, 520, 233);
-        s += F.line(420, 257, 470, 298, { dash: '3 3' });
+        // edges start below each node's Chinese caption so they never cross it
+        const ed = (x1, r1, x2, r2, o) => F.line(x1, ranks[r1].y + 36, x2, ranks[r2].y - 13, o);
+        s += ed(470, 0, 340, 1) + ed(470, 0, 470, 1) + ed(470, 0, 600, 1);
+        s += ed(340, 1, 340, 2) + ed(340, 1, 470, 2) + ed(340, 1, 600, 2, { dash: '3 3' });
+        s += ed(340, 2, 420, 3) + ed(340, 2, 520, 3);
+        s += ed(420, 3, 470, 4, { dash: '3 3' });
         ranks.forEach((R, i) => {
           R.nodes.forEach(([en, zh], j) => {
             const x = pos[i][j], w = Math.max(60, en.length * 8 + 22);
-            s += F.rect(x - w / 2, R.y - 12, w, 24, { fill: R.hi ? '#fff' : '#fff', stroke: R.hi ? F.C.mag : F.C.ink, sw: R.hi ? 1.6 : 1.1, text: en, tcolor: R.hi ? F.C.mag : F.C.ink, rx: 12 });
-            if (zh) s += F.sub(x, R.y + 26, zh, { anchor: 'middle' });
+            s += F.rect(x - w / 2, R.y - 12, w, 24, { fill: '#fff', stroke: R.hi ? F.C.mag : F.C.ink, sw: R.hi ? 1.6 : 1.1, text: en, tcolor: R.hi ? F.C.mag : F.C.ink, rx: 12 });
+            if (zh) s += F.sub(x, R.y + 27, zh, { anchor: 'middle' });
           });
           s += F.g(F.text(190, R.y, R.r, { anchor: 'end', cls: 'lt', color: R.hi ? F.C.mag : F.C.ink }) + F.sub(190, R.y + 15, R.zh, { anchor: 'end' }), { tip: 'c2_berlin_ranks' });
         });
-        s += F.g(F.arrow(30, 300, 30, 60) + F.text(42, 70, 'abstract', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.text(42, 300, 'expert detail', { anchor: 'start', cls: 'tiny', color: F.C.mute }),
+        s += F.g(F.arrow(30, 350, 30, 50) + F.text(42, 60, 'abstract', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.text(42, 350, 'expert detail', { anchor: 'start', cls: 'tiny', color: F.C.mute }),
           { note: { en: 'Going up = more abstract groupings few people name in daily life. Going down = finer distinctions only specialists need.', zh: '往上＝越来越抽象、日常很少说的大类；往下＝越来越细、只有专家才需要的区分。' } });
-        return F.svg(760, 340, s, { label: 'folk taxonomy ranks with basic level highlighted' });
+        return F.svg(760, 380, s, { label: 'folk taxonomy ranks with basic level highlighted' });
       },
       cap_en: 'Berlin’s five ranks, found in folk taxonomies all over the world. The highlighted band is where people actually live: oak, dog, chair.',
       cap_zh: '伯林发现、世界各地民间分类中都存在的五个等级。高亮的那一条，才是人们真正生活的层级：橡树、狗、椅子。',
@@ -190,6 +211,11 @@ So the most “real” category for the mind is the middle one; the top of the t
 - **往下**的层级是专业区分——园丁和育种者需要，大多数人不需要。
 
 所以对大脑来说最“真实”的类别是中间那一层；树的顶端只是后来更抽象的总结。这也解释了为什么软件菜单强迫我们从最顶层开始找东西时，常常让人觉得别扭。`,
+      short_en: `A [[c2_folk_tax]] is a culture’s everyday, unwritten way of naming and grouping living things; Berlin found the same few ranks everywhere (plant → tree → **oak** → white oak). The psychologically primary category sits in the **middle** because it is Rosch’s [[c2_basic_level]]: the level built from **perception and use** — learned first, named fastest, shortest words. Levels above are abstractions; levels below are specialist detail.`,
+      short_zh: `[[c2_folk_tax]]是一种文化日常、未成文的给生物命名和分组的方式；伯林发现各地都有同样几个等级（植物 → 树 → **橡树** → 白橡）。心理上最基本的类别位于**中间**，因为它是罗施所说的[[c2_basic_level]]：建立在**感知与使用**之上的层级——最先学会、命名最快、词最短。上面的层级是抽象概括，下面的是专业细分。`,
+      basis_en: `Wright, *Informatica* ch. 2, drawing on anthropologist Brent Berlin’s cross-cultural ranks (unique beginner, life-form, generic, specific, varietal) and Eleanor Rosch’s basic-level categories — the three names on the exam hint. These are standard findings in cognitive anthropology; the chapter text was not available to quote.`,
+      basis_zh: `赖特《Informatica》第 2 章，引用人类学家布伦特·伯林的跨文化等级（起始类、生活型、属级、种级、变种）和埃莉诺·罗施的“基本层级范畴”——正是考卷提示里的三个名字。这些是认知人类学的经典结论；章节原文无法引用。`,
+      rel: ['2.1', '2.5', '3.3'],
       hook_en: 'The mind starts in the middle (dog), then generalizes up (animal) or specializes down (poodle).',
       hook_zh: '大脑从中间开始（狗），再往上概括（动物）或往下细分（贵宾犬）。',
       trap_en: 'Name both sources: Berlin (the generic rank) and Rosch (basic level). Explain WHY: perception/use, learned first, shortest names.',
@@ -216,9 +242,9 @@ So the most “real” category for the mind is the middle one; the top of the t
         // pheromone halo on tallest
         const top = F.iso(3.65, 5.45, 3.6);
         s += F.g(`<circle cx="${top[0]}" cy="${top[1]}" r="16" fill="none" stroke="${F.C.green}" stroke-dasharray="2 3"/><circle cx="${top[0]}" cy="${top[1]}" r="26" fill="none" stroke="${F.C.green}" stroke-dasharray="2 4" opacity=".6"/>` +
-          F.label([top[0] + 26, top[1]], 380, 'PHEROMONE MARK') + F.sub(388, top[1] + 17, '信息素：“在这里继续堆”'), { tip: 'c2_pheromone' });
+          F.label([top[0] + 26, top[1]], 360, 'PHEROMONE MARK') + F.sub(368, top[1] + 17, '信息素：在这里继续堆'), { tip: 'c2_pheromone' });
         // loop diagram (right)
-        const cx = 630, cy = 165, R = 72;
+        const cx = 590, cy = 160, R = 72;
         const st = [
           ['ACT', '行动：放下泥球', -90],
           ['TRACE', '痕迹：留在环境里', 15],
@@ -228,8 +254,8 @@ So the most “real” category for the mind is the middle one; the top of the t
         st.forEach(([en, zh, a], i) => {
           const r = a * Math.PI / 180, x = cx + R * Math.cos(r), y = cy + R * Math.sin(r);
           loop += F.circle(x, y, 6, { fill: i === 1 ? F.C.mag : '#fff', stroke: i === 1 ? F.C.mag : F.C.ink });
-          const ly = i === 1 ? y - 34 : i === 0 ? y - 32 : y + 26;
-          const an = i === 1 ? 'end' : 'middle', tx = i === 1 ? x + 12 : x;
+          const ly = i === 1 ? y - 2 : i === 0 ? y - 30 : y + 26;
+          const an = i === 1 ? 'start' : 'middle', tx = i === 1 ? x + 14 : x;
           loop += F.text(tx, ly, en, { cls: 'lt', anchor: an }) + F.sub(tx, ly + 15, zh, { anchor: an });
           const a2 = (a + 40) * Math.PI / 180, a3 = (a + 80) * Math.PI / 180;
           loop += F.path(`M${cx + R * Math.cos(a2)},${cy + R * Math.sin(a2)} A${R},${R} 0 0 1 ${cx + R * Math.cos(a3)},${cy + R * Math.sin(a3)}`, { arrow: true, stroke: F.C.mag });
@@ -238,8 +264,8 @@ So the most “real” category for the mind is the middle one; the top of the t
         s += F.g(loop, { tip: 'c2_stigmergy' });
         return F.svg(760, 330, s, { label: 'stigmergy: termite pillars and the action-trace loop' });
       },
-      cap_en: 'Termites never discuss the plan. Each pellet changes the ground, and the changed ground tells the next termite what to do. Pillars and arches emerge from the loop.',
-      cap_zh: '白蚁从不讨论计划。每个泥球都改变了地面，而被改变的地面告诉下一只白蚁该做什么。柱子和拱门就从这个循环里“长”出来。',
+      cap_en: 'A live stigmergy model. Each termite picks where to drop its pellet only by smelling the traces already on the ground: fresh pellets glow (pheromone) and fade. Nobody plans the pillars — they emerge from the loop act → trace → stimulus.',
+      cap_zh: '一个可以运行的痕迹协作模型。每只白蚁只靠“闻”地上已有的痕迹决定把泥球放在哪：新泥球发光（信息素），然后慢慢褪去。没有谁规划柱子——它们从“行动 → 痕迹 → 刺激”的循环里长出来。',
       a_en: `[[c2_stigmergy]] (from Greek *stigma* “mark” + *ergon* “work”) was named by the French biologist Pierre-Paul Grassé in 1959 to explain how termites build huge, complex mounds without a plan or a leader. A termite drops a mud pellet laced with a [[c2_pheromone]]. That trace in the environment **stimulates** the next termite to drop its pellet in the same place; bigger piles attract more pellets, so pillars rise and arch together. **Definition:** indirect coordination through traces left in a shared environment — the work itself becomes the instruction for the next piece of work. No direct communication, no blueprint, no boss.
 
 **Human / digital examples:**
@@ -252,6 +278,96 @@ So the most “real” category for the mind is the middle one; the top of the t
 - **维基百科：**条目的当前状态（一个小作品、一个“需要引用”的标记）提示下一位编辑去补充；数以百万计的人无需交谈就协调起来。
 - **草坪上的“欲望之路”：**每个路人都把草踩平一点，这又引导下一个路人走同一条路。
 - **点赞、星标、热门榜**、GitHub issue 或共享的看板：人（以及 AI 智能体）回应的是别人留下的痕迹，而不是命令。`,
+      glow: {
+        name_en: 'Termite mound · traces build pillars', name_zh: '白蚁丘 · 痕迹长出柱子',
+        hint_en: 'Space runs / pauses the swarm · click a cell to drop a pellet yourself · R resets',
+        hint_zh: '空格开始/暂停蚁群 · 点格子亲手放泥球 · R 重置',
+        aria: 'Isometric termite mound simulation. Each new pellet glows with pheromone and attracts the next pellets, so pillars grow without a plan. Space runs or pauses, click a cell to add a pellet, R resets.',
+        mount(stage, api) {
+          const N = 8, CS = 20, M = 10, PH = 6, MAXH = 14;
+          const K = api.iso.frame([[0, 0, 0], [N * CS + 2 * M, 0, 0], [0, N * CS + 2 * M, 0], [N * CS + 2 * M, N * CS + 2 * M, 0], [0, 0, 6 + MAXH * PH + 10]], 0.06);
+          const { TOP, FRONT, box, boxc } = K;
+          const st = { h: [], f: [], run: false, n: 0, last: null };
+          const reset = () => { st.h = Array.from({ length: N }, () => Array(N).fill(0)); st.f = Array.from({ length: N }, () => Array(N).fill(0)); st.n = 0; st.last = null; };
+          reset();
+          const W = N * CS + 2 * M;
+          // pheromone field around a cell: its own fresh trace + half of its neighbours'
+          const field = (i, j) => {
+            let v = st.f[i][j] + 0.12 * Math.min(st.h[i][j], 4);
+            for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const a = i + di, b = j + dj; if (a >= 0 && b >= 0 && a < N && b < N) v += 0.45 * st.f[a][b]; }
+            return v;
+          };
+          function drop(i, j) {
+            if (st.h[i][j] >= MAXH) return false;
+            st.h[i][j]++; st.f[i][j] = 1; st.n++; st.last = [i, j];
+            return true;
+          }
+          function step() {
+            // decay every trace a little, then one termite chooses where to drop (weighted by the traces)
+            for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) st.f[i][j] *= 0.88;
+            const w = []; let tot = 0;
+            for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { const x = st.h[i][j] >= MAXH ? 0 : 0.12 + Math.pow(field(i, j), 1.6) * 2.2; w.push(x); tot += x; }
+            let r = Math.random() * tot, k = 0;
+            while (k < w.length - 1 && (r -= w[k]) > 0) k++;
+            drop(Math.floor(k / N), k % N);
+          }
+          function render() {
+            let s = box(0, 0, 0, W, W, 6, 10);
+            s += `<g transform="${TOP(0, 0, 6)}"><rect class="detail" x="6" y="6" width="${W - 12}" height="${W - 12}" rx="6"/>${api.iso.slits(M, M + N * CS, CS, M, M + N * CS, true)}${api.iso.slits(M, M + N * CS, CS, M, M + N * CS, false)}</g>`;
+            s += `<g transform="${FRONT(0, W, 6)}"><text class="label label-en" x="12" y="4.6" font-size="4">GROUND = SHARED MESSAGE BOARD</text><text class="label-zh" x="100" y="4.8" font-size="4.4">地面＝共享的留言板</text></g>`;
+            // back to front: smaller i+j first
+            const cells = []; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) cells.push([i, j]);
+            cells.sort((a, b) => (a[0] + a[1]) - (b[0] + b[1]));
+            for (const [i, j] of cells) {
+              const x = M + i * CS + 2, y = M + j * CS + 2, h = st.h[i][j], f = st.f[i][j];
+              s += `<g class="g24-cell" data-ij="${i},${j}"><g transform="${TOP(M + i * CS, M + j * CS, 6)}"><rect width="${CS}" height="${CS}" fill="transparent"/></g>`;
+              if (h > 0) {
+                if (h > 1) s += box(x, y, 6, CS - 4, CS - 4, (h - 1) * PH);
+                const z = 6 + (h - 1) * PH;
+                if (f > 0.12) s += `<g filter="url(#soft)" opacity="${(0.35 + 0.65 * f).toFixed(2)}">${boxc(x, y, z, CS - 4, CS - 4, PH, 0, 'g24-fresh')}</g>`;
+                else s += box(x, y, z, CS - 4, CS - 4, PH);
+                if (f > 0.55) { const c = K.P(x + (CS - 4) / 2, y + (CS - 4) / 2, z + PH + 2); s += `<ellipse class="halo hot" filter="url(#bloom)" cx="${c[0]}" cy="${c[1]}" rx="${14 * f}" ry="${8 * f}"/>`; }
+              }
+              s += `</g>`;
+            }
+            stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+            const pillars = st.h.flat().filter(v => v >= 6).length, tallest = Math.max(...st.h.flat());
+            api.say(`${st.run ? 'swarm on' : 'paused'} · ${st.n} pellets · tallest ${tallest} · pillars ${pillars}`, `${st.run ? '蚁群运行中' : '已暂停'} · ${st.n} 个泥球 · 最高 ${tallest} · 柱子 ${pillars}`);
+            api.power(st.run || st.n > 0);
+          }
+          stage.addEventListener('click', e => {
+            const c = e.target.closest('.g24-cell'); if (!c) return;
+            const [i, j] = c.dataset.ij.split(',').map(Number);
+            for (let a = 0; a < N; a++) for (let b = 0; b < N; b++) st.f[a][b] *= 0.9;
+            drop(i, j); render();
+          });
+          let acc = 0, lastT = 0;
+          api.loop(t => {
+            if (!st.run) { lastT = t; return; }
+            acc += t - lastT; lastT = t;
+            let changed = false;
+            while (acc > 70) { acc -= 70; step(); changed = true; if (st.n >= 260) { st.run = false; break; } }
+            if (changed) render();
+          });
+          const toggle = () => { st.run = !st.run; render(); };
+          render();
+          return {
+            key: e => {
+              if (e.key === ' ' || e.key === 'Enter') { toggle(); return true; }
+              if (e.key === 'r' || e.key === 'R') { reset(); st.run = false; render(); return true; }
+              return false;
+            },
+            demo: () => { reset(); st.run = true; render(); api.after(9000, () => { st.run = false; render(); }); }
+          };
+        },
+        css: `.glow-plate .g24-fresh.face { fill: var(--accent); stroke: var(--accent-hi); } .glow-plate .g24-fresh.face.top { fill: var(--accent-hi); } .glow-plate .g24-cell { cursor: crosshair; }`
+      },
+      short_en: `[[c2_stigmergy]] (Grassé, 1959, studying termites) is **indirect coordination through traces left in the environment**: a termite drops a pheromone-laced pellet, the mark **stimulates** the next termite to build in the same spot, and pillars and arches emerge **with no plan, leader or direct communication**. Digital example: Wikipedia — each edit (or “citation needed” tag) is a trace that prompts the next editor.`,
+      short_zh: `[[c2_stigmergy]]（格拉塞 1959 年研究白蚁时提出）是**通过留在环境中的痕迹进行的间接协调**：白蚁放下带信息素的泥球，这个痕迹**刺激**下一只白蚁在同一处继续建造，于是柱子和拱门在**没有计划、没有领导、没有直接沟通**的情况下出现。数字例子：维基百科——每次编辑（或“需要引用”标记）都是一个痕迹，引导下一位编辑。`,
+      basis_en: `Checked against the stigmergy literature: Grassé coined the term in 1959 for termites, as “stimulation of workers by the performance they have achieved”; it is now defined as indirect coordination through the environment, and Wikipedia is the classic human example. The course covered it under Wright’s Class 2 readings.`,
+      basis_zh: `已对照有关 stigmergy 的资料核对：格拉塞 1959 年为白蚁提出这个词，原意是“工蚁受到自己已完成工作的刺激”；现在定义为通过环境进行的间接协调，维基百科是最经典的人类例子。本课在第 2 课赖特的阅读中讲到。`,
+      links: [{ t: 'Stigmergy (Wikipedia)', u: 'https://en.wikipedia.org/wiki/Stigmergy' }],
+      rel: ['2.2', '5.1', '5.2'],
       hook_en: 'Stigmergy = the work leaves a mark, the mark directs the next work.',
       hook_zh: '痕迹协作＝工作留下痕迹，痕迹指挥下一步工作。',
       trap_en: 'Must include: termites/Grassé, coordination through the ENVIRONMENT, no direct communication or central plan — then a clear example that has the same loop.',
@@ -279,8 +395,8 @@ So the most “real” category for the mind is the middle one; the top of the t
         const cols = [
           ['P', 'PERSONALITY', '本体', ['jazz', 'opera', 'folk'], 0],
           ['M', 'MATTER', '物质', ['piano', 'voice', 'sax'], 0],
-          ['E', 'ENERGY', '动力', ['improvise', 'record', 'teach'], 0],
-          ['S', 'SPACE', '空间', ['New York', 'Paris', 'Tokyo'], 0],
+          ['E', 'ENERGY', '动力', ['improv', 'record', 'teach'], 0],
+          ['S', 'SPACE', '空间', ['NYC', 'Paris', 'Tokyo'], 0],
           ['T', 'TIME', '时间', ['1950s', '1990s', 'today'], 0]
         ];
         let p = F.text(560, 30, 'COMPOSED · PMEST', { cls: 'lt', color: F.C.mag }) + F.sub(560, 46, '从分面组合：任意维度可检索', { anchor: 'middle' });
@@ -288,20 +404,20 @@ So the most “real” category for the mind is the middle one; the top of the t
           const x = 410 + i * 66;
           p += F.text(x + 28, 74, k, { cls: 'big', color: F.C.mag }) + F.text(x + 28, 90, en, { cls: 'tiny', color: F.C.mute }) + F.sub(x + 28, 104, zh, { anchor: 'middle' });
           vals.forEach((v, j) => {
-            p += F.rect(x, 116 + j * 36, 58, 26, { text: v, rx: 13, fill: j === pick ? F.C.magF : '#fff', stroke: j === pick ? F.C.mag : F.C.hair || '#ccc', tcls: 'tiny', tcolor: j === pick ? F.C.mag : F.C.ink });
+            p += F.rect(x, 116 + j * 36, 58, 26, { text: v, rx: 13, fill: j === pick ? F.C.magF : '#fff', stroke: j === pick ? F.C.mag : F.C.mute, tcls: 'tiny', tcolor: j === pick ? F.C.mag : F.C.ink });
           });
           p += F.line(x + 29, 228, 523 + 37, 262, { stroke: F.C.mag, sw: 0.8 });
         });
-        p += F.rect(400, 262, 330, 36, { text: 'jazz : piano : improvise . NYC \' 1950s', fill: '#1b1b1a', tcolor: '#f3f2ee', tcls: 'mono', rx: 6 });
+        p += F.rect(400, 262, 330, 36, { text: 'Music ,jazz ;piano :improvise .NYC \'1950s', fill: F.C.ink, tcolor: F.C.paper, tcls: 'mono', rx: 6 });
         s += F.g(p, { tip: 'c2_pmest' });
         s += F.line(340, 60, 340, 300, { stroke: '#d9d6ce', dash: '3 4' });
         return F.svg(760, 320, s, { label: 'Dewey descent vs PMEST composition' });
       },
-      cap_en: 'Left: in Dewey you climb down one branch and the book gets one shelf address. Right: Ranganathan builds the address from five independent facets — pick one value per facet and join them with signs like the colon.',
-      cap_zh: '左：在杜威体系里你沿一条分支往下爬，书只得到一个书架地址。右：阮冈纳赞用五个独立的分面拼出地址——每个分面选一个值，再用冒号等符号连起来。',
+      cap_en: 'Left: in Dewey you climb down one branch and the book gets one shelf address. Right: Ranganathan builds the address from five independent facets — pick one value per facet and join them with each facet’s sign (, ; : . ’).',
+      cap_zh: '左：在杜威体系里你沿一条分支往下爬，书只得到一个书架地址。右：阮冈纳赞用五个独立的分面拼出地址——每个分面选一个值，再用各分面的符号（, ; : . ’）连起来。',
       a_en: `**Descended (enumerative)** — [[c2_dewey]] is a single top-down tree. Every possible subject is listed in advance; you find a book by descending 700 Arts → 780 Music → 781.65 Jazz, and it gets **one** place. Anything the designers didn’t foresee (or anything that is about two things at once) fits badly.
 
-**Composed (synthetic / faceted)** — [[c2_udc]] (Otlet) adds connecting signs such as “:” so two class numbers can be joined to express a relation. Ranganathan’s Colon Classification goes all the way: any subject is described by five fundamental [[c2_facet|facets]], [[c2_pmest]] — Personality, Matter, Energy, Space, Time — and the class number is **built** by combining a value from each (e.g. jazz : piano : improvisation . New York ’ 1950s).
+**Composed (synthetic / faceted)** — [[c2_udc]] (Otlet) adds connecting signs such as “:” so two class numbers can be joined to express a relation. Ranganathan’s Colon Classification goes all the way: any subject is described by five fundamental [[c2_facet|facets]], [[c2_pmest]] — Personality, Matter, Energy, Space, Time — and the class number is **built** by combining a value from each (e.g. Music ,jazz ;piano :improvisation .New York ’1950s — each facet has its own sign: “,” P, “;” M, “:” E, “.” S, “’” T).
 
 **What changes:**
 - From **one location** to **many dimensions**: the item can be reached through any facet, in any order.
@@ -311,7 +427,7 @@ So the most “real” category for the mind is the middle one; the top of the t
 **Why it matters for tagging and search:** tags *are* facets. A photo can be tagged *beach*, *2024*, *Mom*, *film* at the same time, and found by any of them. [[c2_faceted_search]] — the filter sidebar on Amazon, a library catalog or a photo app — is Ranganathan in software: combine size + color + price in any order. Folders force one place (descent); tags and filters let the user compose their own path, which is how most search works today.`,
       a_zh: `**“下降式”（列举式）**——[[c2_dewey]]是一棵单一的、自上而下的树。所有可能的主题都事先列好；你找书时沿着 700 艺术 → 780 音乐 → 781.65 爵士 往下走，书只得到**一个**位置。设计者没预料到的主题（或同时涉及两件事的主题）都很难放进去。
 
-**“组合式”（综合式 / 分面式）**——[[c2_udc]]（奥特莱）加入了“:”等连接符号，可以把两个类号连起来表达它们的关系。阮冈纳赞的冒号分类法走得更彻底：任何主题都用五个基本[[c2_facet|分面]]，即[[c2_pmest]]来描述——本体、物质、动力、空间、时间——类号是由每个分面各取一个值**组合出来的**（例如 爵士 : 钢琴 : 即兴 . 纽约 ’ 1950 年代）。
+**“组合式”（综合式 / 分面式）**——[[c2_udc]]（奥特莱）加入了“:”等连接符号，可以把两个类号连起来表达它们的关系。阮冈纳赞的冒号分类法走得更彻底：任何主题都用五个基本[[c2_facet|分面]]，即[[c2_pmest]]来描述——本体、物质、动力、空间、时间——类号是由每个分面各取一个值**组合出来的**（例如 音乐 ,爵士 ;钢琴 :即兴 .纽约 ’1950 年代——每个分面都有自己的符号：“,”本体、“;”物质、“:”动力、“.”空间、“’”时间）。
 
 **改变了什么：**
 - 从**一个位置**变成**多个维度**：可以从任何一个分面、以任何顺序找到它。
@@ -319,6 +435,12 @@ So the most “real” category for the mind is the middle one; the top of the t
 - 能表达主题之间的关系，而不只是位置。
 
 **为什么对标签和搜索重要：**标签*就是*分面。一张照片可以同时被标为*海滩*、*2024*、*妈妈*、*胶片*，用其中任何一个都能找到。[[c2_faceted_search]]——亚马逊、图书馆目录或相册里的筛选侧栏——就是软件中的阮冈纳赞：按尺寸 + 颜色 + 价格任意组合。文件夹强迫一个位置（下降式）；标签和筛选让用户自己组合路径，今天大多数搜索都是这样工作的。`,
+      short_en: `**Descended** (Dewey): one pre-listed top-down tree — you climb down 700 → 780 → 781.65 and each item gets **one place**. **Composed** (UDC, Ranganathan’s Colon Classification): the description is **built from independent facets** — [[c2_pmest]] = Personality, Matter, Energy, Space, Time — joined by signs, so new subjects and relations can be expressed. For tagging and search this means **one item, many access points**: tags are facets, and filter sidebars let you combine them in any order.`,
+      short_zh: `**下降式**（杜威）：一棵事先列好的自上而下的树——沿 700 → 780 → 781.65 往下走，每个东西只得到**一个位置**。**组合式**（UDC、阮冈纳赞的冒号分类法）：描述由**独立的分面组合而成**——[[c2_pmest]]＝本体、物质、动力、空间、时间——用符号连接，因此能表达新主题和主题间的关系。对标签和搜索而言就是**一个东西，多个入口**：标签就是分面，筛选栏让你以任意顺序组合它们。`,
+      basis_en: `Wright, *Informatica*, appendixes A–E (classification schemes). Checked the Colon Classification facts: PMEST, each facet marked by its own sign (, ; : . ’), and numbers synthesised from facets rather than chosen from a fixed list. UDC as Otlet & La Fontaine’s Dewey-based scheme with connecting signs is standard library-science history.`,
+      basis_zh: `赖特《Informatica》附录 A–E（分类体系）。已核对冒号分类法：PMEST、每个分面有自己的符号（, ; : . ’）、类号由分面组合而非从固定列表中挑选。UDC 是奥特莱与拉方丹在杜威基础上加入连接符号的体系，这是图书馆学的标准史实。`,
+      links: [{ t: 'Colon classification (Wikipedia)', u: 'https://en.wikipedia.org/wiki/Colon_classification' }, { t: 'List of Dewey Decimal classes', u: 'https://en.wikipedia.org/wiki/List_of_Dewey_Decimal_classes' }],
+      rel: ['2.1', '5.4', '3.3'],
       hook_en: 'Dewey: one shelf, found by climbing down. PMEST: an address built from facets, found from any side — that’s tags and filters.',
       hook_zh: '杜威：一个书架，靠往下爬找到。PMEST：由分面拼出地址，从任何一边都能找到——这就是标签和筛选。',
       trap_en: 'Spell out what PMEST stands for, and connect it explicitly to tags / faceted search (one item, many access points).',

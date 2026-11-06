@@ -76,21 +76,49 @@ defClass({
   qs: [
     {
       id: '4.1', t_en: 'Repository', t_zh: '仓库',
+      short_en: `A [[c4_repo]] is **a project folder tracked by version control — the files plus their complete history**. [[c4_git]] stores that history in a hidden \`.git\` folder as a chain of [[c4_commit|commits]] (snapshots with who, when and why), and a copy usually lives remotely on [[c4_github]] so others — and services like Vercel — can read it. The history is what makes it a repository rather than just a folder.`,
+      short_zh: `[[c4_repo]]是**受版本控制追踪的项目文件夹——文件加上它们的完整历史**。[[c4_git]]把历史存在隐藏的 \`.git\` 文件夹里，形成一串[[c4_commit|提交]]（记录了谁、何时、为什么的快照）；通常还有一份副本放在远程的[[c4_github]]上，让别人以及 Vercel 等服务读取。正是这份历史让它成为“仓库”，而不只是一个文件夹。`,
+      basis_en: `Follows the class GitHub + Vercel exercise and GitHub’s own description of a repository as a project’s files plus each file’s revision history. The Git book describes commits as snapshots stored in the .git directory.`,
+      basis_zh: `依据课上的 GitHub + Vercel 练习，以及 GitHub 自己对仓库的描述：项目的文件，加上每个文件的修订历史。Git 官方书把提交描述为存放在 .git 目录里的快照。`,
+      links: [{ t: 'GitHub Docs — About repositories', u: 'https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories' }],
+      rel: ['4.2', '4.3', '5.3'],
       q_en: 'What is a repository?', q_zh: '什么是仓库（repository）？',
       fig() {
-        const L = [
-          { label: 'Remote copy · GitHub', sub: '远程副本：GitHub（origin）', tip: 'c4_github', pattern: 'grid', density: 4, fill: '#fff' },
-          { label: 'Commit 3 · HEAD', sub: '提交 3：当前版本', tip: 'c4_commit', fill: F.C.magF, side: '#efd2e2', pattern: 'diag', pc: F.C.mag, density: 4 },
-          { label: 'Commit 2', sub: '提交 2：较早的快照', tip: 'c4_commit', fill: F.C.blueF, side: '#d5def6', pattern: 'hatch', pc: F.C.blue, density: 4 },
-          { label: 'Commit 1', sub: '提交 1：第一次保存', tip: 'c4_commit', fill: F.C.blueF, side: '#d5def6', pattern: 'hatch', pc: F.C.blue, density: 2 },
-          { label: '.git · the history', sub: '.git：隐藏的历史数据库', note: { en: 'The hidden folder where Git stores every snapshot. Delete it and the folder is just a folder again.', zh: 'Git 存放所有快照的隐藏文件夹。删掉它，这个文件夹就只是普通文件夹。' }, pattern: 'chips', density: 6 },
-          { label: 'Project folder · files', sub: '项目文件夹：你的文件', note: { en: 'index.html, style.css, images… the working files you edit.', zh: 'index.html、style.css、图片……你正在编辑的工作文件。' }, pattern: 'dots', density: 8 }
-        ];
-        const o = { alternate: true, gap: 2.7 };
-        return F.svg(760, F.stackH(L.length, o), F.stack(L, o), { label: 'exploded view of a git repository' });
+        const C = F.C; let s = '';
+        // file icon helper
+        const file = (x, y, name, o = {}) => F.path(`M${x},${y} h22 l8,8 v28 h-30 Z M${x + 22},${y} v8 h8`, { stroke: o.stroke || C.ink, fill: o.fill || '#fff', sw: 1 }) + F.text(x + 15, y + 50, name, { cls: 'tiny', color: o.tc || C.ink });
+        // row labels
+        const rowL = (y, en, zh, col) => F.text(20, y, en, { anchor: 'start', cls: 'lt', color: col || C.ink }) + F.sub(20, y + 16, zh);
+        // 1. working folder
+        s += rowL(52, 'WORKING FILES', '工作文件：你正在编辑的');
+        s += F.g(file(220, 26, 'index.html') + file(290, 26, 'style.css') + file(360, 26, 'photo.jpg') + file(430, 26, 'about.html', { stroke: C.mag, fill: C.magF, tc: C.mag }), { note: { en: 'The files you see and edit. On their own this is just a folder.', zh: '你能看到并编辑的文件。单独看，它只是一个普通文件夹。' } });
+        s += F.text(520, 50, '← edited, not yet committed', { anchor: 'start', cls: 'tiny', color: C.mag }) + F.sub(520, 66, '已修改，还没提交');
+        // 2. .git history timeline
+        s += rowL(150, '.git · HISTORY', '.git：隐藏的完整历史');
+        const xs = [220, 330, 440, 550];
+        const snap = (x, y, i, hi) => {
+          let g = F.rect(x, y, 80, 56, { fill: hi ? C.magF : '#fff', stroke: hi ? C.mag : C.ink, rx: 4 });
+          for (let k = 0; k < Math.min(4, i + 2); k++) g += `<rect x="${x + 8 + k * 17}" y="${y + 10}" width="12" height="15" fill="#fff" stroke="${hi ? C.mag : C.ink}" stroke-width=".8"/>`;
+          g += F.text(x + 8, y + 44, ['c1 · start', 'c2 · nav', 'c3 · photo', 'c4 · about'][i], { anchor: 'start', cls: 'tiny', color: hi ? C.mag : C.ink });
+          return g;
+        };
+        let tl = '';
+        xs.forEach((x, i) => { tl += snap(x, 124, i, i === 3); if (i) tl += F.arrow(x - 2, 152, xs[i - 1] + 82, 152); });
+        s += F.g(tl, { tip: 'c4_commit' });
+        s += F.text(590, 198, 'HEAD', { cls: 'tiny', color: C.mag }) + F.text(260, 198, 'first save', { cls: 'tiny', color: C.mute });
+        s += F.line(474, 84, 520, 122, { stroke: C.mag, dash: "3 3", arrow: true });
+        s += F.text(680, 152, 'commit', { cls: 'tiny', color: C.mag }) + F.sub(680, 168, '提交 = 存档', { anchor: 'middle' });
+        // 3. remote mirror
+        s += rowL(268, 'GITHUB · REMOTE', 'GitHub：远程的同一份历史');
+        let rm = F.rect(206, 236, 452, 70, { fill: '#fff', stroke: C.blue, rx: 8, dash: '4 3' });
+        xs.forEach((x, i) => { rm += F.rect(x + 6, 248, 68, 44, { fill: C.blueF, stroke: C.blue, rx: 3 }) + F.text(x + 40, 274, 'c' + (i + 1), { cls: 'tiny', color: C.blue }); if (i) rm += F.line(x + 4, 270, xs[i - 1] + 76, 270, { stroke: C.blue }); });
+        s += F.g(rm, { tip: 'c4_github' });
+        s += F.g(F.arrow(690, 186, 690, 246, { stroke: C.blue }) + F.text(700, 222, 'git push', { anchor: 'start', cls: 'tiny', color: C.blue }), { tip: 'c4_push' });
+        s += F.text(380, 328, 'REPOSITORY = FILES + ALL OF THIS HISTORY', { cls: 'lt', color: C.mag }) + F.sub(380, 344, '仓库 = 文件 + 这一整条历史', { anchor: 'middle' });
+        return F.svg(760, 356, s, { label: 'a repository: working files, commit history, and its GitHub copy' });
       },
-      cap_en: 'A repository is not just the files on top of the stack — it is the files plus every saved snapshot underneath, and (usually) a copy of all of it on GitHub.',
-      cap_zh: '仓库不只是最上面那层文件——它是文件，加上下面每一个保存过的快照，（通常）还有放在 GitHub 上的整套副本。',
+      cap_en: 'A repository is not just the files on top — it is the files plus every saved snapshot (commit) in the hidden .git folder, and usually a copy of the whole history on GitHub.',
+      cap_zh: '仓库不只是最上面的文件——它是文件，加上隐藏的 .git 文件夹里每一个保存过的快照（提交），通常还有放在 GitHub 上的整条历史副本。',
       a_en: `A [[c4_repo]] is a **project folder that is tracked by version control** — the files *plus their complete history*. [[c4_git]] stores that history in a hidden \`.git\` folder as a chain of [[c4_commit|commits]]: snapshots of every file at moments you chose to save, each with who, when and why.
 
 In our class the repository lived in two places:
@@ -112,6 +140,12 @@ Because the whole history is kept, a repo lets you see what changed, go back to 
     },
     {
       id: '4.2', t_en: 'Commit', t_zh: '提交',
+      short_en: `A [[c4_commit]] is **a saved snapshot of the repository at one moment, made on purpose**, the basic unit of Git history. It records the changes (shown as a [[c4_diff]]), a unique [[c4_hash]], the author and time, a **message** saying what and why, and a pointer to its **parent** commit — which links snapshots into a timeline you can compare against or return to. Committing saves locally; you [[c4_push]] to send commits to GitHub.`,
+      short_zh: `[[c4_commit]]是**仓库在某一时刻被有意保存下来的快照**，是 Git 历史的基本单位。它记录改动（以[[c4_diff]]显示）、唯一的[[c4_hash]]、作者和时间、说明改了什么和为什么的**提交信息**，以及指向**父提交**的指针——由此把快照连成一条可以对比、可以回退的时间线。提交是在本地保存；要[[c4_push]]才会发到 GitHub。`,
+      basis_en: `Follows the class Git workflow and the official Git documentation (git commit records changes to the repository with a message; each commit points to its parent).`,
+      basis_zh: `依据课上的 Git 流程和 Git 官方文档（git commit 把改动连同说明记录进仓库；每个提交都指向它的父提交）。`,
+      links: [{ t: 'Git — git-commit documentation', u: 'https://git-scm.com/docs/git-commit' }],
+      rel: ['4.1', '4.3', '5.2'],
       q_en: 'What is a commit?', q_zh: '什么是提交（commit）？',
       fig() {
         let s = '';
@@ -168,6 +202,102 @@ You choose what goes in (stage) and then commit; you can always return to or com
     },
     {
       id: '4.3', t_en: 'Deployment', t_zh: '部署',
+      short_en: `Because the repo is connected to Vercel, a push starts an automatic [[c4_deploy|deployment]]: **GitHub updates the branch → notifies Vercel ([[c4_webhook]]) → Vercel clones that commit → runs the [[c4_build]] (install + build command) → uploads the output to its servers/[[c4_cdn]] → assigns a URL** (a preview URL per push; the production domain for the main branch). If the build fails, nothing is published and the old version stays live.`,
+      short_zh: `因为仓库已连接 Vercel，一次推送会自动触发[[c4_deploy|部署]]：**GitHub 更新分支 → 通知 Vercel（[[c4_webhook]]）→ Vercel 拉取该提交 → 运行[[c4_build]]（安装依赖 + 构建命令）→ 把结果上传到它的服务器/[[c4_cdn]] → 分配网址**（每次推送有预览网址；main 分支对应正式域名）。如果构建失败，什么都不会发布，旧版本继续在线。`,
+      basis_en: `Follows the class GitHub → Vercel deploy and Vercel’s Git docs: connecting a repository makes every push create a deployment; pushes to the production branch (usually main) update the production domain, other branches get preview URLs. Vercel’s docs page could not be opened in this session; this matches the documented behaviour we used in class.`,
+      basis_zh: `依据课上的 GitHub → Vercel 部署练习和 Vercel 的 Git 文档：连接仓库后，每次推送都会生成一次部署；推送到生产分支（通常是 main）会更新正式域名，其他分支得到预览网址。本次未能打开 Vercel 文档页面；以上与课上使用时的行为一致。`,
+      links: [{ t: 'Vercel — Deploying Git repositories', u: 'https://vercel.com/docs/git' }],
+      rel: ['4.2', '1.3', '4.1'],
+      glow: {
+        name_en: 'Push → GitHub → Vercel → live URL', name_zh: '推送 → GitHub → Vercel → 上线网址',
+        hint_en: 'Click the laptop or press space to push · B or the switch breaks the build',
+        hint_zh: '点笔记本或按空格推送 · 按 B 或拨开关让构建失败',
+        aria: 'Isometric deploy pipeline: a laptop, a GitHub server, a Vercel build machine, edge servers and a browser. Press space to push a commit and watch each stage light up; press B to break the build.',
+        mount(stage, api) {
+          const K = api.iso.frame([[0, 0, 0], [500, 0, 0], [0, 185, 0], [500, 185, 0], [115, 60, 92], [406, 96, 75]], 0.04);
+          const { TOP, FRONT, box, boxc, path } = K;
+          const t = (x, y, txt, cls = 'label', fs = 6.5, extra = '') => `<text class="${cls}" x="${x}" y="${y}" font-size="${fs}" ${extra}>${api.iso.esc(txt)}</text>`;
+          const wire = (id, pts) => { const d = path(pts); return `<path class="wire-under" d="${d}"/><path id="g43-${id}" class="wire" d="${d}"/><path id="g43-${id}p" class="pulse" pathLength="1000" d="${d}"/>`; };
+          let s = box(0, 0, 0, 500, 185, 8, 14);
+          s += `<g transform="${TOP(0, 0, 8)}"><rect class="detail" x="9" y="9" width="482" height="167" rx="9"/></g>`;
+          // 1 laptop
+          s += `<g id="g43-lap" class="press">${box(18, 112, 8, 70, 50, 5, 3)}${box(22, 114, 13, 62, 4, 44)}</g>`;
+          s += `<g transform="${FRONT(22, 118, 57)}"><rect id="g43-lg" class="glass" x="4" y="4" width="54" height="34" rx="2"/>
+            <text id="g43-l1" class="scr" x="8" y="15" font-size="6.6">$ git commit</text><text id="g43-l2" class="scr" x="8" y="24" font-size="6.6">$ _</text></g>`;
+          s += `<g transform="${FRONT(18, 162, 13)}">${t(2, 14, '01 YOU · LAPTOP', 'label', 7.2)}${t(2, 23, '你：本地电脑', 'label-zh', 7.2)}</g>`;
+          s += wire('w1', [[88, 137, 9], [132, 137, 9], [132, 120, 9]]);
+          // 2 github
+          s += box(115, 60, 8, 60, 60, 78, 0);
+          s += `<g transform="${FRONT(115, 120, 86)}">${api.iso.slits(8, 52, 4, 8, 22)}
+            ${[0, 1, 2, 3, 4, 5].map(i => `<rect id="g43-c${i}" class="led" x="${8 + i * 7.5}" y="30" width="5" height="5" rx="1"/>`).join('')}
+            <text id="g43-gh" class="scr" x="8" y="48" font-size="7.2">main · c3</text>
+            ${t(8, 66, '02 GITHUB · REPO', 'label', 6.7)}${t(8, 74, '远程仓库', 'label-zh', 6.7)}</g>`;
+          s += wire('w2', [[175, 90, 9], [210, 90, 9]]);
+          // 3 vercel builder
+          s += box(210, 55, 8, 80, 70, 58, 0);
+          s += `<g transform="${FRONT(210, 125, 66)}"><rect id="g43-vg" class="glass" x="6" y="6" width="68" height="34" rx="2"/>
+            <text id="g43-v1" class="scr" x="10" y="16" font-size="6.4"></text><text id="g43-v2" class="scr" x="10" y="25" font-size="6.4"></text><text id="g43-v3" class="scr" x="10" y="34" font-size="6.4"></text>
+            ${t(6, 49, '03 VERCEL · BUILD', 'label', 6.4)}${t(6, 56, '拉取并构建', 'label-zh', 6.4)}</g>`;
+          // break switch
+          s += `<g id="g43-sw" class="press">${box(228, 142, 8, 30, 24, 7, 3)}</g>`;
+          s += `<g transform="${TOP(228, 142, 15)}">${t(5, 15, 'BREAK', 'label', 7.8)}</g>`;
+          s += `<g transform="${FRONT(262, 170, 9)}">${t(0, 7, 'BREAK BUILD · 让构建失败', 'label', 6.6)}</g>`;
+          s += wire('w3', [[290, 88, 9], [362, 88, 9]]);
+          // 4 cdn edge servers
+          const cdn = [[330, 48, 30], [330, 104, 24], [364, 72, 38]];
+          cdn.forEach(([x, y, h], i) => {
+            s += box(x, y, 8, 26, 26, h, 0);
+            s += `<g transform="${FRONT(x, y + 26, 8 + h)}"><rect id="g43-e${i}" class="led" x="5" y="5" width="16" height="4" rx="1"/>${api.iso.slits(5, 21, 3, 12, Math.min(h - 4, 22))}</g>`;
+          });
+          s += `<g transform="${FRONT(330, 130, 32)}">${t(0, 30, '04 DEPLOY · CDN', 'label', 6.7)}${t(0, 38, '分发到全球服务器', 'label-zh', 6.7)}</g>`;
+          s += wire('w4', [[390, 90, 9], [402, 96, 9]]);
+          // 5 browser
+          s += box(400, 78, 8, 82, 46, 5, 3) + box(406, 96, 13, 70, 5, 58);
+          s += `<g transform="${FRONT(406, 101, 71)}"><rect id="g43-bg" class="glass" x="4" y="4" width="62" height="44" rx="2"/>
+            <rect class="detail" x="8" y="8" width="54" height="6" rx="2"/><text class="label" x="10" y="12.6" font-size="5.0">your-site.vercel.app</text>
+            <text id="g43-b1" class="scr" x="10" y="27" font-size="8.4">v3</text><text id="g43-b2" class="scr" x="10" y="38" font-size="6.0">live</text></g>`;
+          s += `<g transform="${FRONT(400, 124, 13)}">${t(2, 14, '05 URL LIVE', 'label', 7.2)}${t(2, 23, '网址上线', 'label-zh', 7.2)}</g>`;
+          stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+          const $ = id => stage.querySelector('#g43-' + id);
+          const st = { n: 3, live: 3, broken: false, busy: false };
+          function leds() { for (let i = 0; i < 6; i++) $('c' + i).classList.toggle('hot', i < Math.min(6, st.n - 2)); $('gh').textContent = `main · c${st.n}`; }
+          function idle() { api.say(`live: v${st.live} · ${st.broken ? 'build will FAIL' : 'build ok'} · space to push`, `线上：v${st.live} · ${st.broken ? '构建会失败' : '构建正常'}`); }
+          function setV(a, b, c) { $('v1').textContent = a; $('v2').textContent = b; $('v3').textContent = c; }
+          function toggleBreak() { st.broken = !st.broken; $('sw').classList.toggle('latched', st.broken); api.flash($('sw'), 200); if (!st.busy) idle(); return true; }
+          function push() {
+            if (st.busy) return true; st.busy = true; st.n++;
+            ['w1', 'w2', 'w3', 'w4'].forEach(w => $(w).classList.remove('hot'));
+            $('vg').classList.remove('hot'); setV('', '', ''); ['e0', 'e1', 'e2'].forEach(e => $(e).classList.remove('hot'));
+            api.flash($('lap'), 300); $('lg').classList.add('hot'); $('l1').textContent = `$ commit c${st.n}`; $('l2').textContent = '$ git push';
+            api.replay($('w1p')); $('w1').classList.add('hot'); api.say('1 · push → GitHub', '1 · 推送到 GitHub');
+            api.after(600, () => { leds(); api.replay($('w2p')); $('w2').classList.add('hot'); api.say('2 · webhook tells Vercel', '2 · webhook 通知 Vercel'); });
+            api.after(1200, () => { $('vg').classList.add('hot'); setV(`clone c${st.n}`, '', ''); api.say('3 · Vercel clones the commit', '3 · Vercel 拉取该提交'); });
+            api.after(1700, () => { setV(`clone c${st.n}`, 'npm run build…', ''); api.say('3 · build', '3 · 构建中'); });
+            api.after(2400, () => {
+              if (st.broken) {
+                setV(`clone c${st.n}`, 'npm run build…', '✗ build failed');
+                api.say(`build failed · v${st.live} stays live`, `构建失败 · 旧版本 v${st.live} 继续在线`);
+                st.busy = false; return;
+              }
+              setV(`clone c${st.n}`, 'npm run build…', '✓ build ok'); api.replay($('w3p')); $('w3').classList.add('hot'); api.say('4 · upload to edge servers', '4 · 上传到边缘服务器');
+            });
+            api.after(2950, () => { if (st.broken && !st.busy) return; ['e0', 'e1', 'e2'].forEach((e, i) => api.after(i * 120, () => $(e).classList.add('hot'))); api.replay($('w4p')); $('w4').classList.add('hot'); });
+            api.after(3500, () => {
+              if (!st.busy) return;
+              st.live = st.n; $('bg').classList.add('hot'); $('b1').textContent = `v${st.live}`; $('b2').textContent = '✓ live';
+              api.power(true); st.busy = false; api.say(`5 · v${st.live} live at the URL`, `5 · v${st.live} 已在网址上线`);
+            });
+            return true;
+          }
+          $('lap').addEventListener('click', push);
+          $('sw').addEventListener('click', toggleBreak);
+          leds(); idle(); $('bg').classList.add('hot');
+          return {
+            key: e => { if (e.key === ' ' || e.key === 'Enter' || e.key === 'p' || e.key === 'P') return push(); if (e.key === 'b' || e.key === 'B') return toggleBreak(); return false; },
+            demo: () => api.after(300, push)
+          };
+        }
+      },
       q_en: 'What happens between a push to GitHub and a page appearing on Vercel?',
       q_zh: '从推送（push）到 GitHub，到页面出现在 Vercel 上，中间发生了什么？',
       fig() {
@@ -198,7 +328,7 @@ You choose what goes in (stage) and then commit; you can always return to or com
         s += F.text(115, 152, 'YOU · laptop', { cls: 'tiny', color: F.C.mute }) + F.sub(115, 167, '你在本地', { anchor: 'middle' });
         s += F.path('M115,140 L115,114', { stroke: F.C.mute, dash: '3 3' });
         s += F.text(470, 152, 'VERCEL · automatic, ~seconds', { cls: 'tiny', color: F.C.mute }) + F.sub(470, 167, 'Vercel 自动完成，约几秒到一分钟', { anchor: 'middle' });
-        s += F.path('M360,130 H720', { stroke: F.C.hair || '#ccc', dash: '2 4' });
+        s += F.path('M360,130 H720', { stroke: '#cfcbc2', dash: '2 4' });
         s += F.text(130, 290, 'build fails → no deploy; the old version stays live', { anchor: 'start', cls: 'tiny', color: F.C.red }) + F.sub(130, 306, '构建失败 → 不部署，旧版本继续在线');
         return F.svg(760, 320, s, { label: 'push to deploy pipeline' });
       },
@@ -229,6 +359,12 @@ So between “push” and “page” there is: notification → fetch → build 
     },
     {
       id: '4.4', t_en: 'System prompt', t_zh: '系统提示词',
+      short_en: `A [[c4_sysprompt]] is **the hidden set of instructions placed before the conversation** that sets the model’s role, tone, rules, format and tool use (the API’s \`system\` field). It is **written by the company that builds the product** (OpenAI, Anthropic, Google, Microsoft), not by you — you can only add your own layer with [[c4_custom]]. In the Four Prompts activity the **same prompt gave clearly different answers** (length, tone, caution, searching, citing) because each product wraps the model in a different system prompt, tools, memory and model: [[c4_product]].`,
+      short_zh: `[[c4_sysprompt]]是**放在对话之前、用户看不到的一组指令**，设定模型的角色、语气、规则、格式和工具使用（API 里的 \`system\` 字段）。它**由做产品的公司写**（OpenAI、Anthropic、Google、Microsoft），不是你——你只能通过[[c4_custom]]加上自己的一层。在“四个提示词”活动中，**同一个提示词得到了明显不同的回答**（长度、语气、谨慎程度、是否搜索、是否引用），因为每个产品都用不同的系统提示词、工具、记忆和模型把模型包了起来：[[c4_product]]。`,
+      basis_en: `The course glossary (from Anthropic’s documentation) defines the system prompt as the system field of a Messages API request — where a role, formatting rules and other persistent instructions are set. The observation part comes from the class’s Four Prompts activity.`,
+      basis_zh: `课程词汇表（引自 Anthropic 文档）把系统提示词定义为 Messages API 请求中的 system 字段——设定角色、格式规则和其他长期指令的地方。观察部分来自课上的“四个提示词”活动。`,
+      links: [{ t: 'Anthropic — Prompt engineering overview (course resource)', u: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview' }],
+      rel: ['4.5', '7.1', '6.2'],
       q_en: 'What is a system prompt, who wrote it, and what did you notice when the same prompt went to four products?',
       q_zh: '什么是系统提示词？它是谁写的？把同一个提示词发给四个产品时，你注意到了什么？',
       src: 'Four Prompts activity',
@@ -276,6 +412,12 @@ So between “push” and “page” there is: notification → fetch → build 
     },
     {
       id: '4.5', t_en: 'Prompt as specification', t_zh: '提示词即规格说明',
+      short_en: `We treated a prompt as writing because **a prompt is a [[c4_spec|specification]] of intent, not a magic trick** — in Karpathy’s [[c4_sw3]] the prompt *is* the program, so results depend on clear goals, context, audience, constraints and format, and tricks don’t transfer between models. A wrong answer becomes recognizable when **you define [[c4_success]] before generating** (Anthropic’s first step): then each output can be checked against them and you can say exactly where it failed; without them a fluent wrong answer looks as convincing as a right one.`,
+      short_zh: `我们把提示词当作写作，因为**提示词是一份意图的[[c4_spec|规格说明]]，而不是魔术技巧**——在卡帕西的[[c4_sw3]]里，提示词*就是*程序，所以结果取决于清楚的目标、背景、受众、约束和格式，而技巧换个模型就失效。错误答案之所以能被识别，是因为**在生成之前先定义了[[c4_success]]**（Anthropic 的第一步）：这样每个输出都能逐条对照，准确指出错在哪里；没有标准，一个流畅的错误答案看起来和正确答案一样可信。`,
+      basis_en: `Course glossary (Anthropic Prompt Engineering Overview): prompt engineering means improving a first-draft prompt against defined, empirically testable success criteria. Karpathy’s Software 3.0 (“prompts as programs”) and the spec-driven-development reading frame the prompt as a specification.`,
+      basis_zh: `课程词汇表（Anthropic 提示词工程概览）：提示词工程是对照事先定义、可实际检验的成功标准，改进初稿提示词。卡帕西的软件 3.0（“提示词即程序”）和规格驱动开发的读物把提示词定位为规格说明。`,
+      links: [{ t: 'Anthropic — Prompt engineering overview', u: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview' }, { t: 'Anthropic — Define success criteria', u: 'https://platform.claude.com/docs/en/test-and-evaluate/define-success' }],
+      rel: ['5.5', '4.4', '5.2'],
       q_en: 'Why did we treat a prompt as a kind of writing rather than a trick? What makes a wrong answer recognizable?',
       q_zh: '为什么我们把提示词当作一种写作，而不是一种技巧？是什么让错误答案能被识别出来？',
       fig() {

@@ -94,19 +94,43 @@ defClass({
       q_en: 'Describe surveillance capitalism.', q_zh: '描述“监视资本主义”。',
       src: 'Zuboff; AI and Humanity (AH)',
       fig() {
-        const L = [
-          { label: 'Behavioral futures market', sub: '行为期货市场 · 广告主下注', tip: 'behav_futures', pattern: 'grid', density: 5, fill: '#fff' },
-          { label: 'Prediction products', sub: '预测产品', tip: 'pred_products', bars: { color: F.C.mag, fill: F.C.magF, n: 3, rows: 2 } },
-          { label: 'Machine intelligence', sub: '机器智能 · 模型', note: { en: 'Algorithms that turn surplus into forecasts.', zh: '把剩余数据变成预测的算法。' }, pattern: 'chips', density: 6, pc: F.C.ink },
-          { label: 'Behavioral surplus', sub: '行为剩余 · 被拿走的部分', tip: 'behav_surplus', bars: { color: F.C.red, fill: F.C.redF, n: 3, rows: 3 } },
-          { label: 'Service improvement', sub: '用于改进服务的数据', note: { en: 'The small share of data actually used to make the product better for you.', zh: '真正用来让产品更好用的那一小部分数据。' }, bars: { color: F.C.blue, fill: F.C.blueF, n: 2, rows: 1 } },
-          { label: 'Human experience', sub: '人的经验 · 点击 位置 停留', note: { en: 'Clicks, searches, location, pauses, faces, voices — claimed as free raw material.', zh: '点击、搜索、位置、停顿、面孔、声音——被当作免费原材料。' }, pattern: 'dots', density: 9 }
-        ];
-        const o = { alternate: true, gap: 2.7 };
-        return F.svg(760, F.stackH(L.length, o), F.stack(L, o), { label: 'exploded view of surveillance capitalism' });
+        // Zuboff's cycle: experience → split → surplus → machine intelligence → prediction products → futures market → behavior modification → back to you
+        let s = '';
+        const node = (x, y, w, h, en, zh, o = {}) => F.rect(x, y, w, h, { rx: o.rx ?? 8, fill: o.fill || '#fff', stroke: o.stroke || F.C.ink, sw: o.sw, tip: o.tip, note: o.note }) +
+          F.text(x + w / 2, y + h / 2 - 7, en, { cls: 'lt', color: o.tc || F.C.ink }) + F.sub(x + w / 2, y + h / 2 + 12, zh, { anchor: 'middle' });
+        // you
+        s += F.circle(92, 176, 46, { fill: '#fff', note: { en: 'Clicks, searches, location, pauses, faces, voices — claimed as free raw material.', zh: '点击、搜索、位置、停顿、面孔、声音——被当作免费原材料。' } });
+        for (let i = 0; i < 26; i++) { const a = i * 2.4, r = 8 + (i % 5) * 6; s += `<circle cx="${(92 + r * Math.cos(a)).toFixed(1)}" cy="${(170 + r * 0.8 * Math.sin(a)).toFixed(1)}" r="1.2" fill="${F.C.ink}"/>`; }
+        s += F.text(92, 238, 'YOU · EXPERIENCE', { cls: 'lt' }) + F.sub(92, 254, '你 · 人的经验', { anchor: 'middle' });
+        // flow out of you
+        s += F.path('M138,176 L208,176', { arrow: true, sw: 1.4 });
+        // splitter
+        s += F.g(F.circle(222, 176, 10, { fill: F.C.ink }) + F.text(222, 204, 'DATA', { cls: 'tiny', color: F.C.mute }), { note: { en: 'Everything you do becomes data. The platform decides how to split it.', zh: '你做的一切都变成数据，由平台决定怎么分。' } });
+        // thin blue branch: service improvement, loops back to you
+        s += F.path('M226,166 C240,96 270,80 300,80', { stroke: F.C.blue, sw: 1.2, arrow: true });
+        s += node(300, 54, 170, 52, 'SERVICE IMPROVEMENT', '改进服务（返还给你）', { fill: F.C.blueF, stroke: F.C.blue, tc: F.C.blue, note: { en: 'The small share of data actually used to make the product better for you.', zh: '真正用来让产品更好用的那一小部分数据。' } });
+        s += F.path('M300,70 C200,30 110,70 96,124', { stroke: F.C.blue, sw: 1.2, arrow: true, dash: '4 3' });
+        // thick red branch: behavioral surplus
+        s += F.path('M232,182 L298,206', { stroke: F.C.red, sw: 4, arrow: false }) + F.path('M290,203 L300,207', { stroke: F.C.red, sw: 1.2, arrow: true });
+        s += node(302, 180, 150, 54, 'BEHAVIORAL SURPLUS', '行为剩余（被拿走）', { fill: F.C.redF, stroke: F.C.red, tc: F.C.red, sw: 1.6, tip: 'behav_surplus' });
+        s += F.path('M452,207 L486,207', { stroke: F.C.red, sw: 4 }) + F.path('M480,207 L492,207', { stroke: F.C.red, sw: 1.2, arrow: true });
+        // machine intelligence (chips)
+        let chips = ''; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) chips += `<rect x="${508 + i * 18}" y="${188 + j * 16}" width="9" height="9" fill="${F.C.ink}"/>`;
+        s += F.g(F.rect(494, 172, 88, 70, { rx: 6 }) + chips + F.text(538, 262, 'MACHINE', { cls: 'tiny' }) + F.text(538, 274, 'INTELLIGENCE', { cls: 'tiny' }) + F.sub(538, 290, '机器智能', { anchor: 'middle' }),
+          { note: { en: 'Algorithms refine the surplus into forecasts.', zh: '算法把剩余数据加工成预测。' } });
+        s += F.path('M582,207 L612,207', { stroke: F.C.mag, sw: 1.6, arrow: true });
+        s += node(614, 180, 136, 54, 'PREDICTION PRODUCTS', '预测产品', { fill: F.C.magF, stroke: F.C.mag, tc: F.C.mag, tip: 'pred_products' });
+        s += F.path('M682,234 L682,300', { stroke: F.C.mag, sw: 1.6, arrow: true });
+        s += node(560, 302, 190, 56, 'BEHAVIORAL FUTURES MARKET', '行为期货市场 · 广告主下注', { stroke: F.C.mag, tc: F.C.mag, tip: 'behav_futures' });
+        // behavior modification loop back to you
+        s += F.g(F.path('M560,330 C300,392 -14,330 44,192', { stroke: F.C.mag, sw: 1.6, arrow: true, dash: '6 4' }) +
+          F.text(330, 362, 'BEHAVIOR MODIFICATION · feeds, nudges, rewards', { cls: 'tiny', color: F.C.mag }) + F.sub(330, 378, '行为矫正：信息流、推送、奖励——让预测成真', { anchor: 'middle' }), { tip: 'behav_mod' });
+        // proportion note
+        s += F.text(600, 140, 'thin = what comes back · thick = what is taken', { cls: 'tiny', color: F.C.mute });
+        return F.svg(760, 392, s, { label: 'the surveillance capitalism cycle' });
       },
-      cap_en: 'Read bottom-up: experience is extracted, most of it becomes surplus, models turn it into predictions, predictions are sold. Only the thin blue layer comes back to you as a better service.',
-      cap_zh: '从下往上读：经验被提取，大部分变成“剩余”，模型把它变成预测，预测被卖掉。只有薄薄的蓝色那层以“更好的服务”的形式回到你手里。',
+      cap_en: 'Zuboff’s cycle. Your experience becomes data; a thin share comes back as a better service, the thick share is surplus that machine intelligence turns into predictions, which are sold — and then the system nudges you so the predictions come true.',
+      cap_zh: '祖博夫描述的循环。你的经验变成数据：细细一股以“更好的服务”回到你手里，粗的那股是“剩余”，被机器智能加工成预测并卖掉——然后系统再“推”你一把，让预测成真。',
       a_en: `[[surv_cap]] is Shoshana Zuboff’s term for an economic order that **claims human experience as free raw material** and turns it into behavioral data for hidden practices of extraction, prediction and sale. Our course reading (AI and Humanity) frames it simply: a business model built on relentless data collection to feed targeted advertising — corporate surveillance, distinct from state surveillance.
 
 How it works:
@@ -125,6 +149,11 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
 - 最确定的预测是被“促成”的预测，于是系统走向[[behav_mod]]：用信息流、推送和奖励把我们推向被预测的行为。
 
 结果是巨大的**知识不对称**：他们对我们了如指掌，我们对他们几乎一无所知。`,
+      short_en: `[[surv_cap]] is Shoshana Zuboff’s name for an economic order that **claims human experience as free raw material**. Platforms collect more than they need ([[behav_surplus]]), machine intelligence turns it into **prediction products**, and these are sold in **behavioral futures markets** to advertisers — then the system nudges behavior so the predictions come true ([[behav_mod]]). It creates a huge asymmetry: they know us, we don’t know them.`,
+      short_zh: `[[surv_cap]]是肖莎娜·祖博夫提出的概念，指一种**把人的经验当作免费原材料**的经济秩序。平台收集远超所需的数据（[[behav_surplus]]），机器智能把它加工成**预测产品**，在**行为期货市场**卖给广告主——系统再推动我们的行为，让预测成真（[[behav_mod]]）。结果是巨大的不对称：他们了解我们，我们却不了解他们。`,
+      basis_en: `Shoshana Zuboff, *The Age of Surveillance Capitalism* (2019) — the terms surplus, prediction products, futures markets and behavior modification are hers. The one-line definition (“a business model based on relentless data collection to feed targeted advertising… corporate surveillance distinct from state digital authoritarianism”) is from the course glossary, via the AI and Humanity reading.`,
+      basis_zh: `肖莎娜·祖博夫《监控资本主义时代》（2019）——行为剩余、预测产品、行为期货市场、行为矫正都是她的术语。一句话定义（“一种靠不间断收集数据来投放精准广告的商业模式……与国家数字威权不同的企业监视”）来自课程词汇表，出自《AI and Humanity》读物。`,
+      rel: ['1.2', '3.5', '7.5'],
       hook_en: 'You are not the product — you are the raw material. The product is the prediction of you.',
       hook_zh: '你不是产品，你是原材料；真正的产品是“对你的预测”。',
       trap_en: 'Don’t just say “companies collect data.” Name the chain: experience → behavioral surplus → prediction products → sold to advertisers → behavior modification.',
@@ -143,10 +172,10 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
           F.label(F.iso(0, 4.5, 0.25), 200, 'THE FIEF = PLATFORM') + F.sub(192, F.iso(0, 4.5, 0.25)[1] + 17, '封地 = 平台（亚马逊、应用商店）', { anchor: 'end' }),
           { note: { en: 'Not a market: one company owns the space where buying and selling happen.', zh: '不是市场：交易发生的整个空间由一家公司拥有。' } });
         // vassals (sellers)
-        const sellers = [[0.6, 0.6], [0.6, 5.2], [5.2, 0.6]];
+        const sellers = [[0.5, 5.0], [5.0, 0.5], [0.5, 2.6]];
         let v = '';
         sellers.forEach(([x, y]) => { v += F.plate({ x, y, z: 0.25, w: 1.2, d: 1.2, t: 0.5, fill: F.C.amberF, side: '#f3e3bf' }); });
-        s += F.g(v + F.label(F.iso(5.8, 0.6, 0.75), 580, 'VASSALS · SELLERS') + F.sub(588, F.iso(5.8, 0.6, 0.75)[1] + 17, '附庸 · 卖家：交云地租'), { tip: 'cloud_rent' });
+        s += F.g(v + F.label(F.iso(5.9, 0.5, 0.75), 580, 'VASSALS · SELLERS') + F.sub(588, F.iso(5.9, 0.5, 0.75)[1] + 17, '附庸 · 卖家：交云地租'), { tip: 'cloud_rent' });
         // serfs (users) dots
         let u = '';
         for (let i = 0; i < 14; i++) { const x = 2 + (i % 5) * 0.75, y = 2.2 + Math.floor(i / 5) * 1.3; const p = F.iso(x + (i % 2) * 0.3, y + 2.2 * 0.3, 0.25); u += `<circle cx="${p[0]}" cy="${p[1] - 5}" r="4.5" fill="${F.C.blueF}" stroke="${F.C.blue}" stroke-width="1"/><line x1="${p[0]}" y1="${p[1] - 1}" x2="${p[0]}" y2="${p[1] + 6}" stroke="${F.C.blue}"/>`; }
@@ -157,12 +186,17 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
         const c = F.iso(3.5, 3.5, cz);
         cc += F.label(F.iso(2.3, 3.8, cz + 0.55), 240, 'CLOUD CAPITAL · ALGORITHM') + F.sub(232, F.iso(2.3, 3.8, cz + 0.55)[1] + 17, '云资本 · 算法（云领主所有）', { anchor: 'end' });
         s += F.g(cc, { tip: 'cloud_capital' });
-        // rent & data arrows up
-        const a1 = F.iso(1.2, 1.2, 0.9), a2 = F.iso(5.8, 1.2, 0.9), a3 = F.iso(3.6, 4.6, 0.7);
-        s += F.path(`M${a1[0]},${a1[1]} Q${a1[0]},${c[1] - 10} ${c[0] - 30},${c[1] + 18}`, { stroke: F.C.amber, arrow: true, dash: '4 3' });
-        s += F.path(`M${a2[0]},${a2[1]} Q${a2[0]},${c[1] - 10} ${c[0] + 30},${c[1] + 18}`, { stroke: F.C.amber, arrow: true, dash: '4 3' });
-        s += F.path(`M${a3[0]},${a3[1] - 10} L${c[0]},${c[1] + 26}`, { stroke: F.C.blue, arrow: true, dash: '4 3' });
-        s += F.text(c[0] + 120, c[1] + 30, 'rent ↑  data ↑', { cls: 'tiny', color: F.C.mute });
+        // rent arrows (amber) from every seller, data arrow (blue) from users, all into the cloud capital above
+        let ar = '';
+        sellers.forEach(([x, y]) => {
+          const a = F.iso(x + 0.6, y + 0.6, 0.85);
+          ar += F.path(`M${a[0]},${a[1] - 6} Q${a[0]},${c[1] + 12} ${c[0] + (a[0] < c[0] ? -26 : 26)},${c[1] + 22}`, { stroke: F.C.amber, arrow: true, dash: '4 3' });
+        });
+        const ua = F.iso(3.4, 4.0, 0.6);
+        ar += F.path(`M${ua[0]},${ua[1] - 14} L${c[0]},${c[1] + 30}`, { stroke: F.C.blue, arrow: true, dash: '4 3' });
+        ar += F.line(560, 22, 590, 22, { stroke: F.C.amber, dash: '4 3' }) + F.text(598, 26, 'RENT ↑', { anchor: 'start', cls: 'tiny', color: F.C.amber }) + F.sub(650, 26, '地租');
+        ar += F.line(560, 42, 590, 42, { stroke: F.C.blue, dash: '4 3' }) + F.text(598, 46, 'DATA + UNPAID WORK ↑', { anchor: 'start', cls: 'tiny', color: F.C.blue }) + F.sub(598, 62, '数据与无偿劳动');
+        s += ar;
         return F.svg(760, 285, s, { label: 'technofeudalism diagram' });
       },
       cap_en: 'Capitalism needs a market where many sellers compete for profit. In the technofeudal picture the market sits inside one owner’s cloud: sellers pay rent, users work for free, and the algorithm sets the rules.',
@@ -179,6 +213,12 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
 - 所有者（“云领主”）赚的是**地租，而不是利润**；权力来自控制准入，而不是做出更好的产品。
 
 **与监视资本主义的关系：**两者出自同一个引擎——把我们的行为当作数据来提取。祖博夫把“提取 → 预测 → 行为矫正”的循环描述为资本主义的一种新的、“流氓式”的*形态*。瓦鲁法基斯更进一步：我们产生的数据和算法成为一种新型资本，强大到用“封地”取代了市场。监视是**机制**，技术封建主义是这个机制所搭建起来的**经济结构**。`,
+      short_en: `[[technofeudalism]] (Varoufakis) highlights that platforms are no longer markets but **fiefs**: owners of [[cloud_capital]] earn **rent, not profit** — sellers pay [[cloud_rent]] to exist inside Amazon or an app store, and users are [[cloud_serfs]] whose unpaid posting and scrolling keeps building that capital. Relation: both start from the same extraction of behavior as data — surveillance capitalism describes the **mechanism** (extract → predict → modify); technofeudalism names the **economic structure** it builds.`,
+      short_zh: `[[technofeudalism]]（瓦鲁法基斯）强调平台已不是市场，而是**封地**：[[cloud_capital]]的所有者赚的是**地租而不是利润**——卖家为了在亚马逊或应用商店里存在而交[[cloud_rent]]，用户是[[cloud_serfs]]，无偿发帖和刷屏不断建造这种资本。关系：两者都始于把行为当作数据来提取——监视资本主义描述的是**机制**（提取 → 预测 → 矫正），技术封建主义命名的是这一机制搭建出的**经济结构**。`,
+      basis_en: `Yanis Varoufakis, *Technofeudalism: What Killed Capitalism* (2023). Checked against an interview summary: cloud capital as a “mutation” of capital, rent replacing profit, capitalists becoming vassals and users working “in the direct (unremunerated) service of cloud capital”. Varoufakis does not frame it through Zuboff — the link between the two is the course’s comparison.`,
+      basis_zh: `雅尼斯·瓦鲁法基斯《技术封建主义：是什么杀死了资本主义》（2023）。已对照访谈摘要核对：云资本是资本的一种“变异”，地租取代利润，资本家沦为附庸，用户“直接（无偿）为云资本服务”。瓦鲁法基斯本人并不借用祖博夫的框架——两者的联系是本课的比较。`,
+      links: [{ t: 'The Age of Cloud Capital (Persuasion interview)', u: 'https://www.persuasion.community/p/the-age-of-cloud-capital' }],
+      rel: ['1.1', '3.5', '9.3'],
       hook_en: 'Surveillance capitalism = how they extract. Technofeudalism = what that extraction builds: fiefs that collect rent instead of markets that earn profit.',
       hook_zh: '监视资本主义讲“怎么提取”；技术封建主义讲“提取建成了什么”：收租的封地，而不是赚利润的市场。',
       trap_en: 'The key word is RENT (vs. profit). Mention cloud capital and that users’ unpaid activity builds it.',
@@ -236,7 +276,7 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
 5. **[[query]]** (\`?key1=value1&key2=value2\`) — extra key=value information the server uses to build the answer: a search term, a filter, a page, often a tracking ID.
 6. **[[fragment]]** (\`#section\`) — a place inside the page. It is **not sent to the server**; only the browser reads it.
 
-Together, scheme + domain + port are the “authority” — *who* you are talking to and *how*; path + query are *what* you are asking for.`,
+MDN calls domain + port together the **authority** — *who* you are talking to; the scheme says *how*; path + query say *what* you are asking for.`,
       a_zh: `MDN：[[url]]是网络上某个唯一资源的地址。以 \`https://www.example.com:443/path/to/file.html?key1=value1&key2=value2#section\` 为例：
 1. **[[scheme]]**（\`https\`）——用哪种协议通信。告诉浏览器（和服务器）这是加密的 HTTP。
 2. **[[domain]]**（\`www.example.com\`）——要访问哪台网页服务器。[[dns]]会把它翻译成 IP 地址。
@@ -245,7 +285,13 @@ Together, scheme + domain + port are the “authority” — *who* you are talki
 5. **[[query]]**（\`?key1=value1&key2=value2\`）——服务器用来生成回应的额外 键=值 信息：搜索词、筛选条件、页码，也常常是追踪编号。
 6. **[[fragment]]**（\`#section\`）——页面内的某个位置。它**不会发送给服务器**，只有浏览器会读取。
 
-协议 + 域名 + 端口合起来叫“authority（权威部分）”——说明你在和*谁*、以*什么方式*通话；路径 + 查询参数说明你要*什么*。`,
+MDN 把域名 + 端口合称为 **authority（权威部分）**——说明你在和*谁*通话；协议说明*怎么*通话；路径 + 查询参数说明你要*什么*。`,
+      short_en: `MDN: a [[url]] is the address of a unique resource on the Web. **Scheme** (https) — which protocol to use; **domain** (www.example.com) — which server; **port** (:443) — which gate on it, usually implicit; **path** (/path/file.html) — which resource; **query parameters** (?key=value&…) — extra information the server uses; **fragment** (#section) — a spot in the page that is **never sent to the server**.`,
+      short_zh: `MDN：[[url]]是网络上某个唯一资源的地址。**协议**（https）——用哪种协议；**域名**（www.example.com）——找哪台服务器；**端口**（:443）——服务器上的哪扇门，通常省略；**路径**（/path/file.html）——要哪个资源；**查询参数**（?key=value&…）——服务器使用的额外信息；**锚点**（#section）——页面内的位置，**从不发送给服务器**。`,
+      basis_en: `MDN Web Docs, “What Is a URL?” (the hint on the exam): scheme, authority (domain + port), path to resource, parameters and anchor, with the note that the anchor is never sent to the server. The example URL follows MDN’s own pattern.`,
+      basis_zh: `MDN Web Docs《What Is a URL?》（考卷提示）：协议、authority（域名 + 端口）、资源路径、参数、锚点，并说明锚点从不发送到服务器。示例网址沿用 MDN 自己的格式。`,
+      links: [{ t: 'MDN — What is a URL?', u: 'https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL' }],
+      rel: ['1.4', '1.1', '4.3'],
       hook_en: 'HOW (scheme) · WHO (domain) · WHICH DOOR (port) · WHAT (path) · WITH WHAT CONDITIONS (query) · WHERE ON THE PAGE (fragment — browser only).',
       hook_zh: '怎么说（协议）· 找谁（域名）· 哪扇门（端口）· 要什么（路径）· 附带什么条件（参数）· 页面哪里（锚点——只给浏览器）。',
       trap_en: 'The question says “what each one tells the server” — point out that the fragment tells the server nothing.',
@@ -285,8 +331,122 @@ Together, scheme + domain + port are the “authority” — *who* you are talki
         s += F.text(530, 300, 'side effects · not repeatable', { cls: 'tiny', color: F.C.mute }) + F.sub(530, 316, '有副作用 · 不可随意重复', { anchor: 'middle' });
         return F.svg(720, 330, s, { label: 'GET vs POST request anatomy' });
       },
-      cap_en: 'Same HTTP request, two places to put your data. GET writes it on the outside of the envelope (the URL); POST seals it inside (the body).',
-      cap_zh: '同样是 HTTP 请求，数据有两个放法。GET 把数据写在“信封外面”（URL 里）；POST 把它封进“信封里”（正文）。',
+      cap_en: 'Same HTTP request, two places to put your data. GET writes it on the outside like a postcard (the URL — see the address bar) and changes nothing on the server. POST seals it in an envelope (the body) and the server adds a row — send it twice and you get two accounts.',
+      cap_zh: '同样是 HTTP 请求，数据有两种放法。GET 像明信片，把数据写在外面（URL 里——看地址栏），服务器什么都不变。POST 把数据封进信封（正文），服务器会新增一行记录——发两次就有两个账户。',
+      glow: {
+        name_en: 'GET postcard vs POST envelope', name_zh: 'GET 明信片 vs POST 信封',
+        hint_en: 'Press G (GET) or P (POST), or click the keys · watch the address bar and the server’s rows',
+        hint_zh: '按 G（GET）或 P（POST），或点键盘上的键 · 看地址栏和服务器里的记录行',
+        aria: 'Isometric laptop and server. GET sends a postcard with the data written on the outside, in the URL, and changes nothing on the server. POST sends a sealed envelope whose data is in the body, and adds a row to the server database.',
+        mount(stage, api) {
+          const K = api.iso.frame([[0, 0, 0], [340, 0, 0], [0, 220, 0], [340, 220, 0], [236, 30, 120], [24, 110, 92]], 0.05);
+          const { TOP, FRONT, SIDE, box, boxc, D, P } = K;
+          const esc = api.iso.esc;
+          const route = [[134, 150, 9], [273, 150, 9], [273, 92, 9]];
+          const segL = []; let L = 0; for (let i = 1; i < route.length; i++) { const d = Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]); segL.push(d); L += d; }
+          const at = u => { let d = u * L; for (let i = 0; i < segL.length; i++) { if (d <= segL[i] || i === segL.length - 1) { const k = Math.min(1, d / segL[i]); const a = route[i], b = route[i + 1]; return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2]]; } d -= segL[i]; } };
+          const st = { rows: 2, url: 'example.com', q: '', page: ['Welcome.', 'Search or sign up.'], status: 'idle', anim: null, busy: false, posts: 0 };
+          function scene() {
+            let s = box(0, 0, 0, 340, 220, 8, 12);
+            s += `<g transform="${TOP(0, 0, 8)}"><rect class="detail" x="8" y="8" width="324" height="204" rx="8"/></g>`;
+            const wd = K.path(route);
+            s += `<path class="wire-under" d="${wd}"/><path id="g14-wire" class="wire" d="${wd}"/>`;
+            // server
+            s += box(236, 30, 8, 74, 60, 104);
+            s += `<g transform="${SIDE(310, 90, 112)}">${api.iso.slits(8, 52, 6, 10, 96, true)}</g>`;
+            s += `<g transform="${FRONT(236, 90, 112)}">
+              <rect id="g14-disp" class="glass" x="6" y="8" width="62" height="24" rx="2"/>
+              <text id="g14-st1" class="scr" x="10" y="18" font-size="5">idle</text>
+              <text id="g14-st2" class="scr" x="10" y="27" font-size="4.4"></text>
+              <text class="label" x="6" y="44" font-size="4.6">DATABASE · ACCOUNTS</text>
+              ${Array.from({ length: 6 }, (_, i) => `<rect class="led g14-row" data-i="${i}" x="6" y="${49 + i * 7}" width="62" height="4.5" rx="1"/>`).join('')}
+              <text class="label" x="6" y="98" font-size="4.6">SERVER</text></g>`;
+            // laptop
+            s += box(24, 110, 8, 110, 80, 6, 4);
+            s += `<g transform="${TOP(24, 110, 14)}">${api.iso.slits(8, 100, 7, 8, 26, true)}</g>`;
+            s += `<g id="g14-kget" class="press">${box(36, 142, 14, 38, 24, 5, 3)}<g transform="${TOP(36, 142, 19)}"><text class="label-hi" x="9" y="15" font-size="7">GET</text></g></g>`;
+            s += `<g id="g14-kpost" class="press">${box(84, 142, 14, 38, 24, 5, 3)}<g transform="${TOP(84, 142, 19)}"><text class="label-hi" x="6" y="15" font-size="7">POST</text></g></g>`;
+            s += box(24, 110, 14, 110, 5, 72);
+            s += `<g transform="${FRONT(24, 115, 86)}">
+              <rect id="g14-glass" class="glass hot" x="5" y="5" width="100" height="62" rx="2"/>
+              <rect class="face recess" x="9" y="9" width="92" height="10" rx="2"/>
+              <text id="g14-url" x="12" y="16" font-size="5"></text>
+              <text id="g14-p1" class="scr" x="12" y="32" font-size="5"></text>
+              <text id="g14-p2" class="scr" x="12" y="41" font-size="4.4" opacity=".8"></text>
+              <text id="g14-p3" class="label" x="12" y="60" font-size="4"></text></g>`;
+            s += `<g id="g14-pk"></g>`;
+            stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+          }
+          scene();
+          const $ = id => stage.querySelector('#' + id);
+          function packetSVG(kind) {
+            const [x, y, z] = route[0], w = 26, d = 18;
+            if (kind === 'get') return boxc(x, y - d / 2, z, w, d, 1.5, 0, 'g14-card') + `<g transform="${TOP(x, y - d / 2, z + 1.5)}"><text class="scr" x="2.5" y="8" font-size="4.6">?q=jazz</text><text class="scr" x="2.5" y="14" font-size="3.6">in the URL</text></g>`;
+            if (kind === 'post') return boxc(x, y - d / 2, z, w, d, 8, 0, 'g14-env') + `<g transform="${TOP(x, y - d / 2, z + 8)}"><path class="detail" d="M1 1 L13 9 L25 1"/><text class="label" x="7" y="15" font-size="3.6">sealed</text></g>`;
+            return boxc(x, y - d / 2, z, w, d, 1.5, 0, 'g14-card') + `<g transform="${TOP(x, y - d / 2, z + 1.5)}"><text class="scr" x="3" y="11" font-size="5">${kind}</text></g>`;
+          }
+          function render() {
+            const hasQ = !!st.q;
+            $('g14-url').innerHTML = `<tspan class="label-hi">${esc(st.url)}</tspan>` + (hasQ ? `<tspan class="scr-accent">${esc(st.q)}</tspan>` : '');
+            $('g14-p1').textContent = st.page[0] || ''; $('g14-p2').textContent = st.page[1] || '';
+            $('g14-p3').textContent = hasQ ? 'data visible in address bar · history · logs' : (st.url.endsWith('/signup') ? 'data travelled in the body, not the URL' : '');
+            stage.querySelectorAll('.g14-row').forEach(r => r.classList.toggle('hot', +r.dataset.i < st.rows));
+          }
+          function send(kind) {
+            if (st.busy) return;
+            st.busy = true; api.power(true);
+            api.flash($(kind === 'get' ? 'g14-kget' : 'g14-kpost'), 260);
+            if (kind === 'get') { st.url = 'example.com/search'; st.q = '?q=jazz+piano'; st.page = ['loading…', '']; }
+            else { st.url = 'example.com/signup'; st.q = ''; st.page = ['sending form…', '']; }
+            render(); $('g14-wire').classList.add('hot');
+            $('g14-pk').innerHTML = packetSVG(kind);
+            st.anim = { kind, t0: performance.now(), dir: 1 };
+            api.say(kind === 'get' ? 'GET → data rides in the URL' : 'POST → data sealed in the body', kind === 'get' ? 'GET → 数据写在网址上' : 'POST → 数据封在正文里');
+          }
+          function arrive(kind) {
+            const disp = $('g14-disp'); disp.classList.add('hot');
+            if (kind === 'get') { $('g14-st1').textContent = 'GET /search'; $('g14-st2').textContent = '200 OK · nothing changed'; }
+            else {
+              st.rows = Math.min(6, st.rows + 1); st.posts++;
+              $('g14-st1').textContent = 'POST /signup'; $('g14-st2').textContent = st.posts > 1 ? '201 · ANOTHER account!' : '201 Created · +1 row';
+              const r = stage.querySelector(`.g14-row[data-i="${st.rows - 1}"]`); if (r) { r.setAttribute('filter', 'url(#glow)'); api.after(700, () => r.removeAttribute('filter')); }
+            }
+            render();
+            $('g14-pk').innerHTML = packetSVG(kind === 'get' ? '200 OK' : '201');
+            st.anim = { kind, t0: performance.now(), dir: -1 };
+          }
+          function back(kind) {
+            $('g14-pk').innerHTML = ''; $('g14-wire').classList.remove('hot'); st.busy = false; st.anim = null;
+            if (kind === 'get') { st.page = ['Results: jazz piano', '12 videos · 4 lessons']; api.say(`GET done · server unchanged · accounts ${st.rows}`, `GET 完成 · 服务器没变 · 账户 ${st.rows}`); }
+            else { st.page = [st.posts > 1 ? 'Welcome again?!' : 'Welcome, Ying!', st.posts > 1 ? 'resubmitted = duplicate' : 'account created']; api.say(`POST done · server changed · accounts ${st.rows}${st.posts > 1 ? ' · not idempotent' : ''}`, `POST 完成 · 服务器被改变 · 账户 ${st.rows}${st.posts > 1 ? ' · 重复提交' : ''}`); }
+            render();
+          }
+          api.loop(t => {
+            const A = st.anim; if (!A) return;
+            const u = Math.min(1, (t - A.t0) / 1000);
+            const e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+            const p = at(A.dir > 0 ? e : 1 - e), p0 = route[0];
+            const dd = D(p[0] - p0[0], p[1] - p0[1], 0);
+            $('g14-pk').setAttribute('transform', `translate(${dd[0].toFixed(2)} ${dd[1].toFixed(2)})`);
+            if (u >= 1) { const k = A.kind; st.anim = null; A.dir > 0 ? api.after(250, () => arrive(k)) : back(k); }
+          });
+          $('g14-kget').addEventListener('click', () => send('get'));
+          $('g14-kpost').addEventListener('click', () => send('post'));
+          render(); api.say('press G or P', '按 G 或 P');
+          return {
+            key: e => {
+              const k = e.key.toLowerCase();
+              if (k === 'g' || k === '1') { send('get'); return true; }
+              if (k === 'p' || k === '2') { send('post'); return true; }
+              return false;
+            },
+            demo: () => { api.after(200, () => send('get')); api.after(3400, () => send('post')); }
+          };
+        },
+        css: `.glow-plate .g14-card.face { fill: var(--glass-on); stroke: var(--accent); } .glow-plate .g14-card.face.top { fill: var(--glass-on); }
+              .glow-plate .g14-env.face { fill: var(--accent); stroke: var(--accent-hi); } .glow-plate .g14-env.face.top { fill: var(--accent-hi); }
+              .glow-plate #g14-pk { filter: url(#soft); }`
+      },
       a_en: `Both are [[http]] request methods — the verb the browser sends with a URL.
 - **[[get]]** asks the server to *send back* a resource. MDN: it should only retrieve data. Any data goes in the URL’s query string, so it is visible, bookmarkable, cached and saved in history. It is [[idempotent]]: doing it twice changes nothing.
 - **[[post]]** *sends data to* the server to be processed. MDN: it often causes a change of state or side effects (an account is created, an order is placed). The data travels in the [[req_body]], not in the URL.
@@ -301,6 +461,12 @@ Note: POST is not encryption. It only hides data from the URL; HTTPS is what pro
 **填写表单时：**大多数表单——登录、注册、结账、发表评论——浏览器发送的是 **POST**，因为你在提交会改变服务器内容的数据。（由表单的 \`method\` 属性决定；简单的搜索框用的是 GET——所以地址栏里会出现 \`?q=…\`。）
 
 注意：POST 不等于加密。它只是让数据不出现在 URL 里；真正在传输中保护数据的是 HTTPS。`,
+      short_en: `Both are HTTP request methods. **[[get]]** asks the server to **send back** a resource and should only retrieve data — any data rides **in the URL** (visible, cached, bookmarkable, repeatable). **[[post]]** **submits data** to be processed, often **changing the server’s state** — the data travels in the **request body**. When you fill in a form (log in, sign up, check out), it is usually **POST**; simple search boxes use GET, which is why “?q=” shows in the address bar.`,
+      short_zh: `两者都是 HTTP 请求方法。**[[get]]**请服务器**把资源送回来**，只应用于获取数据——附带的数据放**在 URL 里**（可见、可缓存、可收藏、可重复）。**[[post]]**把**数据提交**给服务器处理，常常**改变服务器状态**——数据放在**请求正文**里。填写表单（登录、注册、结账）时通常是 **POST**；简单的搜索框用 GET，所以地址栏里会出现“?q=”。`,
+      basis_en: `MDN Web Docs, “HTTP request methods” (the exam hint): GET requests a representation of a resource and should only retrieve data; POST submits an entity, often causing a change in state or side effects on the server. That an HTML form’s method attribute decides (GET by default) is standard HTML behaviour.`,
+      basis_zh: `MDN Web Docs《HTTP request methods》（考卷提示）：GET 请求某个资源的表示，只应获取数据；POST 提交一个实体，常导致服务器状态改变或副作用。HTML 表单由 method 属性决定（默认 GET）是标准 HTML 行为。`,
+      links: [{ t: 'MDN — What is a URL? / HTTP methods (course link)', u: 'https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL' }],
+      rel: ['1.3', '6.5', '1.1'],
       hook_en: 'GET = “give me.” POST = “take this.” Forms usually POST.',
       hook_zh: 'GET =“给我”；POST =“收下这个”。表单通常是 POST。',
       trap_en: 'Don’t say “POST is secure.” Say where the data lives (URL vs. body) and whether the request changes the server.',
@@ -338,8 +504,104 @@ Note: POST is not encryption. It only hides data from the URL; HTTPS is what pro
         s += F.text(548 + 85, 310, 'EXPLAINSHELL-STYLE BREAKDOWN', { cls: 'tiny', color: F.C.mute });
         return F.svg(760, Math.max(F.stackH(L.length, o), 330), s, { label: 'shell layers and command anatomy' });
       },
-      cap_en: 'Left: the GUI is the top layer of metaphors; the terminal is a window onto the shell, which talks to programs and the OS. Right: the kind of breakdown Explainshell gives you for one command.',
-      cap_zh: '左：GUI 是最上面那层“隐喻”；终端是通向 shell 的窗口，shell 再去调用程序和操作系统。右：Explainshell 对一条命令所做的那种拆解。',
+      cap_en: 'Type a command and follow it: the terminal only displays text; the shell interprets it (command · flags · argument), asks the OS kernel, which reads the disk, and the output comes back as text. Switch to the GUI view and the same folder shows 3 icons — the hidden files and the command itself disappear.',
+      cap_zh: '输入一条命令，跟着它走：终端只负责显示文字；shell 解释它（命令 · 选项 · 参数），交给操作系统内核，内核去读磁盘，结果再以文字返回。切换到图形界面，同一个文件夹只剩 3 个图标——隐藏文件和命令本身都看不见了。',
+      glow: {
+        name_en: 'Terminal → shell → OS → files', name_zh: '终端 → shell → 操作系统 → 文件',
+        hint_en: 'Click the screen and type (try ls, ls -la, pwd, whoami, ps, help) · Enter runs · Tab switches to the GUI view',
+        hint_zh: '点屏幕后输入（试试 ls、ls -la、pwd、whoami、ps、help）· 回车执行 · Tab 切换到图形界面',
+        aria: 'Isometric computer. Type a shell command into the terminal and press Enter: the command travels to the shell, the kernel and the disk, and real-looking output returns. Tab switches to a GUI view that hides the hidden files.',
+        mount(stage, api) {
+          const K = api.iso.frame([[0, 0, 0], [330, 0, 0], [0, 230, 0], [330, 230, 0], [20, 128, 136], [210, 40, 126]], 0.05);
+          const { TOP, FRONT, SIDE, box, path } = K;
+          const esc = api.iso.esc;
+          const st = { buf: '', lines: ['Last login: Fri Nov 6 on ttys001', 'skyx@mac ~ %'], gui: false, runs: 0, busy: false };
+          const FILES = ['Documents', 'Music', 'Midterm'], HIDDEN = ['.git', '.ssh', '.zshrc'];
+          // tower: DISK (bottom) · KERNEL · SHELL (top)
+          const T = [['g15-disk', 8, 'DISK · FILES', '磁盘 · 文件'], ['g15-kern', 42, 'OS · KERNEL', '操作系统内核'], ['g15-shell', 76, 'SHELL · zsh', 'Shell 解释器']];
+          let s = box(0, 0, 0, 330, 230, 8, 12);
+          s += `<g transform="${TOP(0, 0, 8)}"><rect class="detail" x="8" y="8" width="314" height="214" rx="8"/></g>`;
+          T.forEach(([id, z, en, zh]) => {
+            s += `<g id="${id}" class="press">${box(210, 40, z, 90, 64, 30)}</g>`;
+            s += `<g transform="${FRONT(210, 104, z + 30)}"><text class="label label-en" x="8" y="13" font-size="6">${en}</text><text class="label-zh" x="8" y="13" font-size="6.4">${zh}</text><circle id="${id}-led" class="led" cx="80" cy="11" r="2.4"/>${api.iso.slits(8, 70, 4, 19, 25, true)}</g>`;
+          });
+          const wire = path([[160, 132, 74], [186, 132, 74], [210, 104, 94]]);
+          s += `<path class="wire-under" d="${wire}"/><path id="g15-wire" class="wire" d="${wire}"/><path id="g15-pulse" class="pulse" pathLength="1000" d="${wire}"/>`;
+          // monitor
+          s += box(66, 120, 8, 52, 34, 4, 3) + box(88, 128, 12, 8, 6, 24);
+          s += box(20, 128, 34, 140, 8, 100);
+          s += `<g transform="${FRONT(20, 136, 134)}">
+            <rect id="g15-glass" class="glass hot" x="5" y="5" width="130" height="88" rx="3"/>
+            <g id="g15-screen"></g></g>`;
+          // keyboard
+          s += `<g id="g15-kb" class="press">${box(24, 168, 8, 132, 44, 5, 3)}</g>`;
+          s += `<g transform="${TOP(24, 168, 13)}">${api.iso.slits(8, 124, 8, 6, 38, true)}${api.iso.slits(6, 38, 8, 8, 124, false)}</g>`;
+          // GUI toggle button
+          s += `<g id="g15-gui" class="press">${box(240, 160, 8, 56, 32, 6, 4)}<g transform="${TOP(240, 160, 14)}"><text class="label-hi" x="9" y="19" font-size="8">GUI ⇄</text></g></g>`;
+          stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+          const $ = id => stage.querySelector('#' + id);
+          function screen() {
+            let g = '';
+            if (st.gui) {
+              const icons = FILES.map((f, i) => `<g transform="translate(${14 + i * 40} 18)"><path class="face" d="M0 4 h10 l3 3 h17 v18 h-30z"/><text class="label" x="15" y="34" font-size="5" text-anchor="middle">${f}</text></g>`).join('');
+              g = `<rect class="face recess" x="9" y="9" width="122" height="7" rx="1.5"/><text class="label" x="12" y="14.5" font-size="4.4">Finder — skyx</text>${icons}
+                   <text class="scr" x="12" y="84" font-size="4.4">3 items · hidden files: not shown</text>`;
+            } else {
+              const shown = st.lines.slice(-9);
+              g = shown.map((l, i) => `<text class="${l.startsWith('skyx@') ? 'label-hi' : 'scr'}" x="10" y="${15 + i * 8.2}" font-size="5.2">${esc(l.slice(0, 44))}</text>`).join('');
+              g += `<text class="scr" x="10" y="${15 + shown.length * 8.2}" font-size="5.2">$ ${esc(st.buf.slice(-38))}<tspan class="blink">▍</tspan></text>`;
+            }
+            $('g15-screen').innerHTML = g;
+          }
+          function out(cmd) {
+            const [c, ...rest] = cmd.trim().split(/\s+/); const flags = rest.filter(r => r.startsWith('-')).join(' '), args = rest.filter(r => !r.startsWith('-')).join(' ');
+            let o, disk = false;
+            if (!c) o = [];
+            else if (c === 'ls') { disk = true; o = /a/.test(flags) ? ['.  ..  ' + HIDDEN.join('  '), FILES.join('  ')] : [FILES.join('  ')]; }
+            else if (c === 'pwd') o = ['/Users/skyx'];
+            else if (c === 'whoami') o = ['skyx'];
+            else if (c === 'ps') o = ['PID  812 zsh', 'PID  913 ollama serve'];
+            else if (c === 'echo') o = [args];
+            else if (c === 'date') o = ['Fri Nov  6 09:41:00 EST 2026'];
+            else if (c === 'cat') { disk = true; o = args ? ['midterm due Fri 5pm'] : ['cat: missing file']; }
+            else if (c === 'help') o = ['try: ls · ls -la · pwd · whoami · ps · date'];
+            else if (c === 'clear') o = null;
+            else o = [`zsh: command not found: ${c}`];
+            return { c, flags, args, o, disk };
+          }
+          function run() {
+            if (st.busy || st.gui) return;
+            const cmd = st.buf; const r = out(cmd);
+            st.lines.push('skyx@mac ~ % ' + cmd); st.buf = ''; st.busy = true; st.runs++; screen();
+            api.power(true); api.replay($('g15-pulse')); $('g15-wire').classList.add('hot');
+            const seq = ['g15-shell', 'g15-kern'].concat(r.disk ? ['g15-disk'] : []);
+            seq.forEach((id, i) => api.after(380 + i * 230, () => { api.flash($(id), 420); $(id + '-led').classList.add('hot'); api.after(600, () => $(id + '-led').classList.remove('hot')); }));
+            api.after(400 + seq.length * 230 + 120, () => {
+              if (r.o === null) st.lines = ['skyx@mac ~ %']; else st.lines.push(...r.o);
+              $('g15-wire').classList.remove('hot'); st.busy = false; screen();
+              api.say(r.c ? `cmd ${r.c} · flags ${r.flags || '—'} · arg ${r.args || '—'}` : 'empty line', r.c ? `命令 ${r.c} · 选项 ${r.flags || '无'} · 参数 ${r.args || '无'}` : '空命令');
+            });
+          }
+          function typeKey(ch) { if (st.gui) return; st.buf += ch; api.flash($('g15-kb'), 90); screen(); }
+          function toggleGui() { st.gui = !st.gui; api.flash($('g15-gui'), 200); screen(); api.say(st.gui ? 'GUI · 3 items · hidden files and commands not shown' : 'terminal · every command visible', st.gui ? '图形界面 · 3 个项目 · 隐藏文件和命令都看不到' : '终端 · 每条命令都看得见'); }
+          $('g15-gui').addEventListener('click', toggleGui);
+          screen(); api.say('click the screen, then type', '点屏幕后输入');
+          return {
+            key: e => {
+              if (e.key === 'Tab') { toggleGui(); return true; }
+              if (e.key === 'Enter') { run(); return true; }
+              if (e.key === 'Backspace') { st.buf = st.buf.slice(0, -1); screen(); return true; }
+              if (e.key.length === 1) { typeKey(e.key); return true; }
+              return false;
+            },
+            demo: () => {
+              const cmd = 'ls -la';
+              [...cmd].forEach((ch, i) => api.after(250 + i * 140, () => typeKey(ch)));
+              api.after(250 + cmd.length * 140 + 250, run);
+            }
+          };
+        }
+      },
       a_en: `A [[shell]] is a program that takes the text commands you type, interprets them, and asks the operating system to run other programs with the options and inputs you give (bash and zsh are shells). The [[terminal]] is just the window that displays the shell’s input and output. The Missing Semester calls the shell a textual interface that lets you run programs, pass them arguments, and **combine and automate** them.
 
 What the terminal shows that the [[gui]] hides:
@@ -358,6 +620,12 @@ Neal Stephenson’s point (*In the Beginning… Was the Command Line*): a GUI is
 - **组合能力**：用[[pipe]]和脚本把工具串起来，这在 GUI 里几乎做不到。
 
 尼尔·斯蒂芬森（《In the Beginning… Was the Command Line》）的观点：GUI 是一层**隐喻**（桌面、文件夹、废纸篓），让电脑变得好用，但同时也在“中介”和隐藏真实发生的事；命令行更接近电脑真正执行的文字。便利是有代价的：我们不再看见、也不再掌控那台机器。`,
+      short_en: `A [[shell]] is a program that **reads the text commands you type, interprets them and asks the operating system to run programs** (bash, zsh); the [[terminal]] is just the window that shows it. The terminal shows what the GUI hides: the **actual command** behind an action (command · flags · arguments), the **real file structure** (full paths, hidden dot-files, permissions, processes), **raw output and errors**, and the ability to **combine** tools. Stephenson’s point: the GUI is a layer of metaphors that makes things easy by hiding the machinery.`,
+      short_zh: `[[shell]]是一个程序，**读取你输入的文字命令、解释它们，并请操作系统运行程序**（bash、zsh）；[[terminal]]只是显示它的窗口。终端展示了 GUI 隐藏的东西：一个操作背后的**真实命令**（命令 · 选项 · 参数）、**真实的文件结构**（完整路径、“.”开头的隐藏文件、权限、进程）、**原始输出与报错**，以及把工具**组合**起来的能力。斯蒂芬森的观点：GUI 是一层隐喻，靠隐藏机器来变得好用。`,
+      basis_en: `The three sources on the exam hint: Neal Stephenson, *In the Beginning… Was the Command Line* (GUIs as metaphors that mediate and hide), MIT’s *The Missing Semester* lectures 1–2 (the shell as a textual interface for running, combining and automating programs) and Explainshell (breaking a command into program, flags and arguments).`,
+      basis_zh: `考卷提示中的三个出处：尼尔·斯蒂芬森《In the Beginning… Was the Command Line》（GUI 是一层起中介和隐藏作用的隐喻）、MIT《The Missing Semester》第 1–2 讲（shell 是运行、组合、自动化程序的文本界面）、Explainshell（把命令拆成程序、选项、参数）。`,
+      links: [{ t: 'Stephenson — In the Beginning… Was the Command Line', u: 'https://www.nealstephenson.com/in-the-beginning-was-the-command-line.html' }, { t: 'MIT — The Missing Semester', u: 'https://missing.csail.mit.edu/' }, { t: 'Explainshell', u: 'https://explainshell.com/' }],
+      rel: ['7.1', '8.1', '6.2'],
       hook_en: 'Terminal = the window; shell = the interpreter; GUI = metaphors on top. The terminal shows the real command.',
       hook_zh: '终端是窗口，shell 是解释器，GUI 是盖在上面的隐喻。终端让你看到真实的命令。',
       trap_en: 'Don’t mix up terminal and shell. And answer both halves: define shell + list concrete things the GUI hides.',

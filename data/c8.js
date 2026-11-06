@@ -79,6 +79,93 @@ defClass({
       q_en: 'What is a Modelfile, and which of its lines change the weights and which do not?',
       q_zh: '什么是 Modelfile？其中哪些行会改变权重，哪些不会？',
       src: 'Ollama, Modelfile reference',
+      short_en: 'A **Modelfile** is Ollama’s **plain-text blueprint** for building a model (`ollama create name -f Modelfile`). Only **FROM** (which base weights you start from) and **ADAPTER** (a fine-tuned LoRA applied on top) **change the weights**. **PARAMETER** (temperature, num_ctx…), **TEMPLATE**, **SYSTEM**, **MESSAGE** and **LICENSE** only change how the **same weights** are prompted, sampled or labeled.',
+      short_zh: '**Modelfile** 是 Ollama 用来构建模型的**纯文本蓝图**（`ollama create 名字 -f Modelfile`）。只有 **FROM**（从哪份基础权重出发）和 **ADAPTER**（叠加一个微调好的 LoRA）**会改变权重**。**PARAMETER**（温度、num_ctx 等）、**TEMPLATE**、**SYSTEM**、**MESSAGE** 和 **LICENSE** 只改变**同一组权重**被如何提示、采样或标注。',
+      basis_en: 'Checked against Ollama’s Modelfile reference: instructions FROM (required), PARAMETER, TEMPLATE, SYSTEM, ADAPTER, LICENSE, MESSAGE. ADAPTER “specifies a fine tuned LoRA adapter that should apply to the base model,” and the docs warn behavior is erratic if the base differs. (Newer docs also list REQUIRES and CAPABILITY — metadata, not weights.)',
+      basis_zh: '已对照 Ollama 的 Modelfile 参考文档核对：指令有 FROM（必填）、PARAMETER、TEMPLATE、SYSTEM、ADAPTER、LICENSE、MESSAGE。文档说 ADAPTER 指定一个应作用于基础模型的微调 LoRA 适配器，并警告基础模型不一致时行为会失常。（新版文档还列出 REQUIRES 和 CAPABILITY——属于元数据，不是权重。）',
+      links: [{ t: 'Ollama — Modelfile reference', u: 'https://docs.ollama.com/modelfile' }, { t: 'Modelfile reference (incl. ADAPTER)', u: 'https://ollama.readthedocs.io/en/modelfile' }],
+      rel: ['8.2', '7.1', '4.4'],
+      glow: {
+        name_en: 'The Modelfile machine', name_zh: 'Modelfile 机器',
+        hint_en: 'Keys 1–7 (or click) press one Modelfile line · watch which wire reaches the weights',
+        hint_zh: '按 1–7（或点击）执行一行 Modelfile · 看哪根线通到权重',
+        aria: 'Isometric console with seven keys, one per Modelfile instruction. FROM and ADAPTER are wired to the weights block; the others only reach the output screen.',
+        mount(stage, api) {
+          const K = api.iso.frame([[0, 0, 0], [470, 0, 0], [0, 290, 0], [470, 290, 0], [320, 30, 80], [345, 196, 100]]);
+          const { TOP, FRONT, box, path } = K;
+          const esc = api.iso.esc;
+          const KEYS = ['FROM', 'ADAPTER', 'PARAMETER', 'TEMPLATE', 'SYSTEM', 'MESSAGE', 'LICENSE'];
+          const kx = i => 48 + i * 41;
+          let s = box(0, 0, 0, 470, 290, 8, 14);
+          s += `<g transform="${TOP(0, 0, 8)}"><rect class="detail" x="8" y="8" width="454" height="274" rx="8"/></g>`;
+          // wires
+          const wires = [];
+          wires[0] = path([[kx(0), 188, 20], [kx(0), 170, 9], [kx(0), 150, 9], [350, 150, 9], [350, 122, 9]]);
+          wires[1] = path([[kx(1), 188, 20], [kx(1), 170, 9], [kx(1), 140, 9], [395, 140, 9], [395, 122, 9]]);
+          for (let i = 2; i <= 5; i++) { const yy = 164 + (i - 2) * 4; wires[i] = path([[kx(i), 188, 20], [kx(i), yy + 6, 9], [kx(i), yy, 9], [338, yy, 9], [338, 203, 9]]); }
+          wires[6] = path([[kx(6), 188, 20], [kx(6), 172, 9], [kx(6) + 22, 172, 9]]);
+          const outw = path([[410, 122, 9], [410, 176, 9], [400, 176, 9], [400, 194, 9]]);
+          s += `<path class="wire-under" d="${outw}"/><path id="g81-ow" class="wire" d="${outw}"/><path id="g81-op" class="pulse" pathLength="1000" d="${outw}"/>`;
+          wires.forEach((d, i) => { s += `<path class="wire-under" d="${d}"/><path id="g81-w${i}" class="wire" d="${d}"/><path id="g81-p${i}" class="pulse" pathLength="1000" d="${d}"/>`; });
+          s += `<g transform="${TOP(kx(6) + 22, 166, 9)}"><rect class="face" width="20" height="14" rx="1"/><text class="label" x="2" y="9" font-size="4.5">LICENSE</text></g>`;
+          // console + keys
+          s += box(20, 180, 8, 300, 80, 12, 6);
+          s += `<g transform="${TOP(20, 180, 20)}"><rect class="detail" x="5" y="4" width="290" height="72" rx="5"/>
+            ${KEYS.map((k, i) => `<text class="${i < 2 ? 'label-hi' : 'label'}" x="${kx(i) - 20 - 16}" y="52" font-size="${k.length > 7 ? 5.2 : 6}">${k}</text><text class="label" x="${kx(i) - 20 - 2}" y="64" font-size="6">${i + 1}</text>`).join('')}</g>`;
+          KEYS.forEach((k, i) => { s += `<g id="g81-k${i}" class="press" data-tip="${['c8_from', 'c8_adapter_line', 'c8_parameter', 'c8_template', 'c8_system', 'c8_template', 'c8_modelfile'][i]}">${box(kx(i) - 16, 192, 20, 33, 26, 7, 3)}</g>`; });
+          // weights block
+          s += `<g id="g81-wb" class="press" data-tip="c8_weights">${box(320, 30, 8, 120, 90, 64)}<g transform="${TOP(320, 30, 72)}">${api.iso.slits(10, 110, 10, 8, 82, true)}${api.iso.slits(10, 80, 10, 8, 112, false)}</g></g>`;
+          s += `<g transform="${FRONT(320, 120, 72)}"><text class="label-hi" x="8" y="14" font-size="8">WEIGHTS · 2 GB</text><text class="label-zh" x="8" y="25" font-size="7">权重（几十亿个数字）</text>
+            <rect id="g81-hg" class="glass" x="8" y="34" width="104" height="18" rx="2"/><text id="g81-hash" class="scr" x="13" y="46" font-size="7"></text></g>`;
+          // output screen
+          s += box(345, 196, 8, 100, 10, 88);
+          s += `<g transform="${FRONT(345, 206, 96)}"><rect id="g81-sg" class="glass" x="6" y="6" width="88" height="64" rx="2"/>
+            ${[0, 1, 2, 3].map(k => `<text id="g81-s${k}" class="scr" x="10" y="${19 + k * 14}" font-size="6.2"></text>`).join('')}
+            <text class="label" x="6" y="82" font-size="7">OUTPUT · 输出</text></g>`;
+          stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = s;
+          const $ = id => stage.querySelector('#' + id);
+          const st = { from: 0, adapter: false, temp: 1, tpl: 0, sys: 0, msgs: 0, changes: 0, last: null };
+          const FROMS = ['llama3.2:3b', 'qwen2.5:3b'], TEMPS = [0.2, 0.7, 1.2], SYS = ['You are a poet.', 'One line only.', 'Speak like a manual.'];
+          const hash = () => { const str = FROMS[st.from] + (st.adapter ? '+lora' : ''); let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return ('00000000' + (h >>> 0).toString(16)).slice(-8); };
+          function render() {
+            $('g81-hash').textContent = `blob sha256:${hash()}…`;
+            $('g81-s0').textContent = `FROM ${FROMS[st.from]}${st.adapter ? ' +lora' : ''}`;
+            $('g81-s1').textContent = `SYSTEM "${SYS[st.sys]}"`;
+            $('g81-s2').textContent = `temp ${TEMPS[st.temp]} · ctx 4096`;
+            $('g81-s3').textContent = `tpl ${st.tpl ? 'raw' : 'chat'} · msgs ${st.msgs}`;
+            $('g81-sg').classList.add('hot');
+          }
+          function press(i) {
+            const key = $('g81-k' + i), w = $('g81-w' + i);
+            api.flash(key, 260); w.classList.add('hot'); api.replay($('g81-p' + i));
+            api.after(900, () => w.classList.remove('hot'));
+            const name = KEYS[i];
+            if (i === 0) st.from = (st.from + 1) % 2;
+            if (i === 1) st.adapter = !st.adapter;
+            if (i === 2) st.temp = (st.temp + 1) % 3;
+            if (i === 3) st.tpl = 1 - st.tpl;
+            if (i === 4) st.sys = (st.sys + 1) % 3;
+            if (i === 5) st.msgs = (st.msgs + 1) % 3;
+            api.after(420, () => {
+              if (i < 2) {
+                st.changes++; api.flash($('g81-wb'), 700); $('g81-hg').classList.add('hot');
+                api.after(800, () => $('g81-hg').classList.remove('hot'));
+                api.replay($('g81-op'));
+                api.say(`${name} → weights changed · new blob ${hash()}`, `${name} → 权重改变 · 新的权重文件`);
+              } else if (i < 6) {
+                api.say(`${name} → same blob ${hash()} · new behavior`, `${name} → 权重文件不变 · 只改行为`);
+              } else api.say('LICENSE → legal text only · nothing computed changes', 'LICENSE → 只是法律文本 · 计算的东西一点没变');
+              api.power(true); render();
+            });
+          }
+          KEYS.forEach((k, i) => $('g81-k' + i).addEventListener('click', () => press(i)));
+          render(); api.say(`weights blob ${hash()}`, '当前权重文件');
+          return {
+            key: e => { const n = +e.key; if (n >= 1 && n <= 7) { press(n - 1); return true; } return false; },
+            demo: () => { api.after(200, () => press(4)); api.after(1500, () => press(2)); api.after(2800, () => press(1)); }
+          };
+        }
+      },
       fig() {
         let s = '';
         const rows = [
@@ -112,8 +199,8 @@ defClass({
         s += F.stack(L, o);
         return F.svg(760, Math.max(F.stackH(L.length, o) + 20, by + 44), s, { label: 'Modelfile lines mapped to weights or behavior' });
       },
-      cap_en: 'Left: a Modelfile. Right: the model it builds, exploded. Only the magenta lines reach the numbers; the blue lines wrap the same numbers in different words and dice.',
-      cap_zh: '左：一个 Modelfile。右：它构建出的模型（爆炸图）。只有洋红色的行触及那些数字；蓝色的行只是用不同的话和不同的“骰子”包裹同一组数字。',
+      cap_en: 'Seven keys, one per Modelfile instruction. Only FROM and ADAPTER are wired to the weights block — press them and the weight blob (its hash) changes. PARAMETER, TEMPLATE, SYSTEM and MESSAGE only reach the output screen: same blob, new behavior. LICENSE reaches nothing that computes.',
+      cap_zh: '七个键，对应 Modelfile 的七种指令。只有 FROM 和 ADAPTER 接到权重块上——按下它们，权重文件（及其哈希）就变了。PARAMETER、TEMPLATE、SYSTEM、MESSAGE 只通到输出屏幕：权重文件不变，行为改变。LICENSE 什么计算都不碰。',
       a_en: `A [[c8_modelfile]] is Ollama’s plain-text recipe for a model — a list of instructions that \`ollama create mymodel -f Modelfile\` turns into a new, named model you can run. It is a *blueprint*, not the model itself: it points at weights and describes how to use them.
 
 **Lines that change the weights**
@@ -150,6 +237,12 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       q_en: 'What is an adapter, why is it small, why must it match its base, and what does it change well and badly?',
       q_zh: '什么是适配器？它为什么很小？为什么必须与它的基础模型匹配？它擅长改变什么、不擅长改变什么？',
       src: 'Variable Machine; Class 8',
+      short_en: 'An **adapter** (LoRA) is a **small set of learned changes** added on top of a **frozen base model**: for each big weight matrix it trains two **thin, low-rank matrices** whose product ΔW is added in. It is **small** because the rank is tiny (≈8 vs. 4,096) — megabytes, not gigabytes. It **must match its base** because it stores **differences relative to those exact weights and shapes** (otherwise it fails or behaves erratically). It changes **style, tone and format** well, and **new facts or reasoning** badly (and overfits small data).',
+      short_zh: '**适配器**（LoRA）是叠加在**冻结的基础模型**上的**一小组学到的改动**：为每个大权重矩阵训练两个**细长的低秩矩阵**，把它们的乘积 ΔW 加进去。它**小**，因为秩极低（约 8 对 4096）——是几 MB 而不是几 GB。它**必须匹配基础模型**，因为它存的是**相对于那组特定权重和形状的差值**（否则会加载失败或行为失常）。它擅长改变**风格、语气、格式**，不擅长改变**新事实或推理能力**（小数据还容易过拟合）。',
+      basis_en: 'Checked against Hu et al., “LoRA: Low-Rank Adaptation of Large Language Models” (2021): the pretrained weights are frozen and trainable rank-decomposition matrices are injected, cutting trainable parameters by up to 10,000× for GPT-3; and Ollama’s ADAPTER docs on matching the base. The “well vs. badly” split follows the Class 8 demo and common practice (a rule of thumb, not a law).',
+      basis_zh: '已对照 Hu 等人《LoRA》（2021）核对：冻结预训练权重、注入可训练的低秩分解矩阵，对 GPT-3 可把可训练参数减少多达 1 万倍；以及 Ollama 关于基础模型必须匹配的 ADAPTER 文档。“擅长 / 不擅长”的划分依据第 8 课演示和通行经验（是经验法则，不是定律）。',
+      links: [{ t: 'Hu et al. — LoRA (2021)', u: 'https://arxiv.org/abs/2106.09685' }, { t: 'Ollama — ADAPTER instruction', u: 'https://ollama.readthedocs.io/en/modelfile' }],
+      rel: ['8.1', '8.5', '8.3'],
       fig() {
         let s = '';
         const gridRect = (x, y, w, h, n, m, o) => {
@@ -211,6 +304,47 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       q_en: 'What does the loss number tell you during training?',
       q_zh: '训练过程中，损失（loss）这个数字告诉了你什么？',
       src: 'Variable Machine; Class 8',
+      short_en: '**Loss** is a running measure of **how wrong the model’s next-token predictions are on the training examples** (cross-entropy: how surprised it is by the right token). **Falling** loss means it is learning to imitate the data; **flat** means it isn’t learning; **falling toward zero on a small dataset while validation loss rises** means it is **memorizing (overfitting)**. It does **not** measure quality or taste — you still have to read the outputs.',
+      short_zh: '**损失**是一个持续更新的数字，衡量**模型在训练样本上预测下一个 token 错得有多厉害**（交叉熵：对正确 token 有多“意外”）。**下降**说明它在学着模仿数据；**不动**说明没在学；**在小数据集上降到接近零、同时验证损失上升**，说明它在**死记硬背（过拟合）**。它**不衡量**质量或品味——仍要亲自读输出。',
+      basis_en: 'Standard definition of training loss (cross-entropy over next tokens), as watched during the Variable Machine training runs in Class 8. The lecture slides were not available; the overfitting reading (training vs. validation loss) follows standard machine-learning practice.',
+      basis_zh: '训练损失的标准定义（对下一个 token 的交叉熵），即第 8 课在 Variable Machine 里训练时看到的那个数字。未能看到课堂讲义；“训练损失 vs. 验证损失”判断过拟合，依据的是机器学习的通行做法。',
+      links: [{ t: '3Blue1Brown — neural networks (cost & gradient descent)', u: 'https://www.3blue1brown.com/lessons/neural-networks' }],
+      rel: ['3.1', '8.2', '8.4'],
+      widget: {
+        html() {
+          return `<div class="w-ctrl"><label><span class="en">training steps</span><span class="zh">训练步数</span> <input type="range" min="1" max="100" value="60"></label><span class="w-out"></span></div><div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const C = F.C, inp = el.querySelector('input'), out = el.querySelector('.w-out'), box = el.querySelector('.w-svg'), rd = el.querySelector('.w-readout');
+          const X0 = 80, X1 = 560, Y0 = 270, Y1 = 40, MAX = 3.2;
+          const L = s => 0.35 + 2.65 * Math.exp(-s / 17);
+          const V = s => 0.72 + 2.4 * Math.exp(-s / 15) + 0.00022 * Math.max(0, s - 34) ** 2;
+          const px = s => X0 + (X1 - X0) * s / 100, py = v => Y0 - (Y0 - Y1) * v / MAX;
+          let best = 1; for (let s = 1; s <= 100; s++) if (V(s) < V(best)) best = s;
+          function draw() {
+            const S = +inp.value; let s = '';
+            s += F.line(X0, Y0, X1 + 10, Y0, { arrow: true }) + F.line(X0, Y0, X0, Y1 - 10, { arrow: true });
+            for (let i = 1; i <= 3; i++) s += F.line(X0, py(i), X1, py(i), { stroke: '#e6e3dc', sw: .7 });
+            s += F.text(X1, Y0 + 22, 'STEPS →', { anchor: 'end', cls: 'tiny', color: C.mute }) + F.text(X0 - 10, Y1 - 2, 'LOSS', { anchor: 'end', cls: 'tiny', color: C.mute }) + F.sub(X0 - 10, Y1 + 14, '损失', { anchor: 'end' });
+            const curve = (f, n) => { let d = ''; for (let k = 1; k <= n; k++) d += (k === 1 ? 'M' : 'L') + px(k).toFixed(1) + ',' + py(f(k)).toFixed(1); return d; };
+            s += F.g(F.path(curve(L, S), { sw: 2 }), { tip: 'c8_loss' });
+            s += F.g(F.path(curve(V, S), { sw: 1.6, stroke: C.red, dash: '6 4' }), { tip: 'c8_validation' });
+            s += `<circle cx="${px(S)}" cy="${py(L(S))}" r="4" fill="${C.ink}"/><circle cx="${px(S)}" cy="${py(V(S))}" r="4" fill="${C.red}"/>`;
+            if (S > best + 3) s += F.line(px(best), Y0, px(best), Y1 + 6, { stroke: C.green, dash: '3 3', sw: .9 }) + F.text(px(best) + 6, Y1 + 14, 'BEST STOP', { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(px(best) + 6, Y1 + 29, '最佳停止点', { anchor: 'start' });
+            s += F.text(600, 80, 'TRAINING', { anchor: 'start', cls: 'tiny' }) + F.text(690, 80, L(S).toFixed(2), { anchor: 'start', cls: 'mono' });
+            s += F.text(600, 106, 'VALIDATION', { anchor: 'start', cls: 'tiny', color: C.red }) + F.text(690, 106, V(S).toFixed(2), { anchor: 'start', cls: 'mono', color: C.red });
+            s += F.sub(600, 124, '训练 / 验证损失', { anchor: 'start' });
+            box.innerHTML = F.svg(760, 300, s, { label: 'loss curves explorer' });
+            out.textContent = `step ${S}`;
+            let en, zh;
+            if (S < 12) { en = 'Loss is falling fast: the model is quickly getting less surprised by your examples — it is learning.'; zh = '损失在快速下降：模型对你的样本越来越不“意外”——它在学习。'; }
+            else if (S <= best + 3) { en = 'Both losses are still going down together: learning the pattern, not just the examples.'; zh = '两条损失线还在一起下降：学到的是规律，而不只是样本。'; }
+            else { en = `Training loss keeps falling but validation loss has turned up since ≈ step ${best}: the model is memorizing (overfitting). Stop at the green line — and still read the outputs; low loss ≠ good taste.`; zh = `训练损失还在降，但验证损失从约第 ${best} 步开始回升：模型在死记硬背（过拟合）。应在绿线处停——而且仍要读输出；损失低 ≠ 有品味。`; }
+            rd.innerHTML = `<span class="en">${en}</span> <span class="zh">${zh}</span>`;
+          }
+          inp.addEventListener('input', draw); draw();
+        }
+      },
       fig() {
         let s = '';
         const X0 = 90, Y0 = 280, X1 = 560, Y1 = 40;
@@ -265,6 +399,12 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       q_en: 'How is training on chosen/rejected pairs different from training on examples? What is the data, in that case?',
       q_zh: '用“选中/拒绝”成对数据训练，和用“例子”训练有什么不同？在这种情况下，数据是什么？',
       src: 'Variable Machine; Ouyang et al.; DPO',
+      short_en: 'Training on **examples** (SFT) shows the model **one target answer to imitate**: it learns “answer like this.” Training on **chosen/rejected pairs** (DPO, or RLHF’s reward model) shows **two answers to the same prompt** and pushes the chosen one **up relative to** the rejected one: it learns **what to prefer**, not what to copy. The data is rows of **{prompt, chosen, rejected}** — a **record of human judgment and taste**.',
+      short_zh: '用**例子**训练（SFT）给模型**一个要模仿的目标回答**：它学的是“照这样答”。用**选中/拒绝对**训练（DPO，或 RLHF 里的奖励模型）给出**同一提示的两个回答**，把选中的那个**相对于**被拒绝的推高：它学的是**更偏好什么**，而不是照抄什么。数据是一行行 **{提示, 选中, 拒绝}**——是**人的判断与品味的记录**。',
+      basis_en: 'Checked against Rafailov et al., “Direct Preference Optimization: Your Language Model Is Secretly a Reward Model” (NeurIPS 2023): the policy is optimized directly on preference pairs, with no separate reward model; and Ouyang et al. (InstructGPT) for RLHF: SFT on demonstrations, then a reward model trained on human comparisons. In Variable Machine this is changing a model “with taste.”',
+      basis_zh: '已对照 Rafailov 等人《Direct Preference Optimization》（NeurIPS 2023）核对：直接在偏好对上优化模型，无需单独的奖励模型；RLHF 部分对照 Ouyang 等人（InstructGPT）：先用示范做 SFT，再用人类比较数据训练奖励模型。在 Variable Machine 里，这就是“用品味”改变模型。',
+      links: [{ t: 'Rafailov et al. — Direct Preference Optimization', u: 'https://proceedings.neurips.cc/paper_files/paper/2023/hash/a85b405ed65c6477a4fe8302b5e06ce7-Abstract.html' }, { t: 'Ouyang et al. — InstructGPT (RLHF)', u: 'https://arxiv.org/abs/2203.02155' }],
+      rel: ['8.3', '4.4', '5.5'],
       fig() {
         let s = '';
         const card = (x, y, w, h, k, v, o = {}) => F.rect(x, y, w, h, { fill: o.fill || '#fff', stroke: o.stroke || F.C.ink, rx: 5, tip: o.tip, note: o.note }) +
@@ -282,7 +422,7 @@ What loss does **not** tell you: whether the output is good, true, creative or m
         s += card(420, 150, 145, 62, '✓ CHOSEN · 选中', 'Salt light…', { fill: F.C.greenF, stroke: F.C.green, kc: F.C.green, vc: F.C.green, note: { en: 'The answer a person preferred.', zh: '人更喜欢的那个回答。' } });
         s += card(575, 150, 145, 62, '✗ REJECTED · 拒绝', 'The sea is…', { fill: F.C.redF, stroke: F.C.red, kc: F.C.red, vc: F.C.red, note: { en: 'A plausible answer a person ranked lower.', zh: '一个说得过去、但被人排在后面的回答。' } });
         s += F.text(570, 232, '“THIS, more than THAT”', { cls: 'tiny', color: F.C.mag }) + F.sub(570, 248, '学的是：两者之间的差别', { anchor: 'middle' });
-        s += F.line(380, 70, 380, 250, { stroke: F.C.hair || '#ddd', dash: '3 4', sw: .8 });
+        s += F.line(380, 70, 380, 250, { stroke: F.C.mute, dash: '3 4', sw: .8 });
         // data band
         s += F.g(F.rect(40, 276, 680, 40, { fill: '#fff', stroke: F.C.mag, dash: '4 3', rx: 6 }) +
           F.text(56, 300, 'THE DATA = { prompt, chosen, rejected }  →  a record of human judgment / taste', { anchor: 'start', cls: 'tiny', color: F.C.mag }), { tip: 'c8_pair' });
@@ -310,6 +450,55 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       q_en: 'What happens when two adapters are blended at t = 0.5, and who wrote the result?',
       q_zh: '当两个适配器以 t = 0.5 混合时会发生什么？结果是谁“写”的？',
       src: 'Variable Machine; Class 8',
+      short_en: 'Blending is **arithmetic on the weights**: W = (1 − t)·A + t·B, so at **t = 0.5 every number is the exact midpoint** of the two adapters (trained on the same base). The model behaves **somewhere between the two learned behaviors** — a hybrid, one style dominating, or mush — because the network is not linear, so you must read the outputs. **No one wrote the result directly**: authorship is **distributed** across the people behind datasets A and B, the base model’s makers and its data, and **whoever chose the adapters and t**.',
+      short_zh: '混合就是**对权重做算术**：W = (1 − t)·A + t·B，所以 **t = 0.5 时每个数字都是两个适配器（同一基础模型）的正中点**。模型的表现**介于两种学到的行为之间**——可能是混血、一方占上风，或者一团糊——因为网络不是线性的，必须读输出才知道。**没有人直接写出结果**：作者身份**分散**在数据集 A 和 B 背后的人、基础模型的制作者及其数据，以及**选了适配器和 t 的那个人**身上。',
+      basis_en: 'A linear merge of adapter weights, as in Variable Machine’s blend control (LoRA adapters on the same base, Hu et al.). That outputs do not mix linearly follows from the network being non-linear. “Who wrote it?” is the course’s framing — there is no single correct author; argue the distribution.',
+      basis_zh: '这是对适配器权重的线性合并，就像 Variable Machine 的混合滑杆（同一基础模型上的 LoRA 适配器，见 Hu 等人）。输出不会线性混合，是因为网络本身是非线性的。“谁写的？”是课程的提问方式——没有唯一正确的作者，要论证作者身份是分散的。',
+      links: [{ t: 'Hu et al. — LoRA (2021)', u: 'https://arxiv.org/abs/2106.09685' }],
+      rel: ['8.2', '8.4', 'C5'],
+      widget: {
+        html() {
+          return `<div class="w-ctrl"><label>t <input type="range" min="0" max="1" step="0.05" value="0.5"></label><span class="w-out"></span><span style="color:var(--mute)"><span class="en">A = poems · B = manuals (illustrative outputs)</span> <span class="zh">A = 诗 · B = 说明书（示意输出）</span></span></div><div class="w-svg"></div><div class="w-readout"></div>`;
+        },
+        mount(el) {
+          const C = F.C, inp = el.querySelector('input'), out = el.querySelector('.w-out'), box = el.querySelector('.w-svg'), rd = el.querySelector('.w-readout');
+          const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+          const mix = (a, b, t) => '#' + hex(a).map((v, i) => Math.round(v + (hex(b)[i] - v) * t).toString(16).padStart(2, '0')).join('');
+          const A = [0.82, -0.10, 0.35], B = [0.20, 0.64, -0.41];
+          const OUT = [
+            [0.15, 'Salt light folds over the shore; the tide keeps its own time.', '盐色的光在岸边折叠；潮水守着自己的时辰。'],
+            [0.4, 'Salt light folds the shore. First the tide, then the hush.', '盐色的光折叠海岸。先是潮水，然后是寂静。'],
+            [0.6, 'Step 1: Let the salt light fold. Step 2: Wait for the hush of the tide.', '第一步：让盐色的光折叠。第二步：等待潮水的寂静。'],
+            [0.85, 'Step 1: Observe the tide. Step 2: Note the light on the water.', '第一步：观察潮水。第二步：记录水面的光。'],
+            [1.01, 'Step 1: Check the tide table. Step 2: Record the water level.', '第一步：查潮汐表。第二步：记录水位。']
+          ];
+          function draw() {
+            const t = +inp.value; let s = '';
+            const pl = (ox, oy, fill, side, pc, pattern) => { F.setIso(15, ox, oy); return F.plate({ x: 0, y: 0, w: 4, d: 4, t: 0.25, fill, side, pc, pattern, density: 5 }); };
+            const op = (w) => `opacity:${(0.25 + 0.75 * w).toFixed(2)}`;
+            s += `<g style="${op(1 - t)}">` + pl(110, 40, C.blueF, '#d5def7', C.blue, 'hatch') + F.text(110, 162, 'ADAPTER A', { cls: 'lt', color: C.blue }) + F.sub(110, 178, '适配器 A · 诗', { anchor: 'middle' }) + '</g>';
+            s += `<g style="${op(t)}">` + pl(650, 40, C.redF, '#f3d0d2', C.red, 'diag') + F.text(650, 162, 'ADAPTER B', { cls: 'lt', color: C.red }) + F.sub(650, 178, '适配器 B · 说明书', { anchor: 'middle' }) + '</g>';
+            const mc = mix(C.blue, C.red, t), mf = mix(C.blueF, C.redF, t);
+            s += F.g(pl(380, 26, mf, mf, mc, t < 0.25 ? 'hatch' : t > 0.75 ? 'diag' : 'cross') + F.text(380, 148, `BLEND t = ${t.toFixed(2)}`, { cls: 'lt', color: mc }), { tip: 'c8_merge' });
+            s += F.arrow(185, 95, 290, 85, { stroke: C.blue }) + F.arrow(575, 95, 470, 85, { stroke: C.red });
+            // formula with live numbers
+            s += F.text(380, 176, 'W = (1 − t)·A + t·B', { cls: 'mono' });
+            A.forEach((a, i) => {
+              const w = (1 - t) * a + t * B[i], y = 200 + i * 18;
+              s += `<text x="230" y="${y}" class="mono" fill="${C.blue}" text-anchor="end">a${i + 1} ${a.toFixed(2)}</text>` +
+                `<text x="380" y="${y}" class="mono" fill="${mc}" text-anchor="middle">→ ${w.toFixed(3)}</text>` +
+                `<text x="530" y="${y}" class="mono" fill="${C.red}">b${i + 1} ${B[i].toFixed(2)}</text>`;
+            });
+            box.innerHTML = F.svg(760, 260, s, { label: 'adapter blend explorer' });
+            out.textContent = `t = ${t.toFixed(2)}`;
+            const o = OUT.find(x => t < x[0]);
+            const who_en = t === 0 ? 'only dataset A’s authors (plus the base model)' : t === 1 ? 'only dataset B’s authors (plus the base model)' : 'both datasets’ authors, the base model’s makers and data, and you — who chose t';
+            const who_zh = t === 0 ? '只有数据集 A 的作者（加上基础模型）' : t === 1 ? '只有数据集 B 的作者（加上基础模型）' : '两个数据集的作者、基础模型的制作者及其数据，还有选了 t 的你';
+            rd.innerHTML = `<span class="en">Sample output: <b>“${o[1]}”</b> · Every weight is ${Math.round((1 - t) * 100)}% A + ${Math.round(t * 100)}% B. Who wrote it? ${who_en}.</span> <span class="zh">示例输出：<b>“${o[2]}”</b> · 每个权重 = ${Math.round((1 - t) * 100)}% A + ${Math.round(t * 100)}% B。谁写的？${who_zh}。</span>`;
+          }
+          inp.addEventListener('input', draw); draw();
+        }
+      },
       fig() {
         let s = '';
         const pl = (ox, oy, fill, side, pc, pattern) => { F.setIso(16, ox, oy); return F.plate({ x: 0, y: 0, z: 0, w: 4, d: 4, t: 0.25, fill, side, pc, pattern, density: 5 }); };
