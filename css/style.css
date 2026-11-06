@@ -947,3 +947,27 @@ body.lang-both .brief-sub .zh { display: block; }
 body.lang-both .brief-map li .zh { flex-basis: 100%; padding-left: 0; color: var(--mute); font-size: 13.5px; }
 body.teacher .brief { display: none; }
 @media (max-width: 900px) { .brief-grid { grid-template-columns: 1fr; } .brief { padding: 20px 16px; } }
+
+/* quiz language: questions EN by default (toggle), explanations ZH by default (toggle) — independent of the page language */
+.qz-h { position: relative; }
+.qz-lang { position: absolute; right: 0; top: 0; display: flex; border: 1px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.qz-lang button { font: 500 12px var(--mono); border: 0; background: #fff; padding: 6px 13px; cursor: pointer; color: var(--ink); min-height: 30px; }
+.qz-lang button + button { border-left: 1px solid var(--ink); }
+.qz-lang button.on { background: var(--ink); color: var(--paper); }
+body .quiz[data-ql="en"] :is(.qz-stem, .qz-t) .en { display: block !important; }
+body .quiz[data-ql="en"] :is(.qz-stem, .qz-t) .zh { display: none !important; }
+body .quiz[data-ql="zh"] :is(.qz-stem, .qz-t) .zh { display: block !important; color: var(--ink); font-size: inherit; }
+body .quiz[data-ql="zh"] :is(.qz-stem, .qz-t) .en { display: none !important; }
+body .quiz[data-ql="zh"] .qz-stem .zh { font-size: 15.5px; font-weight: 500; }
+.qz-why-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.qz-why-top h5 { margin: 0; }
+.qz-wl { font: 500 11px var(--mono); border: 1px solid var(--hair); background: #fff; border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--ink2); }
+.qz-wl:hover { border-color: var(--ink); }
+body .qz-why .bi { display: block; max-width: none; }
+body .qz-why[data-wl="zh"] .bi > .zh { display: block !important; border: 0 !important; padding: 0 !important; }
+body .qz-why[data-wl="zh"] .bi > .en { display: none !important; }
+body .qz-why[data-wl="en"] .bi > .en { display: block !important; }
+body .qz-why[data-wl="en"] .bi > .zh { display: none !important; }
+.qz-why .ok-zh { display: none; }
+.qz-why[data-wl="zh"] .ok-zh { display: inline; } .qz-why[data-wl="zh"] .ok-en { display: none; }
+@media (max-width: 900px) { .qz-lang { position: static; width: fit-content; margin-bottom: 10px; } }

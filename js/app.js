@@ -143,6 +143,7 @@
     <div class="qz-h">
       <div class="qz-tag">QUIZ · ${c.n}</div>
       <h3><span class="en">Check yourself: Class ${c.n}</span><span class="zh">第 ${c.n} 课小测验</span></h3>
+      <div class="qz-lang" role="group" aria-label="Quiz language"><button data-ql="en">EN</button><button data-ql="zh">中文</button></div>
       <p class="qz-rule"><span class="en">${c.quiz.length} questions. Every answer comes with an explanation. Score 90% or more to unlock the next chapter.</span><span class="zh">共 ${c.quiz.length} 题，每题选完都有讲解。拿到 90 分以上，就能解锁下一章。</span></p>
     </div>
     <ol class="qz-list"></ol>
@@ -228,7 +229,8 @@
       li.classList.add(ok ? 'right' : 'wrong');
       li.querySelectorAll('.qz-opt').forEach(o => { o.disabled = true; const kk = +o.dataset.k; if (kk === item.a) o.classList.add('is-a'); if (o === b) o.classList.add('picked'); });
       const why = li.querySelector('.qz-why'); why.hidden = false;
-      why.innerHTML = `<h5><span class="en">${ok ? 'Correct' : 'Not quite'}</span><span class="zh">${ok ? '答对了' : '再想想'}</span></h5>${two(item.why_en, item.why_zh)}`;
+      why.dataset.wl = 'zh';
+      why.innerHTML = `<div class="qz-why-top"><h5><span class="ok-en">${ok ? 'Correct' : 'Not quite'}</span><span class="ok-zh">${ok ? '答对了' : '再想想'}</span></h5><button class="qz-wl" type="button">EN</button></div>${two(item.why_en, item.why_zh)}`;
       if (answers.every(x => x !== null)) finish();
     };
     function finish() {
@@ -246,6 +248,15 @@
     }
   }
   CL.forEach(c => c.quiz && c.quiz.length && buildQuiz(c));
+  // quiz language: questions default to English (toggle per quiz, remembered); explanations default to Chinese
+  const setQL = (box, l) => { box.dataset.ql = l; box.querySelectorAll('.qz-lang button').forEach(b => b.classList.toggle('on', b.dataset.ql === l)); };
+  $$('.quiz').forEach(box => setQL(box, store.get('quizLang', 'en')));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.qz-lang button');
+    if (b) { store.set('quizLang', b.dataset.ql); $$('.quiz').forEach(box => setQL(box, b.dataset.ql)); return; }
+    const w = e.target.closest('.qz-wl');
+    if (w) { const why = w.closest('.qz-why'); why.dataset.wl = why.dataset.wl === 'zh' ? 'en' : 'zh'; w.textContent = why.dataset.wl === 'zh' ? 'EN' : '中文'; }
+  });
   applyLocks();
   // following a link into a locked chapter lands on its lock panel; flashcards skip locked chapters
   window.__isLocked = id => { const q = qById[id]; const sec = q && $('#c' + q._c.n); return sec && sec.classList.contains('locked'); };
