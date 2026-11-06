@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 3 29 10.5 16 18 3 10.5Z' fill='white' stroke='black' stroke-width='1.6'/><path d='M3 16.5 16 24 29 16.5' fill='none' stroke='%23b0186e' stroke-width='1.6'/><path d='M3 22 16 29.5 29 22' fill='none' stroke='black' stroke-width='1.6'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&family=Caveat:wght@500;700&family=Permanent+Marker&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="lang-both">
@@ -87,6 +87,20 @@
       </div>
       <div id="glossary-list"></div>
     </section>
+    <section class="cls zine-sec" id="zine">
+      <div class="cls-h">
+        <div class="cls-n">Z<small>ZINE</small></div>
+        <div>
+          <h2><span class="en">The printed zine — a sample</span><span class="zh">打印版小册子（zine）范例</span></h2>
+          <div class="bi intro">
+            <div class="en"><p>The exam can also be handed in as a printed zine: print the pages with the <b>zine button</b> on the exam page, cut and paste or hand-write your answers, add drawings or collage, and clip it with the binder clips provided — worth <b>+5 points</b>. Everything below can be made with a pen, scissors, tape, a highlighter and sticky notes.</p><p><b>This shows the form, not answers to copy:</b> the sentences are short placeholders. The exam needs your own words.</p></div>
+            <div class="zh"><p>考试也可以交打印版小册子：用考卷页面顶部的 <b>zine 按钮</b>打印，把答案剪贴上去或手写，加上手绘图或拼贴，再用老师发的长尾夹夹好——<b>总成绩 +5 分</b>。下面每一页的效果，用一支笔、剪刀、胶带、荧光笔和便利贴就能做出来。</p><p><b>这里示范的是做法，不是让你照抄的答案：</b>页面上的句子只是简短的占位示例，考试要用你自己的话写。</p></div>
+          </div>
+          <div class="zine-actions"><button id="zine-print" class="tool"><span class="ico">⎙</span><span class="en">Print this sample</span><span class="zh">打印这份范例</span></button> <a class="tool" href="zine-sample.pdf" download><span class="ico">↓</span><span class="en">Download PDF</span><span class="zh">下载 PDF</span></a></div>
+        </div>
+      </div>
+      <div id="zine-pages" class="zine-grid"></div>
+    </section>
     <footer class="foot">
       <p>Study companion for CIXD/CDES 3110/6110 Experimental Tools and Technology, Fall 2026. Answers are explanations to learn from — the exam asks you to write in your own words.</p>
       <p>CIXD/CDES 3110/6110 期中复习辅助材料。答案用于理解与学习——考试要求用自己的话写出来。</p>
@@ -110,6 +124,7 @@
 <script src="data/c9.js"></script>
 <script src="data/cC.js"></script>
 <script src="data/hero.js"></script>
+<script src="data/zine.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

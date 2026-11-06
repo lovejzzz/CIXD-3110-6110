@@ -42,7 +42,8 @@
     return CL.map(c => `<a href="#c${c.n}" class="nav-c" data-c="${c.n}">
       <span class="nav-n">${c.n}</span><span class="nav-t"><span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></span>
       <span class="nav-p" data-np="${c.n}"></span></a>`).join('') +
-      `<a href="#glossary" class="nav-c nav-g" data-c="glossary"><span class="nav-n">≡</span><span class="nav-t"><span class="en">Glossary</span><span class="zh">词汇表</span></span><span class="nav-p"></span></a>`;
+      `<a href="#glossary" class="nav-c nav-g" data-c="glossary"><span class="nav-n">≡</span><span class="nav-t"><span class="en">Glossary</span><span class="zh">词汇表</span></span><span class="nav-p"></span></a>` +
+      `<a href="#zine" class="nav-c nav-g" data-c="zine"><span class="nav-n">Z</span><span class="nav-t"><span class="en">Zine sample</span><span class="zh">小册子范例</span></span><span class="nav-p"></span></a>`;
   }
 
   const qById = {}; CL.forEach(c => c.qs.forEach(q => { qById[q.id] = q; q._c = c; }));
@@ -164,6 +165,14 @@
     show(-1);
   });
 
+  /* zine sample */
+  if (window.renderZine) { try { renderZine($('#zine-pages')); } catch (e) { console.error('zine', e); } }
+  $('#zine-print') && $('#zine-print').addEventListener('click', () => {
+    document.body.classList.add('print-zine');
+    const done = () => { document.body.classList.remove('print-zine'); removeEventListener('afterprint', done); };
+    addEventListener('afterprint', done); setTimeout(() => print(), 50);
+  });
+
   /* glow figures (lazy, per plate) */
   if (window.GLOW) try { GLOW.init(CL); } catch (e) { console.error('glow init', e); }
 
@@ -273,9 +282,9 @@
   const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0.25 });
   $$('svg.fig').forEach(s => io.observe(s));
   const navIO = new IntersectionObserver(es => es.forEach(en => {
-    if (en.isIntersecting) $$('.nav-c').forEach(a => a.classList.toggle('cur', a.dataset.c === (en.target.id === 'glossary' ? 'glossary' : en.target.id.slice(1))));
+    if (en.isIntersecting) $$('.nav-c').forEach(a => a.classList.toggle('cur', a.dataset.c === (/^c/.test(en.target.id) ? en.target.id.slice(1) : en.target.id)));
   }), { rootMargin: '-40% 0px -55% 0px' });
-  $$('section.cls, #glossary').forEach(s => navIO.observe(s));
+  $$('section.cls').forEach(s => navIO.observe(s));
 
   /* one entrance per card (skipped for cards already on screen at load) */
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {

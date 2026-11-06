@@ -695,3 +695,34 @@ body.lang-both .st-intro .zh { margin-left: 12px; }
 @media (max-width: 900px) { .st-btns { width: 100%; } .st-btns .st-next { flex: 1; } }
 .plate.stepping svg .st-hl .part { opacity: 1; }
 .kid-ico { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block; }
+
+/* ═══════════ Zine sample ═══════════ */
+.zine-actions { margin-top: 16px; }
+.zine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 34px 26px; margin-top: 10px; }
+.zpage-wrap { margin: 0; }
+.zpage { aspect-ratio: 3 / 4; background: #fffdf8; box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 14px 28px -18px rgba(40,30,10,.45); transform: rotate(var(--r, 0deg)); transition: transform .3s var(--ease-emph); }
+.zpage-wrap:nth-child(odd) .zpage { --r: -.6deg; } .zpage-wrap:nth-child(even) .zpage { --r: .5deg; }
+.zpage:hover { --r: 0deg; transform: scale(1.015); }
+.zpage svg { display: block; width: 100%; height: 100%; }
+.ztip { margin-top: 12px; font-size: 13px; color: var(--ink2); line-height: 1.55; display: grid; gap: 4px; }
+.ztip .zh { color: var(--mute); }
+body.lang-zh .ztip .zh { color: var(--ink2); }
+#zine-pages > svg:first-child { position: absolute; }
+
+/* print just the zine */
+@media print {
+  body.print-zine .top, body.print-zine .side, body.print-zine .hero, body.print-zine #content, body.print-zine #glossary,
+  body.print-zine .zine-sec .cls-h, body.print-zine .foot, body.print-zine .ztip, body.print-zine #tip, body.print-zine .skip { display: none !important; }
+  body.print-zine main { padding: 0; }
+  body.print-zine .zine-grid { display: block; margin: 0; }
+  body.print-zine .zpage-wrap { break-after: page; page-break-after: always; margin: 0; }
+  body.print-zine .zpage { box-shadow: none; transform: none !important; width: 100%; max-height: 100vh; }
+  @page { margin: 10mm; }
+}
+@media print {
+  body.print-zine .zine-sec { padding-top: 0 !important; }
+  body.print-zine #glow-defs, body.print-zine #flash { display: none !important; }
+  body.print-zine .zpage-wrap:last-child { break-after: auto; page-break-after: auto; }
+  body.print-zine .shell { display: block; }
+}
+.zine-actions { display: flex; gap: 8px; flex-wrap: wrap; } .zine-actions a.tool { text-decoration: none; }
