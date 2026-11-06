@@ -279,6 +279,37 @@
     else { $('.pw-err').hidden = false; pwIn.select(); pw.querySelector('.pw-box').classList.remove('shake'); void pw.offsetWidth; pw.querySelector('.pw-box').classList.add('shake'); }
   };
 
+  const PEOPLE = window.PEOPLE || [], PBY = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+  const lecText = c => [c.lec_en, c.lec_zh, ...(c.lec_faq || []).flatMap(f => [f.q_en, f.a_en, f.q_zh, f.a_zh]),
+    ...c.qs.flatMap(q => ['lec_open', 'lec_why', 'lec_trap', 'lec_ask', 'lec_bridge'].flatMap(k => [q[k + '_en'], q[k + '_zh']]))].filter(Boolean).join('\n');
+  const peopleIn = c => { const t = lecText(c); return PEOPLE.filter(p => p.m_en.concat(p.m_zh).some(m => t.includes(m))); };
+  const peopleCard = c => {
+    const ps = peopleIn(c); if (!ps.length) return '';
+    return `<div class="lppl"><h3><span class="en">People in this class</span><span class="zh">本课出现的人物</span></h3>
+      ${ps.map(p => `<div class="lp" id="lp-${c.n}-${p.id}"><div class="lp-n"><b class="en">${esc(p.en)}</b><b class="zh">${esc(p.zh)}</b>${p.yrs ? `<span class="lp-y">${esc(p.yrs)}</span>` : ''}</div>
+        <div class="lp-b"><div class="lp-r"><span class="en">${esc(p.role_en)}</span><span class="zh">${esc(p.role_zh)}</span></div>${two(p.bio_en, p.bio_zh)}</div></div>`).join('')}</div>`;
+  };
+  // wrap the first mention of each person in every lecture block with a hover card
+  function linkPeople(root) {
+    const pats = PEOPLE.flatMap(p => p.m_en.concat(p.m_zh).map(m => ({ m, id: p.id }))).sort((a, b) => b.m.length - a.m.length);
+    const re = new RegExp(pats.map(x => x.m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+    const byM = Object.fromEntries(pats.map(x => [x.m, x.id]));
+    root.querySelectorAll('.lx .en, .lx .zh, .lsec-why .en, .lsec-why .zh, .lfaq-i .en, .lfaq-i .zh').forEach(blk => {
+      if (blk.closest('.lx-k, .lppl')) return;
+      const seen = new Set(), w = document.createTreeWalker(blk, NodeFilter.SHOW_TEXT), nodes = [];
+      while (w.nextNode()) if (!w.currentNode.parentElement.closest('[data-person],[data-tip],summary .lfaq-q')) nodes.push(w.currentNode);
+      nodes.forEach(n => {
+        const t = n.nodeValue; re.lastIndex = 0; if (!re.test(t)) return; re.lastIndex = 0;
+        const f = document.createDocumentFragment(); let i = 0, mm;
+        while ((mm = re.exec(t))) {
+          const id = byM[mm[0]]; if (seen.has(id)) continue; seen.add(id);
+          f.append(t.slice(i, mm.index)); const s = document.createElement('span');
+          s.className = 'pname'; s.dataset.person = id; s.tabIndex = 0; s.textContent = mm[0]; f.append(s); i = mm.index + mm[0].length;
+        }
+        if (i) { f.append(t.slice(i)); n.replaceWith(f); }
+      });
+    });
+  }
   function lectureHTML() {
     const sec = c => {
       const qs = c.qs.map(q => {
@@ -298,7 +329,7 @@
       }).join('');
       return `<section class="lsec" id="l${c.n}">
         <div class="lsec-h"><div class="lsec-n">${c.n}</div><div><h2><span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></h2>
-        ${c.lec_en ? `<div class="lsec-why">${two(c.lec_en, c.lec_zh)}</div>` : ''}</div></div>${qs}
+        ${c.lec_en ? `<div class="lsec-why">${two(c.lec_en, c.lec_zh)}</div>` : ''}</div></div>${peopleCard(c)}${qs}
         ${c.lec_faq && c.lec_faq.length ? `<div class="lfaq"><h3><span class="en">Questions she might ask</span><span class="zh">她可能会问的问题</span></h3>
           ${c.lec_faq.map(f => `<details class="lfaq-i"><summary><span class="lfaq-q">Q</span><span><span class="en">${esc(f.q_en)}</span><span class="zh">${esc(f.q_zh)}</span></span></summary>${two(f.a_en, f.a_zh)}</details>`).join('')}</div>` : ''}</section>`;
     };
@@ -313,7 +344,7 @@
     document.body.classList.toggle('teacher', on);
     store.set('teacher', on);
     const L = $('#lecture');
-    if (on && !lecBuilt) { L.innerHTML = lectureHTML(); lecBuilt = true; }
+    if (on && !lecBuilt) { L.innerHTML = lectureHTML(); try { linkPeople(L); } catch (e) { console.error('people', e); } lecBuilt = true; }
     L.hidden = !on;
     // nav links point to lecture sections while teaching
     $$('.nav-c').forEach(a => { const n = a.dataset.c; if (!a.dataset.href0) a.dataset.href0 = a.getAttribute('href'); a.setAttribute('href', on && $('#l' + n) ? '#l' + n : a.dataset.href0); });
@@ -404,6 +435,8 @@
     const lang = document.body.classList.contains('lang-en') ? 'en' : document.body.classList.contains('lang-zh') ? 'zh' : 'both';
     let head_en = '', head_zh = '', d_en = '', d_zh = '';
     if (k && T[k]) { head_en = T[k].en; head_zh = T[k].zh; d_en = T[k].d_en; d_zh = T[k].d_zh; }
+    const P = el.dataset.person && PBY[el.dataset.person];
+    if (P) { head_en = P.en + (P.yrs ? ' (' + P.yrs + ')' : ''); head_zh = P.zh; d_en = '**' + P.role_en + '.** ' + P.bio_en; d_zh = '**' + P.role_zh + '。**' + P.bio_zh; }
     if (el.dataset.noteEn || el.dataset.noteZh) {
       if (!k) { d_en = el.dataset.noteEn; d_zh = el.dataset.noteZh; }
       else { d_en = el.dataset.noteEn + (d_en ? ' — ' + d_en : ''); d_zh = el.dataset.noteZh + (d_zh ? ' —— ' + d_zh : ''); }
@@ -427,7 +460,7 @@
     tip.style.transform = `translate(${x}px, ${y}px)`;
   }
   function hide() { tip.classList.remove('show'); }
-  const target = e => e.target.closest && e.target.closest('[data-tip],[data-note-en]');
+  const target = e => e.target.closest && e.target.closest('[data-tip],[data-note-en],[data-person]');
   document.addEventListener('mouseover', e => { if (pinned) return; const el = target(e); el ? place(el, e) : hide(); });
   document.addEventListener('mousemove', e => { if (pinned) return; const el = target(e); if (el && el.closest('svg')) place(el, e); });
   document.addEventListener('focusin', e => { const el = target(e); el && place(el); });

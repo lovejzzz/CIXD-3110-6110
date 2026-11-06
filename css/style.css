@@ -971,3 +971,21 @@ body .qz-why[data-wl="en"] .bi > .zh { display: none !important; }
 .qz-why .ok-zh { display: none; }
 .qz-why[data-wl="zh"] .ok-zh { display: inline; } .qz-why[data-wl="zh"] .ok-en { display: none; }
 @media (max-width: 900px) { .qz-lang { position: static; width: fit-content; margin-bottom: 10px; } }
+
+/* ── lecture: people ───────────────────────── */
+.lppl { margin: 26px 0 34px; padding: 22px 26px 8px; background: #fbf8f1; border: 1px solid #e5dfd2; border-radius: 8px; }
+.lppl h3 { margin: 0 0 6px; font: 600 11.5px var(--mono) !important; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+.lppl h3 .en, .lppl h3 .zh { font-family: var(--mono) !important; }
+body.lang-both .lppl h3 .zh { margin-left: 10px; letter-spacing: .06em; }
+.lp { display: grid; grid-template-columns: minmax(150px, 30%) 1fr; gap: 6px 22px; padding: 16px 0; border-top: 1px solid #ece6d9; }
+.lp:first-of-type { border-top: 0; }
+.lp-n b { display: block; font: 400 calc(var(--L) * 1.05)/1.25 var(--serif); color: var(--ink); }
+.lp-n b.zh { font: 600 calc(var(--L) * .82)/1.4 var(--zh-serif) !important; color: var(--ink2); margin-top: 2px; }
+body.lang-en .lp-n b.zh, body.lang-zh .lp-n b.en { display: none; }
+.lp-y { display: block; margin-top: 6px; font: 500 12px var(--mono); letter-spacing: .04em; color: var(--mute); }
+.lp-r { font: 600 calc(var(--L) * .72)/1.4 var(--sans); color: var(--amber); margin-bottom: 6px; }
+body.lang-both .lp-r .zh { display: block; font-weight: 500; }
+.lp-b .bi { font-size: calc(var(--L) * .86); line-height: 1.6; }
+.pname { border-bottom: 1.5px dotted var(--amber); cursor: help; }
+.pname:hover, .pname:focus-visible { background: rgba(217, 154, 30, .14); outline: none; }
+@media (max-width: 700px) { .lp { grid-template-columns: 1fr; } .lppl { padding: 18px 16px 4px; } }
