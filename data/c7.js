@@ -67,6 +67,15 @@ defClass({
       q_en: 'When the same prompt goes to a hosted model and to a model on your laptop, what changes about where it goes, what you can see, and what you can change?',
       q_zh: '同一个提示词分别发给云端托管模型和你笔记本上的模型时，它“去了哪里”、你“能看到什么”、你“能改变什么”有什么不同？',
       src: 'Class 7: Local vs. Hosted; Ollama',
+      kid_en: "Imagine you have a tricky homework question. **Hosted** is like mailing it to a big homework-help company: your letter travels across the city, someone there reads it, keeps a copy in their files, and mails back only the answer. You never see how they worked it out. **Local** is like having a tutor who lives in your own room: the question never leaves the house, and you can watch the tutor work, read their notebook, and even swap in a different tutor. That is the difference between a hosted model and a local model.",
+      kid_zh: "想象你有一道很难的作业题。**云端**就像把题目寄给一家大型“作业辅导公司”：信穿过整座城市，那边有人读它、在档案里留一份副本，最后只把答案寄回来。他们怎么算的，你完全看不到。**本地**就像一位住在你自己房间里的家教：题目从没离开过家，你可以看着家教怎么解题、翻他的笔记本，甚至换一位家教。这就是云端模型和本地模型的区别。",
+      steps: [
+        {"en": "Meet the pieces: your laptop on the left, a small Ollama box right beside it, and a big datacenter far away on the right.", "zh": "先认识一下：左边是你的笔记本电脑，旁边是一个小小的 Ollama 盒子，右边远处是一座大数据中心。", "hi": []},
+        {"en": "Press **H**, then **Enter**. Watch your prompt leave the laptop, cross the Internet and light up the company’s servers. The LOGS light goes on: they keep a copy.", "zh": "按 **H**，再按 **回车**。看你的提示词离开笔记本、穿过互联网，点亮公司的服务器。LOGS 灯亮了：他们留了一份副本。", "hi": []},
+        {"en": "Look at the laptop screen: in hosted mode you only get the answer. Their hidden system prompt, filters and logs stay on their side.", "zh": "看笔记本屏幕：云端模式下你只拿到答案。他们隐藏的系统提示词、过滤器和日志都留在他们那边。", "hi": []},
+        {"en": "Now press **L**, then **Enter**. The prompt stays inside the dashed line — “your machine”. Nobody else gets a copy.", "zh": "现在按 **L**，再按 **回车**。提示词留在虚线框里——“你的电脑”。没有任何人拿到副本。", "hi": []},
+        {"en": "Read the screen again: now you can see the weights file, the Modelfile, the temperature and the license — and change any of them. More control and privacy, but only as smart as your laptop allows.", "zh": "再看屏幕：现在你能看到权重文件、Modelfile、温度和许可证——而且都能改。更多掌控、更多隐私，但聪明程度受限于你的电脑。", "hi": []}
+      ],
       short_en: 'With a **hosted** model the prompt **leaves my laptop** and crosses the Internet to the company’s servers, where a hidden system prompt, filters and logging act on it; I **see only the output** and can change only the settings the interface offers. With a **local** model (Ollama) the prompt goes to `localhost` and **never leaves the machine**; I can **see the weights file, Modelfile, parameters and license** and **change all of it** (swap models, rewrite the system prompt, temperature, quantization). Trade-off: hosted is more capable; local gives privacy and control but is limited by my hardware.',
       short_zh: '用**云端**模型时，提示词**离开我的电脑**，穿过互联网到达公司服务器，被隐藏的系统提示、过滤器和日志处理；我**只看得到输出**，只能改界面给的设置。用**本地**模型（Ollama）时，提示词发往 `localhost`，**从不离开这台电脑**；我能**看到权重文件、Modelfile、参数和许可证**，并且**全都能改**（换模型、改系统提示、温度、量化）。取舍：云端更强；本地有隐私和控制权，但受硬件限制。',
       basis_en: 'Class 7’s “Local vs. Hosted” decision and the Ollama exercise. Checked against Ollama’s Modelfile docs for what a local model exposes (FROM, PARAMETER, TEMPLATE, SYSTEM, LICENSE). What happens on the hosted side (system prompts, logging, retention, training use) depends on each provider’s policy; the lecture slides were not available.',
@@ -219,6 +228,15 @@ defClass({
       q_en: 'What is the difference? Name one model you ran in each category and its license.',
       q_zh: '两者有什么区别？各举一个你运行过的模型，并说出它的许可证。',
       src: 'Hugging Face model cards & licenses; Ai2 OLMo',
+      kid_en: "Think of a bakery. **Open weights** is a bakery that sells you the finished cake: you can eat it, decorate it, even cut it differently — but they won’t tell you the recipe or show you the ingredients. **Open source** is a bakery that gives you the cake *and* the recipe *and* the list of every ingredient and where it came from, so you could bake it yourself and check what’s inside. Llama is the first kind of bakery; OLMo is the second.",
+      kid_zh: "想象一家面包店。**开放权重**就像面包店卖给你一个做好的蛋糕：你可以吃、可以装饰、可以随便切——但他们不告诉你配方，也不给你看用了什么原料。**开源**就像面包店给你蛋糕，*还*给你配方，*还*给你每样原料的清单和产地，你可以自己烤一个，也能检查里面到底放了什么。Llama 属于第一种面包店，OLMo 属于第二种。",
+      steps: [
+        {"en": "Two bakeries side by side: **open weights** on the left (orange), **open source** on the right (green).", "zh": "两家面包店并排：左边（橙色）是**开放权重**，右边（绿色）是**开源**。", "hi": ["c7_open_weights", "c7_open_source"]},
+        {"en": "Both give you the cake: the **weights** and the code to run them. That’s why you could `ollama pull` either one.", "zh": "两家都给你蛋糕：**权重**和运行它的代码。所以两种你都能用 `ollama pull` 下载。", "hi": ["c72-r0", "c72-r1"]},
+        {"en": "Here’s the big difference: the **training data**. Open weights keeps it secret (dashed box); open source shows you what the model read.", "zh": "最大的区别在这里：**训练数据**。开放权重把它藏起来（虚线框）；开源会告诉你模型读过什么。", "hi": ["c72-r2"]},
+        {"en": "The **recipe** — training code, settings and logs — is also only shared by open source. Without it, nobody can rebuild or fully study the model.", "zh": "**配方**——训练代码、设置和日志——也只有开源会公开。没有它，就没人能重建或彻底研究这个模型。", "hi": ["c72-r3"]},
+        {"en": "Last, the **license**: open weights often comes with its own custom rules; open source uses a standard, approved license like Apache 2.0.", "zh": "最后是**许可证**：开放权重常常附带自己定的特殊规则；开源用的是标准、公认的许可证，比如 Apache 2.0。", "hi": ["c7_license"]}
+      ],
       short_en: '**Open weights** means the trained **weights are downloadable** to run and fine-tune, but the **training data and recipe are withheld**, often under a **custom license** with use limits. **Open source** means **weights, training data, code and recipe** are all released under an **OSI-approved license**, so you can study and rebuild the model. Open weights: `llama3.2:3b` (Meta, Llama 3.2 Community License). Open source: `olmo2:7b` (Ai2, Apache 2.0, with open training data, code and checkpoints).',
       short_zh: '**开放权重**：训练好的**权重可以下载**、运行和微调，但**训练数据和配方不公开**，常附带有使用限制的**自定义许可证**。**开源**：**权重、训练数据、代码和配方**全部公开，采用 **OSI 认可的许可证**，可以研究并重建模型。开放权重例子：`llama3.2:3b`（Meta，Llama 3.2 社区许可证）。开源例子：`olmo2:7b`（Ai2，Apache 2.0，训练数据、代码和检查点都公开）。',
       basis_en: 'Checked the Hugging Face model cards: Qwen2.5-3B lists the “qwen-research” license; OLMo-2-1124-7B states code and model are Apache 2.0 and that all code, checkpoints and training details are released, with its OLMo-Mix-1124 / Dolmino pretraining data published by Ai2. DeepSeek’s distilled Llama models ship with an MIT license although built on Meta’s Llama base (Simon Willison flags the mismatch).',
@@ -240,7 +258,7 @@ defClass({
           let g = F.text(380, y + 15, t, { cls: 'lt' }) + F.sub(380, y + 31, z, { anchor: 'middle' });
           g += a ? F.rect(60, y, 240, 36, { text: '✓ RELEASED', fill: C.amberF, stroke: C.amber, tcls: 'tiny' }) : F.rect(60, y, 240, 36, { text: '— WITHHELD', dash: '4 3', tcolor: C.mute, tcls: 'tiny' });
           g += b ? F.rect(460, y, 240, 36, { text: '✓ RELEASED', fill: C.greenF, stroke: C.green, tcls: 'tiny' }) : '';
-          s += F.g(g, { note });
+          s += `<g id="c72-r${i}">` + F.g(g, { note }) + '</g>';
         });
         const y = 266;
         s += F.g(F.text(380, y + 15, 'LICENSE', { cls: 'lt' }) + F.sub(380, y + 31, '许可证', { anchor: 'middle' }) +
@@ -281,6 +299,15 @@ So “open” on a model card can mean very different things — check what is a
       q_en: 'What is quantization, and what do you gain and lose by running a smaller version of a model?',
       q_zh: '什么是量化？运行一个“更小版本”的模型，你得到了什么、失去了什么？',
       src: 'GGUF quantization explained; Ollama',
+      kid_en: "Imagine measuring everyone in your class with a ruler. A ruler with millimetre marks gives exact heights but takes lots of writing. A ruler with only a mark every 10 cm is quicker and your list gets much shorter — but everyone’s height gets rounded, so a few answers come out a bit wrong. **Quantization** does this to every number inside a model: it rounds them onto a coarser ruler so the model file shrinks enough to fit and run fast on a laptop, at the cost of a little accuracy.",
+      kid_zh: "想象你用尺子给全班同学量身高。带毫米刻度的尺子量得很准，但要记很多数字；如果尺子每 10 厘米才有一个刻度，量得快，记录也短得多——可每个人的身高都被“四舍五入”了，有些就不太准。**量化**就是对模型里的每个数字做这件事：把它们放到更粗的“尺子”上取整，让模型文件小到能装进笔记本电脑、跑得更快，代价是精度稍微下降。",
+      steps: [
+        {"en": "Click **FP16** first. One weight sits on a super-fine ruler — almost exact. But look at the file: 6.4 GB, too big for an 8 GB laptop once the system takes its share.", "zh": "先点 **FP16**。一个权重放在非常精细的“尺子”上——几乎完全准确。但看文件：6.4 GB，系统再占一部分，8 GB 的笔记本就装不下了。", "hi": []},
+        {"en": "Click **Q8_0**. Now the ruler has 256 marks. The weight moves a tiny bit to the nearest mark, and the file is cut in half. You’d barely notice a difference in answers.", "zh": "点 **Q8_0**。现在尺子只有 256 个刻度。权重挪到最近的刻度，移动得很少，文件直接减半。回答几乎看不出差别。", "hi": []},
+        {"en": "Click **Q4_K_M**. Only about 16 marks — the rounding error grows, but the file is about 2 GB: it fits and runs fast. This is the usual sweet spot.", "zh": "点 **Q4_K_M**。大约只剩 16 个刻度——取整误差变大了，但文件只有约 2 GB：装得下、跑得快。这是最常用的平衡点。", "hi": []},
+        {"en": "Click **Q2_K**. Just a few marks. Tiny file — but every number is now quite wrong, and the model makes clearly more mistakes.", "zh": "点 **Q2_K**。只剩几个刻度。文件很小——但每个数字都偏差不少，模型明显更容易出错。", "hi": []},
+        {"en": "So quantization is a trade: **gain** size and speed (it fits on your laptop), **lose** precision (more mistakes on hard tasks).", "zh": "所以量化是一笔交换：**得到**体积和速度（能装进你的笔记本），**失去**精度（难题上错得更多）。", "hi": []}
+      ],
       short_en: '**Quantization** stores each weight with **fewer bits** (16-bit → 8 or about 4) by **rounding it onto a coarser scale**. **Gain:** a much smaller file (Llama 3.2 3B: 6.4 GB → 2.0 GB at Q4_K_M) that **fits in a laptop’s memory** and runs **faster**, so the model can run locally. **Lose:** **precision** — a small error in every weight, which shows up as more mistakes in reasoning, math and long or detailed tasks (Q8 ≈ lossless, Q4 a good compromise, Q2 clearly worse).',
       short_zh: '**量化**就是用**更少的位数**存每个权重（16 位 → 8 位或约 4 位），把它**四舍五入到更粗的刻度上**。**得到：**文件小得多（Llama 3.2 3B：6.4 GB → Q4_K_M 2.0 GB），**装得进笔记本内存**、运行**更快**，模型才能本地运行。**失去：****精度**——每个权重都有一点误差，表现为推理、数学和长而细的任务上更多错误（Q8 几乎无损，Q4 是不错的折中，Q2 明显变差）。',
       basis_en: 'File sizes checked against the published GGUF files of Llama 3.2 3B Instruct on Hugging Face (F16 6.43 GB, Q8_0 3.42 GB, Q4_K_M 2.02 GB, Q2_K 1.36 GB). The quality ranking follows the course reading “GGUF quantization explained.”',
@@ -416,6 +443,15 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
       q_en: 'What is each one supposed to disclose?',
       q_zh: '这两种文档各自应该披露什么？',
       src: 'Mitchell et al., Model Cards; Gebru et al., Datasheets for Datasets',
+      kid_en: "Think of a new board game. Inside the box there’s a rule sheet that tells you what age it’s for, how to play, what it’s *not* meant for, and known problems (“the spinner sometimes sticks”). That is a **model card**: the instruction sheet and honest report card for an AI model. Now think of the snack you eat while playing: the package lists every ingredient, where it came from and warnings like “may contain nuts.” That is a **dataset card**: the ingredient label for the data the model learned from.",
+      kid_zh: "想象一款新的桌游。盒子里有一张说明书：适合几岁、怎么玩、*不*适合拿来干什么，还有已知的问题（“转盘有时会卡住”）。这就是**模型卡**：AI 模型的说明书和一份诚实的“成绩单”。再想想你边玩边吃的零食：包装上写着所有配料、产地，还有“可能含有坚果”这样的提醒。这就是**数据集卡**：模型所学数据的“配料表”。",
+      steps: [
+        {"en": "Left: the **model card** — the instruction sheet that comes with a model.", "zh": "左边：**模型卡**——随模型一起发布的说明书。", "hi": ["c7_model_card"]},
+        {"en": "It says what the model is **for** and what it is **not for**, how well it did on tests, and where it fails or is biased.", "zh": "它写明模型**用来做什么**、**不该用来做什么**、测试成绩如何，以及在哪里会出错或有偏见。", "hi": ["c74-m1", "c74-m3", "c74-m4"]},
+        {"en": "Right: the **dataset card** — the ingredient label for the data.", "zh": "右边：**数据集卡**——数据的“配料表”。", "hi": ["c7_dataset_card"]},
+        {"en": "It says why the data was collected and who paid, what’s inside (any personal info?), and how it was gathered — did people agree?", "zh": "它写明为什么收集这些数据、谁出的钱、里面有什么（有没有个人信息？），以及怎么收集的——人们同意了吗？", "hi": ["c74-d0", "c74-d1", "c74-d2"]},
+        {"en": "Follow the arrow: the model card’s “training data” line should point to a dataset card. That link is how you trace a model back to what it learned from.", "zh": "顺着箭头看：模型卡里“训练数据”那一行，应该指向一份数据集卡。这条链接就是你把模型追溯回它学习材料的路径。", "hi": ["c74-m2", "c74-trace"]}
+      ],
       short_en: 'A **model card** (Mitchell et al., 2019) discloses the **model**: who made it and its license, **intended and out-of-scope uses**, its training data, **evaluation results broken down across groups**, and **limitations, biases and ethical considerations**. A **dataset card / datasheet** (Gebru et al.) discloses the **data**: **motivation** (why, by whom, funded by whom), **composition** (what’s in it, any personal data), **collection process** and consent, preprocessing, recommended uses, distribution and maintenance.',
       short_zh: '**模型卡**（Mitchell 等人，2019）披露的是**模型**：谁做的、许可证、**预期用途与不适用场景**、训练数据、**按人群分组的评估结果**，以及**局限、偏见和伦理考量**。**数据集卡 / 数据表**（Gebru 等人）披露的是**数据**：**动机**（为什么做、谁做的、谁出资）、**组成**（里面有什么、是否含个人信息）、**采集过程**与是否同意、预处理、推荐用途、分发与维护。',
       basis_en: 'Checked against Mitchell et al., “Model Cards for Model Reporting” (sections: model details, intended use, factors, metrics, evaluation data, training data, quantitative analyses, ethical considerations, caveats & recommendations) and Gebru et al., “Datasheets for Datasets” (motivation, composition, collection process, preprocessing/cleaning/labeling, uses, distribution, maintenance).',
@@ -424,7 +460,7 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
       rel: ['7.5', '7.2'],
       fig() {
         const C = F.C; let s = '';
-        const card = (x, title, zh, col, fill, tip, rows) => {
+        const card = (x, title, zh, col, fill, tip, rows, idp) => {
           let g = `<rect x="${x + 6}" y="26" width="300" height="320" rx="8" fill="#f3f2ee" stroke="${C.ink}" stroke-width="1"/>` +
             `<rect x="${x}" y="20" width="300" height="320" rx="8" fill="#fff" stroke="${C.ink}" stroke-width="1.15"/>` +
             `<rect x="${x}" y="20" width="300" height="44" rx="8" fill="${fill}" stroke="${col}"/>` +
@@ -432,8 +468,8 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
           s += F.g(g, { tip });
           rows.forEach(([t, z, n], i) => {
             const y = 72 + i * 41;
-            s += F.g(F.rect(x + 12, y, 276, 35, { rx: 3 }) + F.text(x + 24, y + 11, t, { anchor: 'start', cls: 'tiny' }) + F.sub(x + 24, y + 29, z, { anchor: 'start' }),
-              { note: n });
+            s += `<g id="${idp}${i}">` + F.g(F.rect(x + 12, y, 276, 35, { rx: 3 }) + F.text(x + 24, y + 11, t, { anchor: 'start', cls: 'tiny' }) + F.sub(x + 24, y + 29, z, { anchor: 'start' }),
+              { note: n }) + '</g>';
           });
         };
         card(30, 'MODEL CARD', '模型卡 · Mitchell 等人 2019', C.mag, C.magF, 'c7_model_card', [
@@ -444,7 +480,7 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
           ['LIMITATIONS · BIAS', '局限与偏见', { en: 'Known failure modes and biases.', zh: '已知的失败情况与偏见。' }],
           ['ETHICAL CONSIDERATIONS', '伦理考量与建议', { en: 'Risks, sensitive uses, recommendations.', zh: '风险、敏感用途、使用建议。' }],
           ['', '', null]
-        ].slice(0, 6));
+        ].slice(0, 6), 'c74-m');
         card(430, 'DATASET CARD', '数据集卡 · Gebru 等人 “数据表”', C.blue, C.blueF, 'c7_dataset_card', [
           ['MOTIVATION', '为什么做 谁出资', { en: 'Why was the dataset created, by whom, funded by whom?', zh: '为什么创建、由谁创建、谁出资？' }],
           ['COMPOSITION', '里面有什么 含个人信息吗', { en: 'What the instances are, how many, what is missing, any personal or sensitive data.', zh: '每条数据是什么、有多少、缺了什么、是否有个人或敏感信息。' }],
@@ -452,9 +488,9 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
           ['PREPROCESSING', '清洗 过滤 标注', { en: 'Cleaning, filtering, deduplication, labeling — what was removed and why.', zh: '清洗、过滤、去重、标注——删掉了什么、为什么。' }],
           ['USES', '适合与不适合的用途', { en: 'What it has been / should / should not be used for.', zh: '已用于、适合用于、不应用于什么。' }],
           ['DISTRIBUTION · MAINTENANCE', '许可证 维护与更新', { en: 'License, how it is shared, who maintains and updates it.', zh: '许可证、如何分发、由谁维护和更新。' }]
-        ]);
-        s += F.path('M318,163 C370,163 380,42 428,42', { stroke: C.mag, arrow: true, dash: '4 3' });
-        s += F.text(375, 110, 'trace', { cls: 'tiny', color: C.mag });
+        ], 'c74-d');
+        s += '<g id="c74-trace">' + F.path('M318,163 C370,163 380,42 428,42', { stroke: C.mag, arrow: true, dash: '4 3' }) +
+          F.text(375, 110, 'trace', { cls: 'tiny', color: C.mag }) + '</g>';
         return F.svg(760, 355, s, { label: 'model card vs dataset card' });
       },
       cap_en: 'Two documents that are meant to travel with the artifact. The model card’s “training data” section should point to a dataset card — that link is how you walk a model back to its data.',
@@ -503,6 +539,15 @@ In class we read real cards on Hugging Face. What a card leaves out — “train
       q_en: 'Common Crawl, C4, FineWeb, Dolma: how do these relate, and how do you trace a model back to its data?',
       q_zh: 'Common Crawl、C4、FineWeb、Dolma 之间是什么关系？你如何把一个模型追溯回它的数据？',
       src: 'Class 7; WaPo C4 search; Have I Been Trained',
+      kid_en: "Imagine someone photocopied almost every page on the Internet and dumped them into one gigantic warehouse — ads, spam, recipes, homework, everything. That warehouse is **Common Crawl**. Nobody wants to learn from the whole messy pile, so different teams sort through it: one keeps only clean English pages (**C4**), one keeps the best educational-looking pages (**FineWeb**), one mixes web pages with books, code and science papers (**Dolma**). Models are trained on these sorted boxes. To find out what a model read, you follow the labels back: model card → dataset card → open the box and search inside.",
+      kid_zh: "想象有人把互联网上几乎每一页都复印下来，全堆进一个巨大的仓库——广告、垃圾信息、菜谱、作业，什么都有。这个仓库就是 **Common Crawl**。没人想从这一大堆乱七八糟的东西里学习，所以不同的团队去挑拣：有的只留下干净的英文网页（**C4**），有的留下最像“好教材”的网页（**FineWeb**），有的把网页和书、代码、科学论文混在一起（**Dolma**）。模型就是用这些挑好的箱子训练出来的。想知道一个模型读过什么，就顺着标签往回找：模型卡 → 数据集卡 → 打开箱子在里面搜索。",
+      steps: [
+        {"en": "Start at the bottom: **Common Crawl**, the giant warehouse of photocopied web pages, collected since 2008.", "zh": "从最下面开始：**Common Crawl**，一个装满网页“复印件”的巨型仓库，从 2008 年开始收集。", "hi": ["c7_cc"]},
+        {"en": "**C4** (Google): one snapshot, cleaned up — English only, junk and bad words filtered out. It trained T5.", "zh": "**C4**（谷歌）：取一份快照清洗干净——只留英文，过滤掉垃圾和不雅词。用来训练 T5。", "hi": ["c7_c4"]},
+        {"en": "**FineWeb** (Hugging Face): a much bigger, carefully filtered and de-duplicated cut — about 15 trillion tokens.", "zh": "**FineWeb**（Hugging Face）：规模大得多、经过仔细过滤和去重的一份——约 15 万亿个 token。", "hi": ["c7_fineweb"]},
+        {"en": "**Dolma** (Ai2): web pages mixed with code, papers, books and Wikipedia — all public, so OLMo’s data can be checked.", "zh": "**Dolma**（Ai2）：网页加上代码、论文、书和维基百科——全部公开，所以 OLMo 的数据可以被检查。", "hi": ["c7_dolma"]},
+        {"en": "Now walk backwards along the bottom row: model card → dataset card → dataset viewer → search tools like the C4 search or Have I Been Trained.", "zh": "现在沿着最下面一行往回走：模型卡 → 数据集卡 → 数据集查看器 → 搜索工具，比如 C4 搜索或 Have I Been Trained。", "hi": ["c7_model_card", "c7_dataset_card", "c7_hibt"]}
+      ],
       short_en: '**Common Crawl** is the **raw web scrape** (monthly snapshots since 2008). **C4, FineWeb and Dolma are filtered, deduplicated cuts of it**: C4 (Google, built to train T5), FineWeb (Hugging Face, ~15 trillion tokens from 96 snapshots), Dolma (Ai2, Common Crawl mixed with code, papers, books and Wikipedia, for OLMo). To **trace a model back**: model card → its training-data section → the **dataset card** → the dataset viewer → search the corpus itself (Washington Post C4 search, Have I Been Trained).',
       short_zh: '**Common Crawl** 是**原始网页抓取**（2008 年起每月快照）。**C4、FineWeb、Dolma 都是从它过滤、去重切出来的**：C4（谷歌，为训练 T5）、FineWeb（Hugging Face，来自 96 份快照、约 15 万亿 token）、Dolma（Ai2，Common Crawl 再混入代码、论文、书和维基百科，用于 OLMo）。**追溯模型**：模型卡 → “训练数据”一节 → **数据集卡** → 数据集查看器 → 直接搜索语料（《华盛顿邮报》C4 搜索、Have I Been Trained）。',
       basis_en: 'Checked: FineWeb paper (15T tokens from 96 Common Crawl snapshots); Dolma README (v1.6 sources: Common Crawl, The Stack, C4, Reddit, peS2o, Project Gutenberg, Wikipedia/Wikibooks; ODC-BY license). C4 is T5’s cleaned Common Crawl (Raffel et al.). Note: OLMo 2 itself was trained on Dolma’s successors, OLMo-Mix-1124 and Dolmino-Mix-1124.',

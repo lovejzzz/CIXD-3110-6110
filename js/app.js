@@ -76,11 +76,25 @@
     ${widget ? `<div class="widget" data-widget="${q.id}">${widget}</div>` : fig}
     ${(q.cap_en || q.cap_zh) ? `<figcaption>${two(q.cap_en, q.cap_zh)}</figcaption>` : ''}
   </figure>` : ''}
+  ${q.steps && q.steps.length ? `<div class="stepper" data-stepper="${q.id}">
+    <div class="st-top"><span class="st-lbl"><span class="en">Walk through it</span><span class="zh">一步一步看</span></span><span class="st-dots">${q.steps.map((_, i) => `<button class="st-dot" data-go="${i}" aria-label="Step ${i + 1}"></button>`).join('')}</span>
+      <span class="st-btns"><button class="st-prev" aria-label="Previous step">←</button><button class="st-next"><span class="en">Next</span><span class="zh">下一步</span> →</button></span></div>
+    <div class="st-say" aria-live="polite"></div>
+  </div>` : ''}
+  ${(q.embeds || []).map(e => `<figure class="plate cf-plate">
+    <div class="cf-cap"><span>FIG. ${q.id} · <b class="live">3D · SEE-THROUGH</b></span><span class="cf-name"><span class="en">${esc(e.name_en)}</span><span class="zh">${esc(e.name_zh)}</span></span><a class="cf-open" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="en">Open full screen ↗</span><span class="zh">全屏打开 ↗</span></a></div>
+    <iframe class="cf-frame" src="${esc(e.src)}" title="${esc(e.name_en)}" loading="lazy" style="height:${e.h || 640}px"></iframe>
+    <div class="cf-hint"><span class="en">${esc(e.hint_en || 'Drag to turn · switch on See-through to look inside')}</span><span class="zh">${esc(e.hint_zh || '拖动旋转 · 打开 See-through 看内部')}</span></div>
+  </figure>`).join('')}
   <div class="recall-gate">
     <p class="en">Recall mode — say your answer out loud first.</p><p class="zh">自测模式——先用自己的话说一遍。</p>
     <button class="reveal-btn" data-reveal="${q.id}"><span class="en">Show answer</span><span class="zh">显示答案</span></button>
   </div>
   <div class="ans-wrap">
+  ${q.kid_en ? `<section class="kid">
+    <h4><span class="kid-ico" aria-hidden="true"></span><span class="en">Explain it like I'm 12</span><span class="zh">像给 12 岁的孩子讲</span></h4>
+    ${two(q.kid_en, q.kid_zh)}
+  </section>` : ''}
   ${hasShort ? `<section class="ans short">
     <h4><span class="en">Full-credit answer</span><span class="zh">得分版答案</span><i class="h4-note"><span class="en">what to write on the exam</span><span class="zh">考卷上写到这些就够</span></i></h4>
     ${two(q.short_en, q.short_zh)}
@@ -121,6 +135,35 @@
   $('#nav').innerHTML = nav();
   $('#content').innerHTML = CL.map(section).join('');
   if (window.HERO) $('#hero-fig').innerHTML = window.HERO();
+
+  /* steppers: walk a figure step by step, highlighting parts by their tooltip key */
+  $$('[data-stepper]').forEach(el => {
+    const q = qById[el.dataset.stepper], art = el.closest('.q'), plate = art.querySelector('.plate');
+    let i = -1;
+    const say = el.querySelector('.st-say');
+    const show = n => {
+      i = Math.max(-1, Math.min(q.steps.length - 1, n));
+      const st = q.steps[i];
+      el.querySelectorAll('.st-dot').forEach((d, k) => { d.classList.toggle('on', k === i); d.classList.toggle('done', k < i); });
+      el.querySelector('.st-prev').disabled = i <= 0;
+      const nx = el.querySelector('.st-next');
+      nx.innerHTML = i === -1 ? '<span class="en">Start</span><span class="zh">开始</span> →' : i === q.steps.length - 1 ? '<span class="en">Again</span><span class="zh">再来一遍</span> ↺' : '<span class="en">Next</span><span class="zh">下一步</span> →';
+      if (plate) {
+        plate.querySelectorAll('.st-hl').forEach(x => x.classList.remove('st-hl'));
+        const keys = st && st.hi || [];
+        plate.classList.toggle('stepping', keys.length > 0);
+        keys.forEach(k => plate.querySelectorAll(`[data-tip="${k}"], #${CSS.escape(k)}`).forEach(x => x.classList.add('st-hl')));
+      }
+      say.innerHTML = st ? `<b class="st-n">${i + 1}/${q.steps.length}</b>${two(st.en, st.zh, 'st-bi')}` :
+        `<span class="st-intro"><span class="en">${q.steps.length} short steps. Press Start.</span><span class="zh">共 ${q.steps.length} 小步，按“开始”。</span></span>`;
+    };
+    el.addEventListener('click', e => {
+      if (e.target.closest('.st-next')) show(i === q.steps.length - 1 ? 0 : i + 1);
+      else if (e.target.closest('.st-prev')) show(i - 1);
+      else if (e.target.closest('.st-dot')) show(+e.target.closest('.st-dot').dataset.go);
+    });
+    show(-1);
+  });
 
   /* glow figures (lazy, per plate) */
   if (window.GLOW) try { GLOW.init(CL); } catch (e) { console.error('glow init', e); }

@@ -66,6 +66,9 @@ defTerms({
   c3_digital_labor: { en: 'Digital labor', zh: '数字劳动',
     d_en: 'Following Fuchs: the embodied work of building and maintaining the digital stack — from mining and assembly to data labeling, content moderation and waste cleanup.',
     d_zh: '沿用福克斯的说法：建造和维护数字技术栈的“有身体的”劳动——从采矿、组装，到数据标注、内容审核和电子垃圾处理。' },
+  c3_request: { en: 'One voice request', zh: '一次语音请求',
+    d_en: 'The top of Crawford & Joler’s map: a few seconds of convenience (“what time is it?”) that depends on everything underneath.',
+    d_zh: '克劳福德与约勒地图的最顶端：几秒钟的便利（“现在几点？”），却依赖下面的一切。' },
   c3_pyramid: { en: 'Fractal pyramid of value extraction', zh: '价值攫取的分形金字塔',
     d_en: 'Crawford & Joler: a pyramid with a billionaire at the top and mines, waste lakes, shipping containers and factory dormitories at the base — repeated at every scale.',
     d_zh: '克劳福德与约勒：顶端是亿万富翁，底层是矿山、废料湖、集装箱和工厂宿舍的金字塔——在每个尺度上重复出现。' }
@@ -78,7 +81,17 @@ defClass({
   intro_zh: '机器是怎么“阅读”的？这一课先打开模型——一层层数字、词元、嵌入——然后一直拉远镜头，看到每一次 AI 请求背后默默依赖的矿山、工厂和劳动者。',
   qs: [
     {
-      id: '3.1', t_en: 'Neural network', t_zh: '神经网络',
+      id: '3.1',
+      kid_en: `Imagine a row of classmates trying to guess a hidden drawing. The first row each sees a few squares and calls out how dark they are. The second row listens — but each kid trusts some voices more than others — and adds it up: “that sounds like a line across the top!” The last row votes on which number it is. How much each kid trusts each voice is a **weight**; how loudly they shout is the **activation**. Learning just means changing who trusts whom until the right answer wins.`,
+      kid_zh: `想象一排排同学在猜一幅被遮住的画。第一排每人只看到几个小格子，大声报出它有多黑。第二排的同学听着——但每个人更相信某些人的声音——把听到的加起来：“上面好像有一条横线！”最后一排投票：这是几？每个同学有多相信某个声音，就是**权重**；喊得有多大声，就是**激活值**。“学习”就是不断调整谁信谁，直到正确答案赢。`,
+      steps: [
+        { en: 'Start on the left. The drawing of a 7 becomes numbers: dark squares are 1, white squares are 0. Each square is one neuron holding a number.', zh: '从左边开始。画的“7”变成了数字：黑格是 1，白格是 0。每个格子就是一个装着数字的神经元。', hi: ['c3_neuron'] },
+        { en: 'Every line is a weight — how much one neuron listens to another. Blue means “this counts for it,” red means “this counts against it.”', zh: '每一条线都是一个权重——一个神经元有多“听”另一个神经元的话。蓝色表示“支持”，红色表示“反对”。', hi: ['c3_weight'] },
+        { en: 'Each column is a layer. It listens to the whole column before it and lights up its own neurons (magenta = lit).', zh: '每一列是一层。它听前面一整列的话，然后点亮自己的神经元（洋红色＝亮了）。', hi: ['c3_activation'] },
+        { en: 'Zoom into one neuron: multiply each input by its weight, add them up, add the bias, squash to 0–1. That is all one neuron does.', zh: '放大一个神经元：每个输入乘上权重，全部加起来，再加偏置，压到 0–1 之间。一个神经元做的就只有这些。', hi: ['c3_bias'] },
+        { en: 'At the end the “7” neuron lights up. Training = nudging the weights until the right output lights.', zh: '最后，代表“7”的神经元亮了。训练＝一点点调整权重，直到正确的输出亮起来。', hi: ['c3_layer'] }
+      ],
+      t_en: 'Neural network', t_zh: '神经网络',
       short_en: `Each neuron holds an [[c3_activation]] (a number 0–1); a layer is a column of them. One layer **takes all the activations of the layer before it, multiplies each by a [[c3_weight]], adds them up with a [[c3_bias]], and squashes the sum** (sigmoid/ReLU) into its own activations: a′ = σ(W·a + b). So each layer **re-describes** the previous one at a more abstract level (pixels → edges → strokes → “7”), and learning means adjusting the weights.`,
       short_zh: `每个神经元装着一个[[c3_activation]]（0–1 的数），一层就是一列神经元。一层会**取前一层所有的激活值，各乘一个[[c3_weight]]，加起来再加上[[c3_bias]]，然后“压缩”**（sigmoid/ReLU）成自己的激活值：a′ = σ(W·a + b)。所以每一层都在更抽象的层次上**重新描述**前一层（像素 → 边缘 → 笔画 → “7”），而“学习”就是调整权重。`,
       basis_en: `3Blue1Brown, “But what is a neural network?”: a neuron is “a thing that holds a number” (0–1); each connection has a weight, a bias is added to the weighted sum, and a sigmoid squashes it; in matrix form the next layer = σ(W·a + b). Checked against the 3Blue1Brown lesson page. TensorFlow Playground shows the same idea visually.`,
@@ -140,7 +153,7 @@ defClass({
         z += F.text(X + 14, Y + 136, 'Σ + b  (bias)', { anchor: 'start', cls: 'mono' });
         z += F.text(X + 14, Y + 158, 'σ( … ) → a′', { anchor: 'start', cls: 'mono', color: C.mag });
         z += F.text(X + 14, Y + 180, 'squash to 0–1 = activation', { anchor: 'start', cls: 'tiny', color: C.mute });
-        s += F.g(z, { note: { en: 'Each new activation = squash(weighted sum of ALL previous activations + bias): a′ = σ(W·a + b).', zh: '每个新激活值 = 压缩（上一层所有激活值的加权和 + 偏置）：a′ = σ(W·a + b)。' } });
+        s += F.g(z, { tip: 'c3_bias', note: { en: 'Each new activation = squash(weighted sum of ALL previous activations + bias): a′ = σ(W·a + b).', zh: '每个新激活值 = 压缩（上一层所有激活值的加权和 + 偏置）：a′ = σ(W·a + b)。' } });
         s += F.g(F.line(570, 300, 596, 300, { stroke: C.blue, sw: 2 }) + F.text(602, 304, '+ weight excites', { anchor: 'start', cls: 'tiny', color: C.blue }) +
           F.line(570, 318, 596, 318, { stroke: C.red, sw: 2 }) + F.text(602, 322, '− weight inhibits', { anchor: 'start', cls: 'tiny', color: C.red }), { tip: 'c3_weight' });
         return F.svg(760, 340, s, { label: 'neural network layers with one neuron zoomed' });
@@ -163,7 +176,16 @@ In my own words: each layer **re-describes** the layer before it. Weights decide
       trap_zh: '题目里的三个词（层、权重、激活值）都要用上，并说清各自的作用。“学习”＝调整权重。'
     },
     {
-      id: '3.2', t_en: 'Token / tokenizer', t_zh: '词元 / 分词器',
+      id: '3.2',
+      kid_en: `Think of a secret club with a codebook. The codebook doesn’t list every word in the world — it lists common chunks like “un”, “believ”, “ably”, and gives each chunk a number. Any word, even a brand-new name, can be built from chunks. The computer only ever sees the numbers, never the letters. That’s a **tokenizer**: chunks → numbers. It’s also why AI is bad at counting the r’s in “strawberry” — it never saw the letters!`,
+      kid_zh: `想象一个秘密社团有本密码本。密码本不会收录世界上每一个词，而是收录常见的“小块”，比如“un”“believ”“ably”，每块配一个编号。任何词，哪怕是新造的名字，都能用这些小块拼出来。电脑只看得到编号，看不到字母。这就是**分词器**：小块 → 数字。这也是为什么 AI 数不清“strawberry”里有几个 r——它根本没看到字母！`,
+      steps: [
+        { en: 'Look at the sentence in the box. The tokenizer cuts it into chunks — each colored block is one token.', zh: '看框里的句子。分词器把它切成小块——每个彩色方块就是一个 token。', hi: [] },
+        { en: 'Under each block is its ID number. The model never sees letters — only this list of numbers.', zh: '每个方块下面是它的编号。模型从来看不到字母——只看到这串数字。', hi: [] },
+        { en: 'Find “strawberry”: it is one or two chunks, not ten letters. That is why counting its r’s is hard for a model.', zh: '找到“strawberry”：它是一两个小块，而不是十个字母。所以模型很难数出里面有几个 r。', hi: [] },
+        { en: 'Now press 中文 or “rare” and watch the token count change — unusual words get chopped into more pieces.', zh: '现在按“中文”或“rare”，看 token 数量怎么变——不常见的词会被切成更多块。', hi: [] }
+      ],
+      t_en: 'Token / tokenizer', t_zh: '词元 / 分词器',
       short_en: `A [[c3_token]] is **a chunk of text — a word, part of a word, punctuation or a space — that the [[c3_tokenizer]] maps to an integer ID** from a fixed [[c3_vocab]]. The model sees your sentence as tokens because **a neural network only takes numbers from a fixed, finite list**; sub-word pieces can spell any word (new words, names, typos, other languages) without an endless word list. That’s also why limits and prices are counted in tokens.`,
       short_zh: `[[c3_token]]是**一小段文本——一个词、词的一部分、标点或空格——由[[c3_tokenizer]]按照固定的[[c3_vocab]]映射成一个整数编号**。模型把句子看成词元，是因为**神经网络只能接收来自一个固定、有限列表的数字**；子词碎片可以拼出任何词（新词、人名、错别字、其他语言），而不需要一张无穷无尽的单词表。这也是上限和价格按词元计算的原因。`,
       basis_en: `Follows the tokenizer playground used in class (e.g. Tiktokenizer, listed in the course resources): text is split into sub-word tokens by a byte-pair-encoding vocabulary and each token becomes an ID. The live demo above uses the open-source gpt-tokenizer library (OpenAI’s o200k vocabulary) when it can load; otherwise a simplified offline splitter.`,
@@ -288,7 +310,16 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
       trap_zh: '不要写“词元就是一个词”。要写“文本片段/子词 + 编号”，并给出原因（固定词表、新词、只能处理数字）。'
     },
     {
-      id: '3.3', t_en: 'Embedding', t_zh: '嵌入',
+      id: '3.3',
+      kid_en: `Picture a giant lunchroom where every word has a seat. Words that show up in the same conversations end up at the same table: “dog”, “puppy”, “cat” sit together; “jazz” and “piano” sit across the room. A word’s seat is written as numbers — like map coordinates, but with hundreds of directions instead of two. That list of numbers is an **embedding**, and “close” means “used in similar sentences.”`,
+      kid_zh: `想象一个超大的食堂，每个词都有一个座位。经常出现在同一类对话里的词，会坐到同一张桌子：“狗”“小狗”“猫”坐在一起；“爵士”“钢琴”坐在食堂另一头。一个词的座位用一串数字表示——像地图坐标，只不过不是两个方向，而是几百个方向。这串数字就是**嵌入**，“离得近”就是“在相似的句子里出现”。`,
+      steps: [
+        { en: 'Each dot is a word, placed by its numbers. Words used in the same kinds of sentences form neighborhoods.', zh: '每个点是一个词，位置由它的数字决定。用在同类句子里的词，会聚成一个“街区”。', hi: ['c3_embedding'] },
+        { en: '“dog” and “puppy” are almost touching: the model saw them used in very similar ways. Close = used alike.', zh: '“dog”和“puppy”几乎贴在一起：模型看到它们的用法非常像。离得近＝用法像。', hi: ['c3_distributional'] },
+        { en: 'Directions mean something too: the step from “man” to “woman” is the same step as “king” to “queen.”', zh: '方向也有意义：从“man”到“woman”的那一步，和从“king”到“queen”是同一步。', hi: ['c3_vector_space'] },
+        { en: 'Remember: the real map has hundreds of directions. This picture squashes it flat so our eyes can see it.', zh: '记住：真正的地图有几百个方向。这张图只是把它压扁，好让我们的眼睛看得见。', hi: [] }
+      ],
+      t_en: 'Embedding', t_zh: '嵌入',
       short_en: `An [[c3_embedding]] is **a vector — a long list of numbers — that places a token or word as a point in a high-dimensional space**, learned during training from the contexts the word appears in. Two words being close means **the model has seen them used in similar contexts** (similar usage, usually similar meaning — “you shall know a word by the company it keeps”); directions can also encode relations (man→woman ≈ king→queen).`,
       short_zh: `[[c3_embedding]]是**一个向量——一长串数字——把一个词元或单词放到高维空间中的某个点上**，它是在训练中从这个词出现的语境里学出来的。两个词距离近，意味着**模型见过它们在相似的语境中被使用**（用法相似，通常意思也相近——“观其伴，知其词”）；方向也能编码关系（man→woman ≈ king→queen）。`,
       basis_en: `Follows Google’s Embedding Projector (the class activity): it projects ~200–768-dimensional word vectors down to 3D with PCA/t-SNE/UMAP so nearest neighbours become visible. “Close = used alike” is the distributional idea (J.R. Firth).`,
@@ -315,7 +346,7 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
           g += `<ellipse cx="${cx}" cy="${cy}" rx="${(Math.max(...xs) - Math.min(...xs)) / 2 + 48}" ry="${(Math.max(...ys) - Math.min(...ys)) / 2 + 26}" fill="${cl.f}" stroke="${cl.c}" stroke-dasharray="3 3" opacity=".8"/>`;
           cl.pts.forEach(([w, x, y]) => g += `<circle cx="${x}" cy="${y}" r="3.5" fill="${cl.c}"/>` + (w === 'dog' ? F.text(x - 8, y + 4, w, { anchor: 'end', cls: 'mono', color: F.C.ink }) : F.text(x + 7, y - 6, w, { anchor: 'start', cls: 'mono', color: F.C.ink })));
           g += F.text(cx, cy + (Math.max(...ys) - Math.min(...ys)) / 2 + 42, cl.en, { cls: 'tiny', color: cl.c }) + F.sub(cx, cy + (Math.max(...ys) - Math.min(...ys)) / 2 + 56, cl.zh, { anchor: 'middle' });
-          s += F.g(g, { note: { en: `A neighborhood: these words appear in similar sentences, so training pushed their vectors together.`, zh: `一个“街区”：这些词出现在相似的句子里，所以训练把它们的向量推到了一起。` } });
+          s += F.g(g, { tip: 'c3_embedding', note: { en: `A neighborhood: these words appear in similar sentences, so training pushed their vectors together.`, zh: `一个“街区”：这些词出现在相似的句子里，所以训练把它们的向量推到了一起。` } });
         });
         // close pair callout
         s += F.g(F.line(143, 92, 170, 72, { stroke: F.C.mag, sw: 2 }) + F.label([157, 82], 300, 'CLOSE = USED ALIKE', { color: F.C.mag }) + F.sub(308, 99, '距离近＝用法相似'), { tip: 'c3_distributional' });
@@ -325,7 +356,7 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
         A.forEach(([x, y, w]) => an += `<circle cx="${x}" cy="${y}" r="3.5" fill="${F.C.ink}"/>` + F.text(x + 7, y + 14, w, { anchor: 'start', cls: 'mono' }));
         an += F.arrow(252, 228, 296, 193, { stroke: F.C.mag }) + F.arrow(362, 248, 406, 213, { stroke: F.C.mag });
         an += F.text(330, 290, 'same direction = same relation', { cls: 'tiny', color: F.C.mag });
-        s += F.g(an, { note: { en: 'Directions carry meaning too: king − man + woman ≈ queen. (Biases in the training text get encoded the same way.)', zh: '方向也有意义：king − man + woman ≈ queen。（训练文本里的偏见也会以同样的方式被编码进去。）' } });
+        s += F.g(an, { tip: 'c3_vector_space', note: { en: 'Directions carry meaning too: king − man + woman ≈ queen. (Biases in the training text get encoded the same way.)', zh: '方向也有意义：king − man + woman ≈ queen。（训练文本里的偏见也会以同样的方式被编码进去。）' } });
         return F.svg(760, 330, s, { label: '2D projection of word embeddings' });
       },
       cap_en: 'What the Embedding Projector shows, flattened to two dimensions: words become points, and meaning becomes geography.',
@@ -346,7 +377,16 @@ Directions also matter: the step from *man* to *woman* roughly equals the step f
       trap_zh: '要写出“向量/一串数字”、“从语境中学来”，以及“近＝用法相似”（而不是字典意义上的相同）。'
     },
     {
-      id: '3.4', t_en: 'Autonomy slider', t_zh: '自主性滑块',
+      id: '3.4',
+      kid_en: `Think of learning to ride a bike. At first a parent holds the seat the whole time; later they let go for a few meters; one day you ride alone. An AI helper is the same, but backwards: it can give a hint, write one sentence, write the whole essay, or even hand it in for you. The further it goes alone, the more you have to check afterward. Karpathy’s **autonomy slider** is that dial — and you choose where to set it.`,
+      kid_zh: `想想学骑自行车。一开始大人一直扶着后座；后来松手几米；终于有一天你自己骑。AI 助手也一样，只是方向反过来：它可以给你一点提示、帮你写一句、写完整篇作文，甚至直接帮你交上去。它自己走得越远，你事后要检查的就越多。卡帕西说的**自主性滑块**就是这个旋钮——由你决定拨到哪一档。`,
+      steps: [
+        { en: 'The dot on the line is the slider. Left = the AI only helps a little. Right = the AI does almost everything.', zh: '线上的圆点就是滑块。左边＝AI 只帮一点点；右边＝AI 几乎全包。', hi: [] },
+        { en: 'Look at the bar: blue is how much you control, pink is how much the AI controls.', zh: '看这条横条：蓝色是你掌控的部分，粉色是 AI 掌控的部分。', hi: ['c3_gen_verify', 'c3_slider'] },
+        { en: 'Drag the slider right. Pink grows — and the “You verify” card gets harder. Faster, but riskier.', zh: '把滑块往右拖。粉色变多——“你要检查的”卡片也变难了。更快，但风险更高。', hi: [] },
+        { en: 'Click “Your work” and pick where YOU would set it, and why. That is the second half of the exam question.', zh: '点“你的工作”，选一个你自己会设的档位，并想好理由。这就是考题的后半部分。', hi: [] }
+      ],
+      t_en: 'Autonomy slider', t_zh: '自主性滑块',
       short_en: `Karpathy (Software 3.0) says good AI apps offer **partial autonomy with an [[c3_slider]]: what moves is the split of control between human and AI** — how big a chunk the AI does per step and how much the human must verify (Cursor: tab-complete → edit selection → edit file → agent on the whole repo; Perplexity: search → research → deep research). His advice: keep the AI “on a leash” and the [[c3_gen_verify]] fast. **My setting:** [name a level + a task + why — e.g. low/middle for design work, because taste and accuracy are hard to verify in big chunks].`,
       short_zh: `卡帕西（软件 3.0）认为，好的 AI 应用提供**带[[c3_slider]]的部分自主：移动的是人和 AI 之间控制权的分配**——AI 每一步做多大一块、人需要验证多少（Cursor：Tab 补全 → 改选中部分 → 改整个文件 → 智能体改整个仓库；Perplexity：搜索 → 研究 → 深度研究）。他的建议：给 AI “拴上绳子”，让[[c3_gen_verify]]保持快速。**我的设定：**[写出一个档位 + 一项任务 + 理由——例如设计工作设在偏低/中间，因为品味和准确性很难大块验证]。`,
       basis_en: `Karpathy, “Software Is Changing (Again)”, YC AI Startup School 2025 (annotated by Latent Space). The course glossary defines the autonomy slider as a user-selectable level of AI autonomy, with Cursor, Perplexity and Tesla Autopilot as examples, and the generation–verification loop as “verification made easy, generation kept on a tight leash.” The Latent Space notes are paywalled, so this follows the course glossary and widely published talk notes.`,
@@ -465,7 +505,17 @@ His advice: it’s an [[c3_ironman]] — for now build more **augmentation** tha
       trap_zh: '两部分：（1）移动的是什么——自主/控制 vs 人的验证，并举例；（2）你自己的设定和理由。不要漏掉个人部分。'
     },
     {
-      id: '3.5', t_en: 'Infrastructure as physical', t_zh: '基础设施是物质的',
+      id: '3.5',
+      kid_en: `Asking a smart speaker “what time is it?” feels like magic — like a vending machine that answers. But think of the school lunch: before it reaches your tray, farmers grew it, trucks carried it, cooks made it, and someone washes the trays. One tiny question works the same way. It uses metals dug out of the ground (**material**), the work of many people — miners, factory workers, people who label data, even you, because your voice helps train it (**labor**) — and giant computers (**computing**). All three, every single time.`,
+      kid_zh: `问智能音箱“现在几点？”感觉像魔法——像一台会说话的自动售货机。但想想学校的午饭：到你餐盘之前，有农民种菜、卡车运输、厨师做饭、有人洗盘子。一个小小的问题也是这样。它用到从地下挖出来的金属（**物质**），用到很多人的劳动——矿工、工厂工人、给数据贴标签的人，甚至还有你，因为你的声音也在帮它训练（**劳动**）——还用到巨大的计算机（**计算**）。每一次，三样同时都在。`,
+      steps: [
+        { en: 'Top: one tiny question — a few seconds of convenience. This is the only part you normally see.', zh: '最上面：一个小小的问题——几秒钟的便利。平时你只看得到这一层。', hi: ['c3_request'] },
+        { en: 'Under it: the computing — microphones, the internet, data centers and the AI model that hears you.', zh: '它下面：计算——麦克风、互联网、数据中心，还有听懂你说话的 AI 模型。', hi: ['c3_anatomy'] },
+        { en: 'Under that: people at work — miners, factory workers, data labelers… and you, whose voice trains it.', zh: '再下面：在干活的人——矿工、工厂工人、数据标注员……还有你，你的声音在训练它。', hi: ['c3_digital_labor'] },
+        { en: 'At the bottom: the earth itself — metals, energy, shipping, and e-waste when the speaker is thrown away.', zh: '最底下：地球本身——金属、能源、运输，以及音箱被扔掉后的电子垃圾。', hi: ['c3_extractivism'] },
+        { en: '“At once” means all layers are needed for every question. Take away any layer and the magic stops.', zh: '“同时”的意思是：每问一次，所有层都要用到。抽掉任何一层，魔法就停了。', hi: [] }
+      ],
+      t_en: 'Infrastructure as physical', t_zh: '基础设施是物质的',
       short_en: `In [[c3_anatomy]], Crawford & Joler trace one Amazon Echo request and show it is three systems working **at the same time**: a **material system** (minerals mined, energy, shipping, e-waste — [[c3_extractivism]]), a **form of labor** (miners, factory workers, data labelers, and users whose speech trains it — [[c3_digital_labor]]), and a **computing system** (data, models, cloud servers). “At once” means every second of convenience consumes the earth and hidden human work as well as computation — the clean interface hides the first two.`,
       short_zh: `在[[c3_anatomy]]中，克劳福德与约勒追踪一次亚马逊 Echo 请求，指出它是**同时运转**的三个系统：**物质系统**（开采的矿物、能源、运输、电子垃圾——[[c3_extractivism]]）、**一种劳动形式**（矿工、工厂工人、数据标注员，以及用说话训练它的用户——[[c3_digital_labor]]），以及**计算系统**（数据、模型、云服务器）。“同时”意味着每一秒的便利都在消耗地球资源和隐形的人类劳动，而不只是计算——干净的界面把前两者藏了起来。`,
       basis_en: `Crawford & Joler, Anatomy of an AI System (2018, anatomyof.ai), as summarized in the course glossary: extractivism (materials, labor and data), digital labor (from mining to data labeling to waste cleanup, after Fuchs), and the fractal pyramid of value extraction. The essay page itself could not be opened in this session.`,
@@ -477,7 +527,7 @@ His advice: it’s an [[c3_ironman]] — for now build more **augmentation** tha
       src: '',
       fig() {
         const L = [
-          { label: '“Alexa, what time is it?”', sub: '一次语音请求 · 几秒钟的便利', note: { en: 'The tiny moment of convenience at the top of the map.', zh: '地图顶端那一刻小小的便利。' }, fill: F.C.blueF, side: '#d5def6', t: 0.6,
+          { label: '“Alexa, what time is it?”', sub: '一次语音请求 · 几秒钟的便利', tip: 'c3_request', note: { en: 'The tiny moment of convenience at the top of the map.', zh: '地图顶端那一刻小小的便利。' }, fill: F.C.blueF, side: '#d5def6', t: 0.6,
             extra: z => { const p = F.iso(2, 2, z + 0.6); return `<ellipse cx="${p[0]}" cy="${p[1]}" rx="22" ry="12" fill="#fff" stroke="${F.C.blue}"/>`; } },
           { label: 'Computing system', sub: '计算：数据 模型 数据中心', tip: 'c3_anatomy', pattern: 'chips', density: 6,
             note: { en: 'Training data, neural networks, cloud data centers, networks and the energy to run them.', zh: '训练数据、神经网络、云端数据中心、网络，以及驱动它们的能源。' } },

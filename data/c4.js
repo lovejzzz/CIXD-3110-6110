@@ -63,6 +63,24 @@ defTerms({
   c4_vibe: { en: 'Vibe coding', zh: '氛围编程（vibe coding）',
     d_en: 'Karpathy’s term: loosely prompting an AI and shipping whatever comes back. The opposite of treating the prompt as a spec.',
     d_zh: 'Karpathy 的说法：随意地给 AI 提要求，回来什么就用什么。与“把提示词当规格说明”正好相反。' },
+  c4_workdir: { en: 'Working files', zh: '工作文件',
+    d_en: 'The files you see and edit right now. On their own they are just a folder — the history is what makes a repository.',
+    d_zh: '你此刻看到并编辑的文件。单独看只是一个文件夹——有了历史才叫仓库。' },
+  c4_message: { en: 'Commit message', zh: '提交信息',
+    d_en: 'A short note written by a person saying what changed and why — for your future self and teammates.',
+    d_zh: '由人写的一句简短说明：改了什么、为什么改——写给未来的自己和队友。' },
+  c4_parent: { en: 'Parent commit', zh: '父提交',
+    d_en: 'The pointer from a commit back to the snapshot before it. These links turn snapshots into a timeline.',
+    d_zh: '一个提交指回上一个快照的指针。这些链接把快照串成一条时间线。' },
+  c4_user_msg: { en: 'Your message', zh: '你的消息',
+    d_en: 'The only layer you typed. In the Four Prompts activity it was identical in every product.',
+    d_zh: '唯一由你输入的一层。在“四个提示词”活动里，它在每个产品中都完全相同。' },
+  c4_model_w: { en: 'Model weights (per product)', zh: '模型权重（各产品不同）',
+    d_en: 'Each product also runs a different model and version underneath the prompt layers.',
+    d_zh: '在提示词各层之下，每个产品运行的模型和版本也各不相同。' },
+  c4_check: { en: 'Checking output against criteria', zh: '对照标准检查输出',
+    d_en: 'Reading the result line by line against the success criteria you wrote first — each one becomes a ✓ or ✗.',
+    d_zh: '把结果逐条与你事先写好的成功标准对照——每一条都变成 ✓ 或 ✗。' },
   c4_sw3: { en: 'Software 3.0', zh: '软件 3.0',
     d_en: 'Karpathy: prompts are programs — “the hottest new programming language is English.” Writing a prompt is a kind of programming in prose.',
     d_zh: 'Karpathy：提示词就是程序——“最热门的新编程语言是英语”。写提示词是一种用文字编程。' }
@@ -75,7 +93,16 @@ defClass({
   intro_zh: '我们通过 GitHub 和 Vercel 把网站上线——由此理解仓库、提交和部署；然后把同一个提示词发给四个商业产品，发现“产品不等于模型”，而提示词是一种写作：一份规格说明。',
   qs: [
     {
-      id: '4.1', t_en: 'Repository', t_zh: '仓库',
+      id: '4.1',
+      kid_en: `Think of a video game with save points. The folder is the game you’re playing right now. Every time you hit “save,” Git keeps that save — all of them, forever, in a hidden folder called .git — so you can go back to any earlier save. GitHub is the cloud save, so your friends (and websites like Vercel) can load the same game. A **repository** = your game + every save you ever made.`,
+      kid_zh: `想想有存档点的电子游戏。文件夹就是你正在玩的这一局。每次按“保存”，Git 都会把这个存档留下来——全部永久保存在一个叫 .git 的隐藏文件夹里——你随时可以回到任何一个旧存档。GitHub 是云存档，朋友们（还有 Vercel 这样的网站）可以读取同一个进度。**仓库**＝你的游戏 + 你存过的每一个档。`,
+      steps: [
+        { en: 'Top row: the files you are working on right now. By themselves, they are just a folder.', zh: '最上面一行：你正在编辑的文件。光有它们，只是一个普通文件夹。', hi: ['c4_workdir'] },
+        { en: 'Middle row: every save point (commit), kept in the hidden .git folder. The newest one is HEAD.', zh: '中间一行：每一个存档点（提交），都保存在隐藏的 .git 文件夹里。最新的叫 HEAD。', hi: ['c4_commit'] },
+        { en: 'git push copies those saves up to GitHub — the cloud save that teammates and Vercel can read.', zh: 'git push 把这些存档复制到 GitHub——队友和 Vercel 都能读取的云存档。', hi: ['c4_push', 'c4_github'] },
+        { en: 'Put it together: repository = files + every save. The history is what makes it more than a folder.', zh: '合起来：仓库＝文件 + 每一个存档。正是这段历史让它不只是一个文件夹。', hi: [] }
+      ],
+      t_en: 'Repository', t_zh: '仓库',
       short_en: `A [[c4_repo]] is **a project folder tracked by version control — the files plus their complete history**. [[c4_git]] stores that history in a hidden \`.git\` folder as a chain of [[c4_commit|commits]] (snapshots with who, when and why), and a copy usually lives remotely on [[c4_github]] so others — and services like Vercel — can read it. The history is what makes it a repository rather than just a folder.`,
       short_zh: `[[c4_repo]]是**受版本控制追踪的项目文件夹——文件加上它们的完整历史**。[[c4_git]]把历史存在隐藏的 \`.git\` 文件夹里，形成一串[[c4_commit|提交]]（记录了谁、何时、为什么的快照）；通常还有一份副本放在远程的[[c4_github]]上，让别人以及 Vercel 等服务读取。正是这份历史让它成为“仓库”，而不只是一个文件夹。`,
       basis_en: `Follows the class GitHub + Vercel exercise and GitHub’s own description of a repository as a project’s files plus each file’s revision history. The Git book describes commits as snapshots stored in the .git directory.`,
@@ -91,7 +118,7 @@ defClass({
         const rowL = (y, en, zh, col) => F.text(20, y, en, { anchor: 'start', cls: 'lt', color: col || C.ink }) + F.sub(20, y + 16, zh);
         // 1. working folder
         s += rowL(52, 'WORKING FILES', '工作文件：你正在编辑的');
-        s += F.g(file(220, 26, 'index.html') + file(290, 26, 'style.css') + file(360, 26, 'photo.jpg') + file(430, 26, 'about.html', { stroke: C.mag, fill: C.magF, tc: C.mag }), { note: { en: 'The files you see and edit. On their own this is just a folder.', zh: '你能看到并编辑的文件。单独看，它只是一个普通文件夹。' } });
+        s += F.g(file(220, 26, 'index.html') + file(290, 26, 'style.css') + file(360, 26, 'photo.jpg') + file(430, 26, 'about.html', { stroke: C.mag, fill: C.magF, tc: C.mag }), { tip: 'c4_workdir', note: { en: 'The files you see and edit. On their own this is just a folder.', zh: '你能看到并编辑的文件。单独看，它只是一个普通文件夹。' } });
         s += F.text(520, 50, '← edited, not yet committed', { anchor: 'start', cls: 'tiny', color: C.mag }) + F.sub(520, 66, '已修改，还没提交');
         // 2. .git history timeline
         s += rowL(150, '.git · HISTORY', '.git：隐藏的完整历史');
@@ -139,7 +166,17 @@ Because the whole history is kept, a repo lets you see what changed, go back to 
       trap_zh: '不要只答“存代码的地方”。要说出*历史 / 版本控制*——这才是仓库和普通文件夹的区别。'
     },
     {
-      id: '4.2', t_en: 'Commit', t_zh: '提交',
+      id: '4.2',
+      kid_en: `A commit is like one page in a scrapbook. You glue in a photo of your project exactly as it is right now, and you write a sticky note: today’s date, your name, and *why* you changed it (“added the contact form”). Each page also says “the page before this one is #9c07,” so the pages stay in order. Later you can flip back to any page, or compare two pages to see what changed.`,
+      kid_zh: `一个提交就像剪贴簿里的一页。你把项目此刻的样子拍张照贴进去，再贴一张便利贴：今天的日期、你的名字，还有*为什么*改（“加了联系表单”）。每一页还写着“上一页是 #9c07”，这样页面就不会乱。以后你可以翻回任意一页，或者比较两页，看看改了什么。`,
+      steps: [
+        { en: 'Top: commits form a chain. Each circle is one saved snapshot; the newest (HEAD) is on the right.', zh: '上面：提交连成一条链。每个圆圈是一个保存的快照；最新的（HEAD）在最右边。', hi: ['c4_commit'] },
+        { en: 'Open one commit. First: its unique ID, the hash — like a fingerprint no other commit has.', zh: '打开一个提交。第一项：它独一无二的编号——哈希值，就像别人没有的指纹。', hi: ['c4_hash'] },
+        { en: 'The message: a short note in human words saying WHY you made this change.', zh: '提交信息：一句用人话写的说明，讲清你为什么这样改。', hi: ['c4_message'] },
+        { en: 'The parent: an arrow back to the previous snapshot. These arrows are what make history a chain.', zh: '父提交：指回上一个快照的箭头。正是这些箭头让历史连成一条链。', hi: ['c4_parent'] },
+        { en: 'The diff: exactly what changed — green lines added, red lines removed.', zh: '差异：到底改了什么——绿色是新加的，红色是删掉的。', hi: ['c4_diff'] }
+      ],
+      t_en: 'Commit', t_zh: '提交',
       short_en: `A [[c4_commit]] is **a saved snapshot of the repository at one moment, made on purpose**, the basic unit of Git history. It records the changes (shown as a [[c4_diff]]), a unique [[c4_hash]], the author and time, a **message** saying what and why, and a pointer to its **parent** commit — which links snapshots into a timeline you can compare against or return to. Committing saves locally; you [[c4_push]] to send commits to GitHub.`,
       short_zh: `[[c4_commit]]是**仓库在某一时刻被有意保存下来的快照**，是 Git 历史的基本单位。它记录改动（以[[c4_diff]]显示）、唯一的[[c4_hash]]、作者和时间、说明改了什么和为什么的**提交信息**，以及指向**父提交**的指针——由此把快照连成一条可以对比、可以回退的时间线。提交是在本地保存；要[[c4_push]]才会发到 GitHub。`,
       basis_en: `Follows the class Git workflow and the official Git documentation (git commit records changes to the repository with a message; each commit points to its parent).`,
@@ -164,8 +201,8 @@ Because the whole history is kept, a repo lets you see what changed, go back to 
           F.text(X + 10, y + 15, k, { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.text(X + 10, y + h - 11, v, { anchor: 'start', cls: 'mono', color: o.vc || F.C.ink });
         s += row(Y, 40, 'HASH · 哈希值', 'a1b2c3d4e5f6…', { tip: 'c4_hash', vc: F.C.mag });
         s += row(Y + 46, 40, 'AUTHOR + TIME · 作者与时间', 'Ying <ying@gwu.edu> · Oct 6 14:02', { note: { en: 'Who made this change and when.', zh: '谁、在什么时候做了这次改动。' } });
-        s += row(Y + 92, 40, 'MESSAGE · 说明', '"Add contact form to homepage"', { note: { en: 'A short human explanation of WHY — written for your future self and teammates.', zh: '一句写给未来的自己和队友的说明：为什么改。' } });
-        s += row(Y + 138, 40, 'PARENT · 父提交', '9c07…', { note: { en: 'The link back to the previous snapshot — this is what makes history a chain.', zh: '指回上一个快照的链接——历史因此成为一条链。' } });
+        s += row(Y + 92, 40, 'MESSAGE · 说明', '"Add contact form to homepage"', { tip: 'c4_message', note: { en: 'A short human explanation of WHY — written for your future self and teammates.', zh: '一句写给未来的自己和队友的说明：为什么改。' } });
+        s += row(Y + 138, 40, 'PARENT · 父提交', '9c07…', { tip: 'c4_parent', note: { en: 'The link back to the previous snapshot — this is what makes history a chain.', zh: '指回上一个快照的链接——历史因此成为一条链。' } });
         // diff block
         let d = F.rect(X, Y + 184, Wc, 74, { fill: '#fff', rx: 3 }) + F.text(X + 10, Y + 199, 'SNAPSHOT / DIFF · 快照与差异', { anchor: 'start', cls: 'tiny', color: F.C.mute });
         d += `<rect x="${X + 8}" y="${Y + 207}" width="${Wc - 16}" height="18" fill="${F.C.greenF}"/>` + F.text(X + 14, Y + 220, '+ <form method="post" action="/contact">', { anchor: 'start', cls: 'mono', color: F.C.green });
@@ -201,7 +238,17 @@ You choose what goes in (stage) and then commit; you can always return to or com
       trap_zh: '提交不等于上传。commit 是在本地保存；push 才是发送到 GitHub。'
     },
     {
-      id: '4.3', t_en: 'Deployment', t_zh: '部署',
+      id: '4.3',
+      kid_en: `Imagine mailing your drawing to a magazine. You drop it in the mailbox (that’s **git push**). The post office (GitHub) rings the printing house (Vercel): “new drawing arrived!” The printer copies it, checks it prints right (the **build**), then sends copies to newsstands all over the world (the CDN) and gives you an address where anyone can see it (the URL). If the printer jams — the build fails — nothing new goes out, and the old issue stays on the shelves.`,
+      kid_zh: `想象你把一幅画寄给杂志社。你把它投进邮筒（这就是 **git push**）。邮局（GitHub）给印刷厂（Vercel）打电话：“新画到了！”印刷厂复印它，检查印得对不对（这就是**构建**），再把印好的杂志送到世界各地的报刊亭（CDN），还给你一个任何人都能看到它的地址（网址）。如果印刷机卡纸——构建失败——新的就发不出去，书架上还是旧的那一期。`,
+      steps: [
+        { en: 'Press space (or click the laptop). That is git push: your new commit leaves your computer.', zh: '按空格（或点笔记本）。这就是 git push：你的新提交离开了你的电脑。', hi: ['g43-lap'] },
+        { en: 'Watch the light travel: GitHub receives the commit and pings Vercel (the webhook).', zh: '看光点移动：GitHub 收到提交，然后通知 Vercel（这就是 webhook）。', hi: [] },
+        { en: 'Vercel clones that exact commit and runs the build. Its screen shows the steps.', zh: 'Vercel 把这个提交原样拉下来，运行构建。它的屏幕上显示每一步。', hi: [] },
+        { en: 'The result is copied to servers worldwide, and the browser on the right shows the live URL.', zh: '结果被复制到世界各地的服务器，右边的浏览器显示出上线的网址。', hi: [] },
+        { en: 'Now press B to break the build and push again. Nothing new goes live — the old version stays up.', zh: '现在按 B 让构建失败，再推送一次。新的不会上线——旧版本继续在线。', hi: [] }
+      ],
+      t_en: 'Deployment', t_zh: '部署',
       short_en: `Because the repo is connected to Vercel, a push starts an automatic [[c4_deploy|deployment]]: **GitHub updates the branch → notifies Vercel ([[c4_webhook]]) → Vercel clones that commit → runs the [[c4_build]] (install + build command) → uploads the output to its servers/[[c4_cdn]] → assigns a URL** (a preview URL per push; the production domain for the main branch). If the build fails, nothing is published and the old version stays live.`,
       short_zh: `因为仓库已连接 Vercel，一次推送会自动触发[[c4_deploy|部署]]：**GitHub 更新分支 → 通知 Vercel（[[c4_webhook]]）→ Vercel 拉取该提交 → 运行[[c4_build]]（安装依赖 + 构建命令）→ 把结果上传到它的服务器/[[c4_cdn]] → 分配网址**（每次推送有预览网址；main 分支对应正式域名）。如果构建失败，什么都不会发布，旧版本继续在线。`,
       basis_en: `Follows the class GitHub → Vercel deploy and Vercel’s Git docs: connecting a repository makes every push create a deployment; pushes to the production branch (usually main) update the production domain, other branches get preview URLs. Vercel’s docs page could not be opened in this session; this matches the documented behaviour we used in class.`,
@@ -358,7 +405,17 @@ So between “push” and “page” there is: notification → fetch → build 
       trap_zh: '一定要提到“构建”这一步，以及它是自动触发的（仓库已连接）。很多答案直接从 GitHub 跳到“上线了”。'
     },
     {
-      id: '4.4', t_en: 'System prompt', t_zh: '系统提示词',
+      id: '4.4',
+      kid_en: `Imagine asking the same question to four teachers at four different schools. Each school gave its teacher a secret rulebook you’re not allowed to read: “keep it short,” “always ask a follow-up question,” “look things up first.” Your question is exactly the same, but the answers come out different — because of the rulebook. That secret rulebook is the **system prompt**, and the company that runs the AI writes it, not you.`,
+      kid_zh: `想象你把同一个问题问四所不同学校的四位老师。每所学校都给老师发了一本你不能看的秘密规则手册：“回答要短”“一定要反问一句”“先查资料再回答”。你的问题一模一样，答案却各不相同——因为那本手册。那本秘密手册就是**系统提示词**，而且是运营这个 AI 的公司写的，不是你。`,
+      steps: [
+        { en: 'Top sheet: your message. In the Four Prompts activity it was exactly the same in all four products.', zh: '最上面一张：你的消息。在“四个提示词”活动里，它在四个产品里一模一样。', hi: ['c4_user_msg'] },
+        { en: 'Under it, layers each product adds: your custom instructions, memory, and tools like search.', zh: '它下面，是每个产品各自加上的几层：你的自定义指令、记忆，以及搜索之类的工具。', hi: ['c4_custom', 'c4_memory', 'c4_tools'] },
+        { en: 'The pink layer is the system prompt — hidden rules written by the company. You never see it.', zh: '粉色这层是系统提示词——公司写的隐藏规则。你永远看不到。', hi: ['c4_sysprompt'] },
+        { en: 'At the bottom, each company also runs a different model.', zh: '最底下，每家公司运行的模型也不一样。', hi: ['c4_model_w'] },
+        { en: 'Result: same words in, four different answers out. The product is not just the model.', zh: '结果：输入相同，输出四个不同答案。产品不等于模型。', hi: ['c4_product'] }
+      ],
+      t_en: 'System prompt', t_zh: '系统提示词',
       short_en: `A [[c4_sysprompt]] is **the hidden set of instructions placed before the conversation** that sets the model’s role, tone, rules, format and tool use (the API’s \`system\` field). It is **written by the company that builds the product** (OpenAI, Anthropic, Google, Microsoft), not by you — you can only add your own layer with [[c4_custom]]. In the Four Prompts activity the **same prompt gave clearly different answers** (length, tone, caution, searching, citing) because each product wraps the model in a different system prompt, tools, memory and model: [[c4_product]].`,
       short_zh: `[[c4_sysprompt]]是**放在对话之前、用户看不到的一组指令**，设定模型的角色、语气、规则、格式和工具使用（API 里的 \`system\` 字段）。它**由做产品的公司写**（OpenAI、Anthropic、Google、Microsoft），不是你——你只能通过[[c4_custom]]加上自己的一层。在“四个提示词”活动中，**同一个提示词得到了明显不同的回答**（长度、语气、谨慎程度、是否搜索、是否引用），因为每个产品都用不同的系统提示词、工具、记忆和模型把模型包了起来：[[c4_product]]。`,
       basis_en: `The course glossary (from Anthropic’s documentation) defines the system prompt as the system field of a Messages API request — where a role, formatting rules and other persistent instructions are set. The observation part comes from the class’s Four Prompts activity.`,
@@ -370,12 +427,12 @@ So between “push” and “page” there is: notification → fetch → build 
       src: 'Four Prompts activity',
       fig() {
         const L = [
-          { label: 'Your message', sub: '你的消息（四个产品都一样）', note: { en: 'Identical in all four products.', zh: '在四个产品里完全相同。' }, fill: F.C.blueF, side: '#d5def6', pattern: 'hatch', pc: F.C.blue, density: 3 },
+          { label: 'Your message', sub: '你的消息（四个产品都一样）', tip: 'c4_user_msg', note: { en: 'Identical in all four products.', zh: '在四个产品里完全相同。' }, fill: F.C.blueF, side: '#d5def6', pattern: 'hatch', pc: F.C.blue, density: 3 },
           { label: 'Custom instructions', sub: '你的自定义指令 / 项目', tip: 'c4_custom', pattern: 'dots', density: 5, fill: '#fff' },
           { label: 'Memory · context', sub: '记忆与上下文', tip: 'c4_memory', pattern: 'grid', density: 4, fill: '#fff' },
           { label: 'Tools · search · code', sub: '工具：搜索 代码 文件', tip: 'c4_tools', pattern: 'chips', density: 5 },
           { label: 'System prompt', sub: '系统提示词（公司写的）', tip: 'c4_sysprompt', fill: F.C.magF, side: '#efd2e2', pattern: 'diag', pc: F.C.mag, density: 4 },
-          { label: 'Model weights', sub: '模型权重（各家不同）', note: { en: 'Each company also runs a different model (and version).', zh: '每家公司运行的模型（和版本）也不同。' }, pattern: 'cross', density: 6 }
+          { label: 'Model weights', sub: '模型权重（各家不同）', tip: 'c4_model_w', note: { en: 'Each company also runs a different model (and version).', zh: '每家公司运行的模型（和版本）也不同。' }, pattern: 'cross', density: 6 }
         ];
         const o = { ox: 170, scale: 16, gap: 3.0, side: 'r', labelR: 300 };
         let s = F.stack(L, o);
@@ -411,7 +468,17 @@ So between “push” and “page” there is: notification → fetch → build 
       trap_zh: '三问都要答：是什么、谁写的（公司）、以及四个产品对比时的具体观察。'
     },
     {
-      id: '4.5', t_en: 'Prompt as specification', t_zh: '提示词即规格说明',
+      id: '4.5',
+      kid_en: `Think of ordering a birthday cake. “Make me a cake” could come back as anything — and you can’t really say it’s wrong. But a clear order — chocolate, serves 8, says “Happy 12th Mia,” ready by 5 pm — lets you check: wrong flavor? You can point to the exact line it broke. A prompt is that order form. The **success criteria** are the checklist you write *before* the cake is made, so a wrong answer is easy to spot.`,
+      kid_zh: `想想订生日蛋糕。只说“给我做个蛋糕”，做出来什么样都有可能——你也很难说它错了。但一张清楚的订单——巧克力味、够 8 个人吃、写着“Mia 12 岁生日快乐”、下午 5 点前做好——就能拿来检查：口味不对？你能指出它违反了哪一条。提示词就是这张订单。**成功标准**就是你在蛋糕做好*之前*写下的检查清单，所以错的答案一眼就能看出来。`,
+      steps: [
+        { en: 'Left: the prompt written like an order form — goal, audience, limits, format.', zh: '左边：像订单一样写的提示词——目标、受众、限制、格式。', hi: ['c4_clear'] },
+        { en: 'The green box is the most important part: success criteria, written BEFORE you see any answer.', zh: '绿色框是最重要的一项：成功标准，在看到任何答案之前就写好。', hi: ['c4_success'] },
+        { en: 'The model reads the order and makes an output. In Software 3.0, the prompt is the program.', zh: '模型读这张订单，生成输出。在“软件 3.0”里，提示词就是程序。', hi: ['c4_sw3'] },
+        { en: 'Now check the output against each criterion: ✓ or ✗. The ✗ lines show exactly what is wrong.', zh: '现在把输出逐条对照标准：✓ 还是 ✗。打 ✗ 的那几行，正好说明哪里错了。', hi: ['c4_check'] },
+        { en: 'Then fix the writing of the prompt — not hunt for “magic words” — and try again.', zh: '然后改的是提示词的写法——而不是去找“咒语”——再试一次。', hi: [] }
+      ],
+      t_en: 'Prompt as specification', t_zh: '提示词即规格说明',
       short_en: `We treated a prompt as writing because **a prompt is a [[c4_spec|specification]] of intent, not a magic trick** — in Karpathy’s [[c4_sw3]] the prompt *is* the program, so results depend on clear goals, context, audience, constraints and format, and tricks don’t transfer between models. A wrong answer becomes recognizable when **you define [[c4_success]] before generating** (Anthropic’s first step): then each output can be checked against them and you can say exactly where it failed; without them a fluent wrong answer looks as convincing as a right one.`,
       short_zh: `我们把提示词当作写作，因为**提示词是一份意图的[[c4_spec|规格说明]]，而不是魔术技巧**——在卡帕西的[[c4_sw3]]里，提示词*就是*程序，所以结果取决于清楚的目标、背景、受众、约束和格式，而技巧换个模型就失效。错误答案之所以能被识别，是因为**在生成之前先定义了[[c4_success]]**（Anthropic 的第一步）：这样每个输出都能逐条对照，准确指出错在哪里；没有标准，一个流畅的错误答案看起来和正确答案一样可信。`,
       basis_en: `Course glossary (Anthropic Prompt Engineering Overview): prompt engineering means improving a first-draft prompt against defined, empirically testable success criteria. Karpathy’s Software 3.0 (“prompts as programs”) and the spec-driven-development reading frame the prompt as a specification.`,
@@ -437,12 +504,12 @@ So between “push” and “page” there is: notification → fetch → build 
         // model
         s += F.arrow(X + W + 6, Y + 120, 345, Y + 120);
         F.setIso(13, 395, Y + 92);
-        s += F.g(F.plate({ x: 0, y: 0, z: 1.2, w: 3, d: 3, t: 0.2, pattern: 'chips', density: 4 }) + F.plate({ x: 0, y: 0, z: 0, w: 3, d: 3, t: 0.2, pattern: 'dots', density: 5 }), { note: { en: 'The model generates an output from your spec.', zh: '模型根据你的规格生成输出。' } });
+        s += F.g(F.plate({ x: 0, y: 0, z: 1.2, w: 3, d: 3, t: 0.2, pattern: 'chips', density: 4 }) + F.plate({ x: 0, y: 0, z: 0, w: 3, d: 3, t: 0.2, pattern: 'dots', density: 5 }), { tip: 'c4_sw3', note: { en: 'The model generates an output from your spec.', zh: '模型根据你的规格生成输出。' } });
         s += F.text(395, Y + 175, 'MODEL', { cls: 'lt' });
         s += F.arrow(445, Y + 120, 485, Y + 120);
         // output + checklist
         const OX = 490;
-        s += F.rect(OX, Y + 40, 230, 160, { fill: '#fff', rx: 4, note: { en: 'Compare the output line by line with your criteria.', zh: '把输出逐条与你的标准对照。' } });
+        s += F.rect(OX, Y + 40, 230, 160, { fill: '#fff', rx: 4, tip: 'c4_check', note: { en: 'Compare the output line by line with your criteria.', zh: '把输出逐条与你的标准对照。' } });
         s += F.text(OX + 12, Y + 58, 'OUTPUT vs CRITERIA', { anchor: 'start', cls: 'tiny', color: F.C.mute });
         [['✓', 'answers the goal', F.C.green], ['✓', 'right audience', F.C.green], ['✗', 'too long: 600 > 300 words', F.C.red], ['✓', 'format: 3 bullets', F.C.green], ['✗', 'invented a source', F.C.red]].forEach(([m, t, c], i) => {
           s += F.text(OX + 16, Y + 84 + i * 23, m, { anchor: 'start', cls: 'big', color: c }) + F.text(OX + 36, Y + 84 + i * 23, t, { anchor: 'start', cls: 'mono', color: c === F.C.red ? F.C.red : F.C.ink });

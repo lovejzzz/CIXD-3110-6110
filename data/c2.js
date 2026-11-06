@@ -52,6 +52,14 @@ defClass({
       q_en: 'Wright\'s definition of a hierarchy, and one example from software you use every day.',
       q_zh: '赖特对“层级”的定义，并举一个你每天使用的软件中的例子。',
       src: 'Wright, Informatica, ch. 1',
+      kid_en: "A hierarchy is like a set of nesting boxes, or your school: the school contains grades, each grade contains classes, each class contains students. Every student belongs to exactly one class, so there is exactly one path to find them: School → Grade 7 → Class B → Leo. Bigger boxes are 'more inclusive' — they hold more things. Your computer's folders work the same way.",
+      kid_zh: "层级就像一套套娃，或者你的学校：学校里有年级，年级里有班，班里有学生。每个学生只属于一个班，所以找到他只有一条路：学校 → 七年级 → 二班 → 小李。越外面的盒子越“包容”——装的东西越多。电脑里的文件夹也是这样。",
+      steps: [
+        { en: "Start at the top: DRIVE / is the biggest box. Everything on the computer is inside it.", zh: "从最上面开始：DRIVE / 是最大的盒子，电脑里的一切都在它里面。", hi: ["k21_root"] },
+        { en: "Each folder sits inside exactly ONE parent folder — like each class belongs to one grade.", zh: "每个文件夹只放在“一个”上级文件夹里——就像每个班只属于一个年级。", hi: ["k21_off", "k21_on"] },
+        { en: "Follow the pink line down: Users → skyx → Documents → Midterm → answers.pdf.", zh: "顺着粉色的线往下走：Users → skyx → Documents → Midterm → answers.pdf。", hi: ["k21_on", "k21_file"] },
+        { en: "Written as text, that one road is the file path. Each slash is one step down the hierarchy.", zh: "把这条唯一的路写成文字，就是文件路径。每个斜杠就是往下走一层。", hi: ["k21_path"] }
+      ],
       fig() {
         // a real tree: one root, every node has exactly one parent; the path to the file is highlighted
         const N = {
@@ -68,7 +76,7 @@ defClass({
         });
         Object.entries(N).forEach(([k, [x, y, t, on]]) => {
           const w = Math.max(70, t.length * 8.2 + 26);
-          s += F.rect(x - w / 2, y - 13, w, 26, { rx: 13, text: t, tcls: 'mono', fill: on === 2 ? F.C.magF : '#fff', stroke: on ? F.C.mag : F.C.ink, sw: on ? 1.5 : 1.1, tcolor: on ? F.C.mag : F.C.ink,
+          s += F.rect(x - w / 2, y - 13, w, 26, { rx: 13, text: t, tcls: 'mono', tip: k === 'root' ? 'k21_root' : k === 'file' ? 'k21_file' : on ? 'k21_on' : 'k21_off', fill: on === 2 ? F.C.magF : '#fff', stroke: on ? F.C.mag : F.C.ink, sw: on ? 1.5 : 1.1, tcolor: on ? F.C.mag : F.C.ink,
             note: k === 'root' ? { en: 'The root: the most inclusive category — everything is inside it.', zh: '根：最大的类，一切都在它里面。' }
               : k === 'file' ? { en: 'The leaf has ONE address. Moving it means taking it out of one box and putting it in another.', zh: '叶子只有一个地址。要“移动”它，就得把它从一个盒子拿出来放进另一个。' }
               : { en: 'Each folder sits inside exactly one parent.', zh: '每个文件夹只属于一个上级。' } });
@@ -80,7 +88,7 @@ defClass({
         s += F.g(F.rect(430, 330, 310, 70, { fill: '#fff', stroke: F.C.mute, rx: 8 }) +
           F.text(446, 350, 'ONE THING · ONE PATH', { anchor: 'start', cls: 'tiny', color: F.C.mag }) + F.sub(600, 350, '每样东西只有一条路径') +
           F.text(446, 378, '/Users/skyx/Documents/Midterm/answers.pdf', { anchor: 'start', cls: 'tiny', color: F.C.ink }),
-          { note: { en: 'The path IS the hierarchy written as text: each slash steps one level down.', zh: '路径就是写成文字的层级：每个斜杠往下走一层。' } });
+          { tip: 'k21_path', note: { en: 'The path IS the hierarchy written as text: each slash steps one level down.', zh: '路径就是写成文字的层级：每个斜杠往下走一层。' } });
         s += F.text(580, 44, 'TOP-DOWN', { cls: 'lt' }) + F.sub(580, 60, '自上而下', { anchor: 'middle' });
         return F.svg(760, 424, s, { label: 'a file system drawn as a tree' });
       },
@@ -108,6 +116,14 @@ defClass({
       q_en: 'Wright\'s definition of a network, and what he means when he says networks and hierarchies give rise to each other.',
       q_zh: '赖特对“网络”的定义，以及他说“网络与层级相互催生”是什么意思。',
       src: 'Wright, Informatica, ch. 1',
+      kid_en: "A hierarchy is like your school's org chart: the principal at the top, teachers under them, orders go down. A network is like your friends' group chats: anyone can message anyone, no top. But watch what happens: in every school, kids form friendships across classes (a network inside the hierarchy). And in a group chat, one popular kid soon becomes the one everyone listens to (a hierarchy growing out of the network). They keep turning into each other.",
+      kid_zh: "层级像学校的组织结构图：校长在最上面，老师在下面，命令一层层往下传。网络像朋友之间的群聊：谁都能给谁发消息，没有“顶端”。但注意：每个学校里，孩子都会跨班交朋友（层级里长出了网络）；而群聊里，很快会有个最受欢迎的人，大家都听他的（网络里长出了层级）。两者会不断变成对方。",
+      steps: [
+        { en: "Left: a hierarchy. One top, and every line goes down. One path between any two nodes.", zh: "左边是层级：一个顶端，每条线都往下走，任意两点之间只有一条路。", hi: ["c2_hierarchy"] },
+        { en: "Right: a network. Nodes link to each other directly, many paths, no top.", zh: "右边是网络：节点之间直接相连，路有很多条，没有顶端。", hi: ["c2_network"] },
+        { en: "Find the hub: many nodes link to it. Rank by links and a hierarchy appears inside the network.", zh: "找到那个枢纽：很多节点都连着它。按连接数排个名，网络里就出现了层级。", hi: ["k22_hub"] },
+        { en: "The two arrows are Wright's point: hierarchies grow side-links into networks, and networks grow hubs into hierarchies.", zh: "两条箭头就是赖特的观点：层级会长出横向联系变成网络，网络会长出枢纽变成层级。", hi: ["k22_h2n", "k22_n2h"] }
+      ],
       fig() {
         let s = '';
         // hierarchy (left)
@@ -123,13 +139,13 @@ defClass({
         n += N.map((p, i) => F.circle(p[0], p[1], i === 3 ? 13 : 8, { fill: i === 3 ? F.C.blueF : '#fff', stroke: F.C.blue })).join('');
         s += F.g(n + F.text(605, 290, 'NETWORK', { cls: 'lt', color: F.C.blue }) + F.sub(605, 306, '网络：自下而上 · 点对点', { anchor: 'middle' }), { tip: 'c2_network' });
         // hub callout
-        s += F.g(F.label([623, 140], 724, '') + F.text(728, 158, 'HUB', { anchor: 'start', cls: 'tiny', color: F.C.mag }) + F.sub(728, 174, '枢纽'),
-          { note: { en: 'A hub: a node many others link to. Rank nodes by links and a hierarchy appears inside the network (PageRank, follower counts).', zh: '枢纽：很多节点都连向它。按链接数给节点排名，网络内部就长出了层级（PageRank、粉丝数）。' } });
+        s += F.g(F.circle(N[3][0], N[3][1], 13, { fill: F.C.blueF, stroke: F.C.blue }) + F.label([623, 140], 724, '') + F.text(728, 158, 'HUB', { anchor: 'start', cls: 'tiny', color: F.C.mag }) + F.sub(728, 174, '枢纽'),
+          { tip: 'k22_hub', note: { en: 'A hub: a node many others link to. Rank nodes by links and a hierarchy appears inside the network (PageRank, follower counts).', zh: '枢纽：很多节点都连向它。按链接数给节点排名，网络内部就长出了层级（PageRank、粉丝数）。' } });
         // arrows between
         s += F.g(F.path('M290,120 C360,80 430,80 490,110', { stroke: F.C.mag, arrow: true }) + F.text(390, 70, 'hierarchies spawn networks', { cls: 'tiny', color: F.C.mag }) + F.sub(390, 86, '机构催生交叉联系', { anchor: 'middle' }),
-          { note: { en: 'Inside any hierarchy people form side-links: cross-references in a library, informal ties in an org, hyperlinks between folders.', zh: '任何层级内部都会长出横向联系：图书馆里的“参见”、组织里的非正式关系、文件之间的超链接。' } });
+          { tip: 'k22_h2n', note: { en: 'Inside any hierarchy people form side-links: cross-references in a library, informal ties in an org, hyperlinks between folders.', zh: '任何层级内部都会长出横向联系：图书馆里的“参见”、组织里的非正式关系、文件之间的超链接。' } });
         s += F.g(F.path('M490,200 C430,240 360,240 290,200', { stroke: F.C.mag, arrow: true }) + F.text(390, 252, 'networks spawn hierarchies', { cls: 'tiny', color: F.C.mag }) + F.sub(390, 268, '链接汇聚成排名', { anchor: 'middle' }),
-          { note: { en: 'Out of open networks, structure emerges: popular hubs, rankings, platforms that end up on top.', zh: '开放的网络里会涌现结构：热门枢纽、排行榜、最终占据顶端的平台。' } });
+          { tip: 'k22_n2h', note: { en: 'Out of open networks, structure emerges: popular hubs, rankings, platforms that end up on top.', zh: '开放的网络里会涌现结构：热门枢纽、排行榜、最终占据顶端的平台。' } });
         return F.svg(760, 320, s, { label: 'hierarchy vs network' });
       },
       cap_en: 'Two shapes of order. The arrows are Wright’s point: each one keeps growing out of the other.',
@@ -164,6 +180,14 @@ So the history of information is a back-and-forth between the two, and neither e
       q_en: 'What is a folk taxonomy, and why does the psychologically primary category (oak, dog) sit in the middle of it rather than at the top?',
       q_zh: '什么是民间分类学？为什么心理上最基本的类别（橡树、狗）位于这个分类的中间，而不是顶端？',
       src: 'Wright, ch. 2; Berlin; Rosch',
+      kid_en: "Point at a dog and ask a little kid what it is. They won't say \"animal\" or \"golden retriever\" — they'll say \"dog!\" That middle word is the first one we learn, the quickest to picture, and usually the shortest. Going up (animal, living thing) gets too vague to picture; going down (golden retriever) needs an expert. A folk taxonomy is the everyday way a culture names and groups things, and people live in its middle.",
+      kid_zh: "指着一只狗问小朋友这是什么，他不会说“动物”，也不会说“金毛寻回犬”，而是说“狗！”这个“中间”的词，是我们最先学会、最容易想象、通常也最短的词。往上（动物、生物）太笼统，脑子里画不出来；往下（金毛）需要专家才分得清。民间分类学就是一种文化在日常里给东西起名、分组的方式，而人们就生活在它的“中间层”。",
+      steps: [
+        { en: "These are Berlin's five ranks, found in folk taxonomies all over the world, from most abstract to most detailed.", zh: "这是伯林发现的五个等级，世界各地的民间分类里都有，从最抽象排到最细。", hi: ["c2_berlin_ranks"] },
+        { en: "Going up the arrow = more abstract (plant). Going down = finer detail only experts need (white oak).", zh: "沿箭头往上＝更抽象（植物）；往下＝只有专家才需要的细分（白橡）。", hi: ["k23_axis"] },
+        { en: "The pink band is the middle: oak, pine, maple. That's the basic level — what people actually say.", zh: "粉色那一条就是“中间”：橡树、松树、枫树。这是基本层级——人们平时真正说的词。", hi: ["c2_basic_level"] },
+        { en: "Why the middle? Rosch: it's built from how we see and use things — learned first, named fastest, shortest words.", zh: "为什么在中间？罗施说：它建立在我们怎么“看”和怎么“用”东西之上——最先学会、叫得最快、词最短。", hi: ["c2_basic_level"] }
+      ],
       fig() {
         let s = '';
         const ranks = [
@@ -192,7 +216,7 @@ So the history of information is a back-and-forth between the two, and neither e
           s += F.g(F.text(190, R.y, R.r, { anchor: 'end', cls: 'lt', color: R.hi ? F.C.mag : F.C.ink }) + F.sub(190, R.y + 15, R.zh, { anchor: 'end' }), { tip: 'c2_berlin_ranks' });
         });
         s += F.g(F.arrow(30, 350, 30, 50) + F.text(42, 60, 'abstract', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.text(42, 350, 'expert detail', { anchor: 'start', cls: 'tiny', color: F.C.mute }),
-          { note: { en: 'Going up = more abstract groupings few people name in daily life. Going down = finer distinctions only specialists need.', zh: '往上＝越来越抽象、日常很少说的大类；往下＝越来越细、只有专家才需要的区分。' } });
+          { tip: 'k23_axis', note: { en: 'Going up = more abstract groupings few people name in daily life. Going down = finer distinctions only specialists need.', zh: '往上＝越来越抽象、日常很少说的大类；往下＝越来越细、只有专家才需要的区分。' } });
         return F.svg(760, 380, s, { label: 'folk taxonomy ranks with basic level highlighted' });
       },
       cap_en: 'Berlin’s five ranks, found in folk taxonomies all over the world. The highlighted band is where people actually live: oak, dog, chair.',
@@ -226,6 +250,14 @@ So the most “real” category for the mind is the middle one; the top of the t
       q_en: 'Define stigmergy from the termites, then give a human or digital example.',
       q_zh: '从白蚁的例子出发定义“stigmergy”，再举一个人类或数字世界的例子。',
       src: '',
+      kid_en: "Imagine kids building a sandcastle at the beach without talking. One kid drops a bucket of sand. The next kid sees a bump and adds sand to the bump, because a bump looks like a good place to build. More sand makes a bigger bump, which attracts even more sand — and towers appear that nobody planned. That's stigmergy: the work itself leaves a sign that tells the next worker what to do. Termites build mounds this way, and people do it on Wikipedia, where each edit invites the next one.",
+      kid_zh: "想象几个小孩在沙滩上堆沙堡，彼此不说话。一个孩子倒下一桶沙；下一个孩子看到一个小鼓包，就往鼓包上加沙，因为那里看起来适合堆。沙越多鼓包越大，吸引来的沙就更多——最后出现了谁也没设计过的塔。这就是“痕迹协作”（stigmergy）：做出来的东西本身留下信号，告诉下一个人该做什么。白蚁就是这样筑巢的；维基百科上，每次编辑也会引来下一次编辑。",
+      steps: [
+        { en: "Press Space to start the swarm. Each termite drops a pellet — nobody gives orders.", zh: "按空格让白蚁开始活动。每只白蚁放下一颗泥球——没有谁下命令。", hi: [] },
+        { en: "Fresh pellets glow: that's the pheromone mark. It says 'build here'. It fades over time.", zh: "新放下的泥球会发光：这是信息素标记，意思是“在这里继续堆”，过一会儿会变淡。", hi: [] },
+        { en: "Watch: termites prefer spots with the strongest traces, so piles grow into pillars. Check the 'pillars' count in the readout.", zh: "看：白蚁更喜欢痕迹最强的位置，于是小堆长成柱子。看看读数里“柱子”的数量。", hi: [] },
+        { en: "Click a cell yourself to drop a pellet — you just left a trace, and the swarm will follow it. Press R to reset.", zh: "自己点一个格子放一颗泥球——你刚留下了痕迹，白蚁会跟着来。按 R 重置。", hi: [] }
+      ],
       fig() {
         F.setIso(22, 230, 140);
         let s = '';
@@ -378,6 +410,14 @@ So the most “real” category for the mind is the middle one; the top of the t
       q_en: 'What changes when a classification is composed (UDC, Ranganathan\'s PMEST) rather than descended (Dewey)? Why does this matter for tagging and search?',
       q_zh: '当分类是“组合出来的”（UDC、阮冈纳赞的 PMEST）而不是“沿树往下找的”（杜威）时，有什么改变？这对标签和搜索为什么重要？',
       src: 'Wright, appendixes A–E',
+      kid_en: "Dewey is like a single shelf map in a library: a book about jazz piano in New York has to go in ONE spot, so you can only find it by walking down one path. Faceted classification is like a game where you build a character by picking from separate menus — hair, outfit, weapon, pet. Ranganathan's PMEST works the same way: pick a value for each facet (what it is, what it's made of, what's happening, where, when) and snap them together. That's why you can search or filter by any of them — just like tags.",
+      kid_zh: "杜威分类像图书馆里一张固定的书架地图：一本讲“纽约爵士钢琴”的书只能放在“一个”位置，你只能沿着一条路走过去找。分面分类像游戏里捏人物：发型、衣服、武器、宠物，各选一样再拼起来。阮冈纳赞的 PMEST 也是这样：每个“面”（是什么、什么材料、在做什么、在哪里、什么时候）各选一个值，再拼到一起。所以你能按其中任何一个去搜索、筛选——就像打标签。",
+      steps: [
+        { en: "Left: Dewey. You climb down one branch — 700 Arts → 780 Music → 781 → 781.65 Jazz. One book, one shelf spot.", zh: "左边是杜威：沿着一根枝往下爬——700 艺术 → 780 音乐 → 781 → 781.65 爵士。一本书，一个书架位置。", hi: ["c2_dewey"] },
+        { en: "Right: PMEST. Five separate menus: Personality, Matter, Energy, Space, Time.", zh: "右边是 PMEST：五个分开的“菜单”——本体、物质、动力、空间、时间。", hi: ["c2_pmest"] },
+        { en: "Pick one value from each menu and join them with signs. You COMPOSE the address instead of descending to it.", zh: "每个菜单选一个值，用符号连起来。地址是“拼”出来的，不是“往下找”出来的。", hi: ["c2_pmest"] },
+        { en: "Because each facet is separate, you can search by any one: all things from the 1950s, all things about piano. That's how tags and filters work.", zh: "因为每个面都是独立的，你可以只按其中一个搜：所有 1950 年代的、所有关于钢琴的。标签和筛选就是这样工作的。", hi: ["c2_pmest", "c2_dewey"] }
+      ],
       fig() {
         let s = '';
         // Dewey descent (left)

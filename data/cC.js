@@ -33,7 +33,7 @@ defClass({
             mn: { en: 'The tool’s structure can start to shape what I think a project is.', zh: '工具的结构可能开始左右我对项目的理解。' } },
           { en: 'IDEATE', zh: '构思', p: ['more directions', '更多方向'], m: ['ideas homogenize', '想法同质化'], mtip: 'cC_homog',
             pn: { en: 'A model can push out many directions quickly.', zh: '模型能很快给出很多方向。' } },
-          { en: 'MAKE', zh: '制作', p: ['fast prototypes', '智能体快速做出'], m: ['de-skilling', '去技能化'], mtip: 'cC_deskill', hot: true,
+          { en: 'MAKE', zh: '制作', p: ['fast prototypes', '智能体快速做出'], m: ['de-skilling', '去技能化'], mtip: 'cC_deskill', ptip: 'cC_make_plus', hot: true,
             pn: { en: 'An agent harness takes a sketch to a working, deployed page in an afternoon.', zh: '借助智能体框架，一个下午就从草图做到可运行、已上线的页面。' } },
           { en: 'SHARE', zh: '发布', p: ['live in minutes', '几分钟就上线'], m: ['gets scraped', '被抓进训练语料'],
             pn: { en: 'Push to GitHub, Vercel deploys it.', zh: '推送到 GitHub，Vercel 自动部署。' },
@@ -46,24 +46,29 @@ defClass({
           const x = x0 + i * dx, col = t.hot ? C.mag : C.ink;
           // + card above
           s += F.line(x, y0 - 14, x, 120, { stroke: C.green, sw: .8, dash: '2 3' });
-          s += F.rect(x - cw / 2, 70, cw, 50, { fill: C.greenF, stroke: C.green, rx: 6, note: t.pn, tip: t.ptip });
+          s += F.rect(x - cw / 2, 70, cw, 50, { fill: C.greenF, stroke: C.green, rx: 6, note: t.pn, tip: t.ptip || 'cC_plus' });
           s += F.text(x - cw / 2 + 9, 88, '+ ' + t.p[0], { anchor: 'start', cls: 'tiny', color: C.green }) + F.sub(x - cw / 2 + 9, 108, t.p[1]);
           // − card below
           s += F.line(x, y0 + 14, x, 232, { stroke: C.red, sw: .8, dash: '2 3' });
-          s += F.rect(x - cw / 2, 232, cw, 50, { fill: C.redF, stroke: C.red, rx: 6, note: t.mn, tip: t.mtip });
+          s += F.rect(x - cw / 2, 232, cw, 50, { fill: C.redF, stroke: C.red, rx: 6, note: t.mn, tip: t.mtip || 'cC_minus' });
           s += F.text(x - cw / 2 + 9, 250, '− ' + t.m[0], { anchor: 'start', cls: 'tiny', color: C.red }) + F.sub(x - cw / 2 + 9, 270, t.m[1]);
           // stage node
-          s += `<circle cx="${x}" cy="${y0}" r="${t.hot ? 13 : 9}" fill="${t.hot ? C.magF : '#fff'}" stroke="${col}" stroke-width="${t.hot ? 2 : 1.2}"/>`;
-          s += F.text(x + 16, y0 + 2 - 12, t.en, { anchor: 'start', cls: 'tiny', color: col }) + F.sub(x + 16, y0 + 2 + 12, t.zh, { cls: t.hot ? '' : '' });
+          s += F.g(`<circle cx="${x}" cy="${y0}" r="${t.hot ? 13 : 9}" fill="${t.hot ? C.magF : '#fff'}" stroke="${col}" stroke-width="${t.hot ? 2 : 1.2}"/>` +
+            F.text(x + 16, y0 + 2 - 12, t.en, { anchor: 'start', cls: 'tiny', color: col }) + F.sub(x + 16, y0 + 2 + 12, t.zh),
+            { tip: 'cC_st_' + i, note: { en: `Stage ${i + 1}: ${t.en.toLowerCase()}`, zh: `第 ${i + 1} 阶段：${t.zh}` } });
         });
         const hx = x0 + 3 * dx;
-        s += F.rect(hx - 70, 300, 140, 24, { fill: C.mag, stroke: C.mag, rx: 12 });
-        s += F.text(hx, 314, 'RESONATES MOST', { cls: 'tiny', color: '#fff' }) + F.sub(hx, 342, '共鸣最强 · 写一个具体时刻', { anchor: 'middle', color: C.mag });
+        s += F.g(F.rect(hx - 70, 300, 140, 24, { fill: C.mag, stroke: C.mag, rx: 12 }) +
+          F.text(hx, 314, 'RESONATES MOST', { cls: 'tiny', color: '#fff' }) + F.sub(hx, 342, '共鸣最强 · 写一个具体时刻', { anchor: 'middle', color: C.mag }),
+          { tip: 'cC_hot', note: { en: 'The one stage you will write about, with a real moment.', zh: '你要写的那一个阶段，配一个真实时刻。' } });
         s += F.text(30, 314, 'draw yours: 5 stages · 1 gain + 1 cost each', { anchor: 'start', cls: 'tiny', color: C.mute }) + F.sub(30, 330, '画你自己的：每个阶段一收获一代价');
         return F.svg(760, 352, s, { label: 'a sample practice mapped as stages, each with one gain and one cost' });
       },
       cap_en: 'A sample practice laid out as the stages it moves through. Every stage carries one gain (+) and one cost (−) tied to a course concept; one stage is circled as where it resonates most. Draw the same line for your own practice before you write.',
       cap_zh: '把一个示范性的创作实践画成它经过的几个阶段。每个阶段都有一项收获（＋）和一项代价（－），并对应某个课程概念；圈出共鸣最强的那一个。动笔之前，先为你自己的实践画出同样的一条线。',
+      kid_en: "Think of making a comic book. You **research** (look at references), **organize** (sticky notes on a wall), **come up with ideas**, **draw and ink**, then **post it online**. AI tools are like a super-fast helper who can jump in at any of those steps. But every kind of help has a price: if the helper draws for you, you stop getting better at drawing; if everyone uses the same helper, all the comics start to look alike; once you post online, your drawings might get scooped up to train the next AI. The exam wants you to pick the step where this matters most **to you**, and say one good thing and one bad thing.",
+      kid_zh: "想象你在画一本漫画。你要**找资料**（看参考图），**整理**（墙上贴便利贴），**想点子**，**起稿上墨**，最后**发到网上**。AI 工具就像一个超快的帮手，哪一步都能插手。但每种帮忙都有代价：帮手替你画，你自己就不再进步；大家都用同一个帮手，所有漫画会越来越像；一发到网上，你的画可能被收走去训练下一个 AI。考试要你选出对**你自己**最重要的那一步，说一个好处、一个坏处。",
+      steps: [{"en": "The arrow is a whole making process, start to finish: research → organize → ideate → make → share.", "zh": "这根箭头是一整套创作流程，从头到尾：找资料 → 整理 → 构思 → 制作 → 发布。", "hi": ["cC_st_0", "cC_st_1", "cC_st_2", "cC_st_3", "cC_st_4"]}, {"en": "Green cards above = what AI tools **give** you at each stage. Hover one for a real example.", "zh": "上面的绿卡 = AI 工具在每个阶段**给你**的好处。把鼠标放上去能看到具体例子。", "hi": ["cC_plus", "cC_make_plus"]}, {"en": "Red cards below = what they **cost** you. Two of them are course words: de-skilling and homogenization.", "zh": "下面的红卡 = 它们让你**付出**的代价。其中两张是课程术语：去技能化和同质化。", "hi": ["cC_minus", "cC_homog", "cC_deskill"]}, {"en": "Pick ONE stage where it matters most to you — here, MAKE: fast prototypes (+) but de-skilling (−). That is your “resonates most” moment.", "zh": "选出对你最重要的那**一个**阶段——这里是“制作”：做得快（＋），但会去技能化（－）。这就是你“共鸣最强”的时刻。", "hi": ["cC_st_3", "cC_make_plus", "cC_deskill", "cC_hot"]}, {"en": "Now fill in the template below with YOUR real moment, two course words on each side, and one rule you will follow.", "zh": "现在用下面的填空模板写你**自己**的真实时刻，正反两面各写两个课程术语，再写一条你会遵守的原则。", "hi": []}],
       short_en: `*Fill-in template — replace every ___ with your own experience.*
 1. My practice is ___ (what you make, with what, for whom).
 2. These technologies resonate most in my **___ stage**, e.g. this term when I ___ (a real moment, a real tool).

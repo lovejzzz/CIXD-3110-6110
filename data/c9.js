@@ -96,23 +96,25 @@ defClass({
           const G = window.__AMERSHI;
           const SHORT = ['What it can do', 'How well it can do', 'Time by context', 'Relevant info', 'Social norms', 'Mitigate bias', 'Easy to invoke', 'Easy to dismiss', 'Easy to correct', 'Scope when unsure', 'Explain why', 'Remember recent', 'Learn from user', 'Adapt cautiously', 'Granular feedback', 'Show consequences', 'Global controls', 'Notify of changes'];
           const cols = [
-            { en: 'INITIALLY', zh: '初始', ids: [0, 1], pick: 0, col: F.C.blue, fill: F.C.blueF, ph_en: 'Initially', ph_zh: '初始阶段' },
-            { en: 'DURING', zh: '交互中', ids: [2, 3, 4, 5], pick: 3, col: F.C.green, fill: F.C.greenF, ph_en: 'During interaction', ph_zh: '交互过程中' },
-            { en: 'WHEN WRONG', zh: '出错时', ids: [6, 7, 8, 9, 10], pick: 8, col: F.C.red, fill: F.C.redF, ph_en: 'When wrong', ph_zh: '出错时' },
-            { en: 'OVER TIME', zh: '随时间', ids: [11, 12, 13, 14, 15, 16, 17], pick: 16, col: F.C.mag, fill: F.C.magF, ph_en: 'Over time', ph_zh: '随时间推移' }
+            { k: 'c9_initially', en: 'INITIALLY', zh: '初始', ids: [0, 1], pick: 0, col: F.C.blue, fill: F.C.blueF, ph_en: 'Initially', ph_zh: '初始阶段' },
+            { k: 'c9_during', en: 'DURING', zh: '交互中', ids: [2, 3, 4, 5], pick: 3, col: F.C.green, fill: F.C.greenF, ph_en: 'During interaction', ph_zh: '交互过程中' },
+            { k: 'c9_wrong', en: 'WHEN WRONG', zh: '出错时', ids: [6, 7, 8, 9, 10], pick: 8, col: F.C.red, fill: F.C.redF, ph_en: 'When wrong', ph_zh: '出错时' },
+            { k: 'c9_overtime', en: 'OVER TIME', zh: '随时间', ids: [11, 12, 13, 14, 15, 16, 17], pick: 16, col: F.C.mag, fill: F.C.magF, ph_en: 'Over time', ph_zh: '随时间推移' }
           ];
           const colOf = gi => cols.find(c => c.ids.includes(gi));
           let sel = 0;
           const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
           function draw() {
+            // keep any stepper highlight across redraws (a click re-renders the grid)
+            const keep = [...el.querySelectorAll('.st-hl[data-tip]')].map(x => x.dataset.tip);
             let s = F.arrow(20, 24, 740, 24, { sw: 1 });
             const cw = 172, gx = 12;
             cols.forEach((c, i) => {
               const x = 20 + i * (cw + gx);
-              s += F.text(x, 50, c.en, { anchor: 'start', cls: 'lt', color: c.col }) + F.sub(x + c.en.length * 7.6 + 8, 50, c.zh);
+              s += `<g class="part" data-tip="${c.k}">` + F.text(x, 50, c.en, { anchor: 'start', cls: 'lt', color: c.col }) + F.sub(x + c.en.length * 7.6 + 8, 50, c.zh) + `</g>`;
               c.ids.forEach((gi, j) => {
                 const y = 64 + j * 44, g = G[gi], on = gi === sel, picked = gi === c.pick;
-                s += `<g data-g="${gi}" style="cursor:pointer">` +
+                s += `<g data-g="${gi}" class="part" data-tip="c9_${g[0].toLowerCase()}" style="cursor:pointer">` +
                   `<rect x="${x}" y="${y}" width="${cw}" height="38" rx="4" fill="${on ? c.fill : '#fff'}" stroke="${on ? c.col : F.C.ink}" stroke-width="${on ? 2 : 1}"/>` +
                   F.text(x + 8, y + 14, g[0], { anchor: 'start', cls: 'tiny', color: c.col }) +
                   F.text(x + 40, y + 14, SHORT[gi], { anchor: 'start', cls: 'tiny', color: F.C.ink }) +
@@ -122,6 +124,7 @@ defClass({
             });
             s += `<circle cx="24" cy="388" r="3.2" fill="${F.C.ink}"/>` + F.text(32, 388, 'used in the model answer', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.sub(210, 391, '= 参考答案选用的四条');
             el.querySelector('.w-svg').innerHTML = F.svg(760, 402, s, { label: '18 guidelines in four phases — click one' });
+            keep.forEach(k => el.querySelectorAll(`[data-tip="${k}"]`).forEach(x => x.classList.add('st-hl')));
             const g = G[sel], c = colOf(sel);
             el.querySelector('.w-readout').innerHTML =
               `<p><b style="color:${c.col}">${g[0]} · ${esc(g[1])}</b> <span class="zh">${esc(g[2])}</span> — <span class="en">${c.ph_en}</span><span class="zh"> ${c.ph_zh}</span></p>` +
@@ -132,6 +135,9 @@ defClass({
           draw();
         }
       },
+      kid_en: "Imagine your school gets a new robot helper. A good one behaves well at four different moments. **When you first meet it**, it tells you what it can and can’t do — like a new classmate introducing themselves. **While you work together**, it speaks up at the right time with useful things, not random facts in the middle of a test. **When it messes up**, it’s easy to say “no, not that” and fix it — like having an eraser. **Over the weeks**, it lets you change its settings and tells you when it changes. Amershi’s 18 guidelines are sorted into exactly these four moments.",
+      kid_zh: "想象学校来了一个机器人助手。一个好助手要在四个时刻表现得体。**刚认识时**，它先告诉你它会什么、不会什么——就像新同学先做自我介绍。**一起做事时**，它在合适的时候说有用的话，而不是考试时在你耳边乱插嘴。**它出错时**，你能很容易地说“不是这个”然后改掉——就像手边有块橡皮。**过了几周后**，它让你自己调设置，自己有变化时也会提前告诉你。Amershi 的 18 条准则，就是按这四个时刻分组的。",
+      steps: [{"en": "Read the arrow at the top from left to right: it is **time**, from the first meeting to weeks later. The 18 rules are sorted by WHEN they matter.", "zh": "从左往右看最上面那根箭头：它代表**时间**，从第一次见面到几周以后。18 条准则是按“什么时候起作用”来分的。", "hi": ["c9_initially", "c9_during", "c9_wrong", "c9_overtime"]}, {"en": "**Initially** — before you rely on it. Only two rules: say what you can do (G1) and how well you can do it (G2).", "zh": "**初始阶段**——在你依赖它之前。只有两条：说清能做什么（G1），说清做得有多好（G2）。", "hi": ["c9_initially", "c9_g1", "c9_g2"]}, {"en": "**During interaction** — while you are using it: show up at the right time, show only what helps right now, be polite, be fair.", "zh": "**交互过程中**——你正在用它的时候：时机要对，只给此刻有用的信息，要有礼貌，要公平。", "hi": ["c9_during", "c9_g3", "c9_g4", "c9_g5", "c9_g6"]}, {"en": "**When wrong** — AI WILL make mistakes. So make it easy to call it up, wave it away, fix it, play safe when unsure, and explain itself.", "zh": "**出错时**——AI 一定会出错。所以要让人容易叫它出来、容易打发它走、容易改正；它没把握时要收着点，还要能解释自己为什么这么做。", "hi": ["c9_wrong", "c9_g7", "c9_g8", "c9_g9", "c9_g10", "c9_g11"]}, {"en": "**Over time** — it learns and changes, so it must remember carefully, change slowly, take your feedback, give you master controls, and tell you when it changes.", "zh": "**随时间推移**——它会学习、会变化，所以要谨慎地记住、慢慢地改变、接收你的反馈、给你总开关，有变化时要通知你。", "hi": ["c9_overtime", "c9_g12", "c9_g13", "c9_g14", "c9_g15", "c9_g16", "c9_g17", "c9_g18"]}, {"en": "For the exam, pick one rule from each column — the four with dots (G1, G4, G9, G17) are a safe set. Click any cell to read its exact wording and the paper’s example.", "zh": "考试时每列选一条——带圆点的四条（G1、G4、G9、G17）就是稳妥的组合。点任何一格都能看到原文表述和论文里的例子。", "hi": ["c9_g1", "c9_g4", "c9_g9", "c9_g17"]}],
       short_en: `Amershi et al. group the 18 guidelines by **when they apply**. **Initially** — G1 *Make clear what the system can do*: show users the AI’s scope before they rely on it. **During interaction** — G4 *Show contextually relevant information*: surface only what fits the user’s current task and setting. **When wrong** — G9 *Support efficient correction*: assume errors and make editing or undoing cheap. **Over time** — G17 *Provide global controls*: let users set what the system monitors and how it behaves overall.`,
       short_zh: `Amershi 等人按**适用时机**把 18 条准则分组。**初始阶段**——G1“说清系统能做什么”：在用户依赖 AI 之前，先让他们看到它的能力范围。**交互过程中**——G4“显示与情境相关的信息”：只呈现符合用户当前任务和处境的内容。**出错时**——G9“方便地纠正”：预设会出错，让编辑和撤销的成本很低。**随时间推移**——G17“提供全局控制”：让用户设定系统监测什么、整体如何表现。`,
       basis_en: `Checked against Table 1 of the CHI 2019 camera-ready paper (Microsoft Research PDF): the four phase groups (G1–2, G3–6, G7–11, G12–18) and every guideline title, description and example in the grid match the table. The lecture slides themselves were not available.`,
@@ -285,6 +291,9 @@ The grouping itself is the lesson: an AI product is not designed once at the fir
           };
         }
       },
+      kid_en: "Think of two restaurants. The first gives you a **menu**: you see every dish and what’s in it before you order. The second has no menu — you just guess dishes and the waiter keeps saying “sorry, we don’t have that.” An activity tracker is the first restaurant: on day one it shows the list of what it measures and how. A smart speaker is the second: you only find out what it can’t do when it fails. Guideline G1 is simply: **show the menu**.",
+      kid_zh: "想象两家餐厅。第一家给你**菜单**：点菜前你就能看到每道菜和里面有什么。第二家没有菜单——你只能猜着点，服务员一次次说“不好意思，这个没有”。运动手环就是第一家：第一天它就列出它测什么、怎么测。智能音箱是第二家：你只有在它答不上来时，才知道它不会什么。准则 G1 说的就是：**把菜单拿出来**。",
+      steps: [{"en": "This desk has two gadgets that both use AI. We are testing one rule: **G1 — make clear what the system can do**.", "zh": "桌上有两个都用了 AI 的小设备。我们只检验一条准则：**G1——说清系统能做什么**。", "hi": []}, {"en": "Press **T** (or click the band). Its screen lists exactly what it measures and how — like reading the menu before you order.", "zh": "按 **T**（或点手环）。它的屏幕列出它到底测什么、怎么测——就像点菜前先看菜单。", "hi": []}, {"en": "Now press **S** (or click the speaker) and ask it something. No screen, no list — you only learn what it can’t do when it says sorry.", "zh": "现在按 **S**（或点音箱）问它点什么。没有屏幕，也没有清单——只有它说“对不起”时，你才知道它不会什么。", "hi": []}, {"en": "Press **S** a few more times. Notice you are **guessing**. That guessing is what breaking G1 feels like.", "zh": "再按几次 **S**。你会发现自己在**瞎猜**。这种“只能猜”的感觉，就是违反 G1。", "hi": []}, {"en": "Exam recipe: name the paper’s example (activity tracker), say WHY it applies G1 (shows its scope up front), then name a product you use that breaks it.", "zh": "考试写法：说出论文里的例子（运动手环），说明它为什么体现 G1（一开始就亮出能力范围），再举一个你用过、违反这条的产品。", "hi": []}],
       short_en: `In Table 1, **G1 – Make clear what the system can do** is illustrated by **activity trackers**: the product displays all the metrics it tracks and explains how. That applies G1 because users learn the system’s **scope** before trusting it, so their expectations match what it can really do. A smart speaker (e.g. Alexa) breaks G1: it shows no list of abilities, so I only discover its limits when it answers “Sorry, I can’t help with that.”`,
       short_zh: `在表 1 中，**G1“说清系统能做什么”**的例子是**活动追踪器**：产品列出它追踪的所有指标，并说明是怎么测的。这体现了 G1，因为用户在信任它之前就知道了系统的**能力范围**，预期和实际能力一致。智能音箱（如 Alexa）违反了 G1：它不展示任何能力清单，我只有在它回答“抱歉，这个我帮不了”时才知道它的局限。`,
       basis_en: `Checked against Table 1 of the CHI 2019 paper: G1’s example is [Activity Trackers] — it “displays all the metrics that it tracks and explains how.” The other examples listed in the answer (music recommenders’ hedging for G2, “Tap to Edit” for G9, 3–4 autocomplete suggestions for G10, fastest-route explanation for G11, teaching callouts for G18) are from the same table.`,
@@ -331,20 +340,23 @@ What it should do: a short spoken or in-app list of what it can do, examples tie
         const L = (y, t, col = C.ink, cls = 'mono') => F.text(30, y, t, { anchor: 'start', cls, color: col });
         // rows (y positions are reused by the leader lines)
         const Y = { req: 66, edit: 100, diff: 132, perm: 196, done: 290 };
-        s += L(Y.req, '> add a contact form to the homepage', C.blue);
+        s += F.g(L(Y.req, '> add a contact form to the homepage', C.blue), { tip: 'c9_g10', note: { en: 'A vague request: which page? which fields? It never asks.', zh: '一个含糊的请求：哪个页面？哪些字段？它从不追问。' } });
         s += L(Y.edit, '● Edit(index.html)');
-        s += F.rect(30, Y.diff - 18, 406, 50, { fill: '#fff', stroke: '#ccc', rx: 4 });
-        s += `<rect x="31" y="${Y.diff - 17}" width="404" height="22" fill="${C.greenF}"/><rect x="31" y="${Y.diff + 7}" width="404" height="22" fill="${C.redF}"/>`;
-        s += F.text(40, Y.diff - 2, '+ <form method="post" action="/contact">', { anchor: 'start', cls: 'mono', color: C.green });
-        s += F.text(40, Y.diff + 22, '- <p>Email me sometime</p>', { anchor: 'start', cls: 'mono', color: C.red });
-        s += F.rect(30, Y.perm - 26, 406, 66, { fill: C.amberF, stroke: C.amber, rx: 4 });
-        s += F.text(42, Y.perm - 8, 'Allow this edit to index.html?', { anchor: 'start', cls: 'mono' });
-        s += F.text(42, Y.perm + 12, '1 Yes   2 Yes, don’t ask again   3 No', { anchor: 'start', cls: 'tiny', color: C.ink });
-        s += F.text(42, Y.perm + 30, 'shift+tab · switch permission mode', { anchor: 'start', cls: 'tiny', color: C.mute });
+        s += F.g(F.rect(30, Y.diff - 18, 406, 50, { fill: '#fff', stroke: '#ccc', rx: 4 }) +
+          `<rect x="31" y="${Y.diff - 17}" width="404" height="22" fill="${C.greenF}"/><rect x="31" y="${Y.diff + 7}" width="404" height="22" fill="${C.redF}"/>` +
+          F.text(40, Y.diff - 2, '+ <form method="post" action="/contact">', { anchor: 'start', cls: 'mono', color: C.green }) +
+          F.text(40, Y.diff + 22, '- <p>Email me sometime</p>', { anchor: 'start', cls: 'mono', color: C.red }),
+          { tip: 'c9_g9', note: { en: 'The diff: every change is visible and can be rejected.', zh: 'diff：每处改动都看得见，也都能拒绝。' } });
+        s += F.g(F.rect(30, Y.perm - 26, 406, 66, { fill: C.amberF, stroke: C.amber, rx: 4 }) +
+          F.text(42, Y.perm - 8, 'Allow this edit to index.html?', { anchor: 'start', cls: 'mono' }) +
+          F.text(42, Y.perm + 12, '1 Yes   2 Yes, don’t ask again   3 No', { anchor: 'start', cls: 'tiny', color: C.ink }) +
+          F.text(42, Y.perm + 30, 'shift+tab · switch permission mode', { anchor: 'start', cls: 'tiny', color: C.mute }),
+          { tip: 'c9_g17', note: { en: 'The permission prompt and modes: you set the rules for the whole session.', zh: '权限提示和模式：你为整个会话定规则。' } });
         s += L(248, '● Bash(open index.html)', C.mute);
-        s += L(Y.done, '✓ Done — the form works on every page.', C.ink);
-        s += `<rect x="26" y="${Y.done - 16}" width="350" height="24" rx="4" fill="none" stroke="${C.red}" stroke-dasharray="4 3"/>`;
-        s += F.text(30, 330, '(no tests were run · nothing says so)', { anchor: 'start', cls: 'tiny', color: C.red });
+        s += F.g(L(Y.done, '✓ Done — the form works on every page.', C.ink) +
+          `<rect x="26" y="${Y.done - 16}" width="350" height="24" rx="4" fill="none" stroke="${C.red}" stroke-dasharray="4 3"/>` +
+          F.text(30, 330, '(no tests were run · nothing says so)', { anchor: 'start', cls: 'tiny', color: C.red }),
+          { tip: 'c9_g2', note: { en: 'A confident “Done” with nothing checked.', zh: '什么都没检查，就自信地说“完成”。' } });
         // scorecard on the right, wired to the moments in the session
         const rows = [
           { y: Y.perm, ok: true, g: 'G17', en: 'Global controls', zh: '提供全局控制', why: 'permission modes', wz: '权限模式', tip: 'c9_g17', col: C.green },
@@ -368,6 +380,9 @@ What it should do: a short spoken or in-app list of what it can do, examples tie
       },
       cap_en: 'Score the tool at the moments it actually happened. The permission prompt and the diff apply guidelines well (green); the confident “Done” and the unasked guess break them (red). The fix goes into the final report.',
       cap_zh: '在工具真正发生的那些时刻打分。权限提示和 diff 很好地体现了准则（绿）；自信的“完成”和没问就猜违反了准则（红）。修改应落在最后的报告上。',
+      kid_en: "Pretend an AI helper did your group project and you have to write its **report card**. Two things it does well: it **asks before touching your files**, like a friend asking “can I borrow your pen?”, and it **shows exactly what it changed**, like a teacher’s red pen. Two things it does badly: it says “**Done, all perfect!**” without checking — like saying your homework is finished without checking the answers — and it **guesses** instead of asking what you meant. Your answer: one good rule, one broken rule, and how you would fix it.",
+      kid_zh: "假装一个 AI 助手帮你做了小组作业，你要给它写一张**成绩单**。它做得好的两件事：**动你的文件之前先问**，就像朋友先问“能借你的笔吗？”；还有**清楚标出改了哪里**，像老师用红笔批改。做得不好的两件事：它没检查就说“**做完了，全都没问题！**”——就像没对答案就说作业写完了；还有它**靠猜**，不问你到底想要什么。你的答案：一条它做到的准则、一条它违反的准则，再说你会怎么改。",
+      steps: [{"en": "Left: a moment in Claude Code, an AI that edits a website. Right: a report card using Amershi’s rules. Each line connects a moment to a grade.", "zh": "左边：Claude Code（一个会改网站的 AI）里的一个片段。右边：用 Amershi 准则打的成绩单。每条连线把一个时刻连到一个分数。", "hi": []}, {"en": "It shows exactly what it changed — green lines added, red lines removed — and you can say no. That is **G9, easy to correct. ✓**", "zh": "它把改动清楚地标出来——绿色是加的，红色是删的——你可以拒绝。这就是 **G9：方便纠正 ✓**。", "hi": ["c9_g9"]}, {"en": "Before editing, it asks permission, and you can switch the rules for the whole session. That is **G17, global controls. ✓**", "zh": "改文件之前它会请求许可，你还能切换整个会话的规则。这就是 **G17：全局控制 ✓**。", "hi": ["c9_g17"]}, {"en": "Then it says “Done — works on every page” but ran no tests. Sounding sure without checking breaks **G2, say how well it can do. ✗**", "zh": "然后它说“完成——每个页面都能用”，但一个测试都没跑。没检查却说得很肯定，违反了 **G2：说清做得有多好 ✗**。", "hi": ["c9_g2"]}, {"en": "And it never asked which page or which fields — it guessed. That breaks **G10, scope when unsure. ✗**", "zh": "而且它从没问过是哪个页面、要哪些字段——全靠猜。这违反了 **G10：不确定时缩小范围 ✗**。", "hi": ["c9_g10"]}, {"en": "Your answer = tool + one rule it follows + one rule it breaks + your fix. The fix here: make it report what it actually checked, and ask before guessing.", "zh": "你的答案 = 工具 + 一条做到的准则 + 一条违反的准则 + 你的修改。这里的修改：让它报告到底检查了什么，并且先问再猜。", "hi": ["c9_g17", "c9_g2"]}],
       short_en: `**Claude Code** (an agent harness) applies **G17 – Provide global controls**: its permission modes let me decide once what it may do without asking, and every edit appears as a diff I can reject (G9, efficient correction). It breaks **G2 – Make clear how well the system can do what it can do**: it reports “Done” with the same confidence whether or not it ran any tests. I would add a verification summary to every report — what ran, what was assumed, what is untested — with a confidence level, and have it ask before guessing.`,
       short_zh: `**Claude Code**（一个智能体框架）很好地体现了**G17“提供全局控制”**：它的权限模式让我一次性决定它哪些事可以不经询问就做，每次编辑都显示为可以拒绝的 diff（G9，方便地纠正）。它违反了**G2“说清系统做得有多好”**：无论有没有运行测试，它都用同样自信的语气报告“完成”。我会在每次报告中加入验证摘要——运行了什么、假设了什么、哪些没测——并标明把握程度，遇到不确定时先问再做。`,
       basis_en: `Built on Amershi et al. Table 1 (G2, G9, G10, G17 wording checked) and Claude Code’s permission-mode documentation (ask before edits, accept edits automatically, plan only). Whether a tool breaks G2 depends on the session you actually saw — anchor your answer in a real moment.`,

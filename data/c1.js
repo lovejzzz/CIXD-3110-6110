@@ -93,22 +93,32 @@ defClass({
       id: '1.1', t_en: 'Surveillance capitalism', t_zh: '监视资本主义',
       q_en: 'Describe surveillance capitalism.', q_zh: '描述“监视资本主义”。',
       src: 'Zuboff; AI and Humanity (AH)',
+      kid_en: "Imagine a school café that gives you free lunch. While you eat, a quiet helper writes down everything: what you pick, how long you stare at the dessert, who you sit with. A little of that list is used to make the menu better for you. Most of it goes into a notebook of guesses — \"Mia will want chocolate milk on Friday\" — and the café sells those guesses to snack companies. Then the café starts nudging you (a sign, a coupon) so the guess comes true. That business is surveillance capitalism: you are not the customer, you are the material.",
+      kid_zh: "想象学校门口有家“免费”的午餐店。你吃饭时，有个人在旁边悄悄记：你拿了什么、盯着甜点看了多久、和谁坐一桌。一小部分记录真的用来改菜单，让你吃得更好；大部分被写进一本“猜测本”——“小美周五会想喝巧克力奶”——再把这些猜测卖给零食公司。接着店里还会“推”你一下（放张海报、给张优惠券），让猜测成真。这就是监视资本主义：你不是顾客，你是原材料。",
+      steps: [
+        { en: "Start at the left: that circle is YOU. Every click, search and pause becomes data.", zh: "从左边开始：那个圆就是“你”。你的每次点击、搜索、停顿都变成数据。", hi: ["k11_you", "k11_data"] },
+        { en: "A thin blue stream goes back to you as a better app. That's the small part you get.", zh: "一条细细的蓝线回到你那里，变成更好用的 App——这是你得到的那一小部分。", hi: ["k11_service"] },
+        { en: "The thick red stream is the extra — the 'behavioral surplus' the company keeps.", zh: "粗粗的红线是“多拿走的那部分”——公司留下的“行为剩余”。", hi: ["behav_surplus"] },
+        { en: "Machine intelligence turns that extra into guesses about what you'll do next: prediction products.", zh: "机器智能把这些剩余加工成“你下一步会做什么”的猜测：预测产品。", hi: ["k11_mi", "pred_products"] },
+        { en: "The guesses are sold to advertisers in a market that bets on your future behavior.", zh: "这些猜测卖给广告主，就像在一个“押注你未来行为”的市场里交易。", hi: ["behav_futures"] },
+        { en: "Last, the dashed line: the system nudges you so its guesses come true. The loop starts again.", zh: "最后看虚线：系统“推”你一把，让它的猜测成真——循环又开始了。", hi: ["behav_mod", "k11_you"] }
+      ],
       fig() {
         // Zuboff's cycle: experience → split → surplus → machine intelligence → prediction products → futures market → behavior modification → back to you
         let s = '';
         const node = (x, y, w, h, en, zh, o = {}) => F.rect(x, y, w, h, { rx: o.rx ?? 8, fill: o.fill || '#fff', stroke: o.stroke || F.C.ink, sw: o.sw, tip: o.tip, note: o.note }) +
           F.text(x + w / 2, y + h / 2 - 7, en, { cls: 'lt', color: o.tc || F.C.ink }) + F.sub(x + w / 2, y + h / 2 + 12, zh, { anchor: 'middle' });
         // you
-        s += F.circle(92, 176, 46, { fill: '#fff', note: { en: 'Clicks, searches, location, pauses, faces, voices — claimed as free raw material.', zh: '点击、搜索、位置、停顿、面孔、声音——被当作免费原材料。' } });
+        s += F.circle(92, 176, 46, { fill: '#fff', tip: 'k11_you', note: { en: 'Clicks, searches, location, pauses, faces, voices — claimed as free raw material.', zh: '点击、搜索、位置、停顿、面孔、声音——被当作免费原材料。' } });
         for (let i = 0; i < 26; i++) { const a = i * 2.4, r = 8 + (i % 5) * 6; s += `<circle cx="${(92 + r * Math.cos(a)).toFixed(1)}" cy="${(170 + r * 0.8 * Math.sin(a)).toFixed(1)}" r="1.2" fill="${F.C.ink}"/>`; }
         s += F.text(92, 238, 'YOU · EXPERIENCE', { cls: 'lt' }) + F.sub(92, 254, '你 · 人的经验', { anchor: 'middle' });
         // flow out of you
         s += F.path('M138,176 L208,176', { arrow: true, sw: 1.4 });
         // splitter
-        s += F.g(F.circle(222, 176, 10, { fill: F.C.ink }) + F.text(222, 204, 'DATA', { cls: 'tiny', color: F.C.mute }), { note: { en: 'Everything you do becomes data. The platform decides how to split it.', zh: '你做的一切都变成数据，由平台决定怎么分。' } });
+        s += F.g(F.circle(222, 176, 10, { fill: F.C.ink }) + F.text(222, 204, 'DATA', { cls: 'tiny', color: F.C.mute }), { tip: 'k11_data', note: { en: 'Everything you do becomes data. The platform decides how to split it.', zh: '你做的一切都变成数据，由平台决定怎么分。' } });
         // thin blue branch: service improvement, loops back to you
         s += F.path('M226,166 C240,96 270,80 300,80', { stroke: F.C.blue, sw: 1.2, arrow: true });
-        s += node(300, 54, 170, 52, 'SERVICE IMPROVEMENT', '改进服务（返还给你）', { fill: F.C.blueF, stroke: F.C.blue, tc: F.C.blue, note: { en: 'The small share of data actually used to make the product better for you.', zh: '真正用来让产品更好用的那一小部分数据。' } });
+        s += node(300, 54, 170, 52, 'SERVICE IMPROVEMENT', '改进服务（返还给你）', { fill: F.C.blueF, stroke: F.C.blue, tc: F.C.blue, tip: 'k11_service', note: { en: 'The small share of data actually used to make the product better for you.', zh: '真正用来让产品更好用的那一小部分数据。' } });
         s += F.path('M300,70 C200,30 110,70 96,124', { stroke: F.C.blue, sw: 1.2, arrow: true, dash: '4 3' });
         // thick red branch: behavioral surplus
         s += F.path('M232,182 L298,206', { stroke: F.C.red, sw: 4, arrow: false }) + F.path('M290,203 L300,207', { stroke: F.C.red, sw: 1.2, arrow: true });
@@ -117,7 +127,7 @@ defClass({
         // machine intelligence (chips)
         let chips = ''; for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) chips += `<rect x="${508 + i * 18}" y="${188 + j * 16}" width="9" height="9" fill="${F.C.ink}"/>`;
         s += F.g(F.rect(494, 172, 88, 70, { rx: 6 }) + chips + F.text(538, 262, 'MACHINE', { cls: 'tiny' }) + F.text(538, 274, 'INTELLIGENCE', { cls: 'tiny' }) + F.sub(538, 290, '机器智能', { anchor: 'middle' }),
-          { note: { en: 'Algorithms refine the surplus into forecasts.', zh: '算法把剩余数据加工成预测。' } });
+          { tip: 'k11_mi', note: { en: 'Algorithms refine the surplus into forecasts.', zh: '算法把剩余数据加工成预测。' } });
         s += F.path('M582,207 L612,207', { stroke: F.C.mag, sw: 1.6, arrow: true });
         s += node(614, 180, 136, 54, 'PREDICTION PRODUCTS', '预测产品', { fill: F.C.magF, stroke: F.C.mag, tc: F.C.mag, tip: 'pred_products' });
         s += F.path('M682,234 L682,300', { stroke: F.C.mag, sw: 1.6, arrow: true });
@@ -164,13 +174,21 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
       q_en: 'What does technofeudalism highlight? How does it relate to surveillance capitalism?',
       q_zh: '“技术封建主义”强调了什么？它与监视资本主义有什么关系？',
       src: 'Varoufakis, Technofeudalism',
+      kid_en: "Think of a huge game server that everyone plays on. If you want to sell skins there, you must pay the owner a cut of every sale — not because the owner made a better skin, but because they own the place. Players make the server fun by playing, chatting and posting for free, which makes the owner's server even more valuable. That's technofeudalism: the owner is like a lord, sellers pay rent to be inside, and players work for free.",
+      kid_zh: "想象一个所有人都在玩的超大游戏服务器。你想在里面卖皮肤，每卖一件都要给服务器老板抽成——不是因为老板做的皮肤更好，而是因为地盘是他的。玩家们免费地玩、聊天、发帖，让这个服务器越来越热闹、越来越值钱。这就是技术封建主义：老板像领主，卖家交“地租”才能留在里面，玩家像农奴一样免费干活。",
+      steps: [
+        { en: "The big grid is the platform. It looks like a market, but one company owns all of it — a 'fief'.", zh: "这块大网格就是平台。它看起来像市场，其实整块地都归一家公司——一块“封地”。", hi: ["k12_fief"] },
+        { en: "The yellow boxes are sellers. They pay a cut of every sale just to be inside: cloud rent.", zh: "黄色盒子是卖家。他们每卖一件都要抽成，只为能待在里面：这叫“云地租”。", hi: ["cloud_rent"] },
+        { en: "The little blue people are users. Posting, rating and scrolling is free work for the owner.", zh: "蓝色小人是用户。发帖、打分、刷屏，都是给老板的免费劳动。", hi: ["cloud_serfs"] },
+        { en: "Floating on top is the algorithm — cloud capital. It decides what everyone sees, and the owner collects rent instead of profit.", zh: "浮在上面的是算法——“云资本”。它决定每个人看到什么，老板靠收租而不是靠竞争赚钱。", hi: ["cloud_capital"] }
+      ],
       fig() {
         F.setIso(24, 380, 84);
         let s = '';
         // the fief (platform) — big base
         s += F.g(F.plate({ x: 0, y: 0, z: 0, w: 7, d: 7, t: 0.25, pattern: 'grid', density: 7, fill: '#fff' }) +
           F.label(F.iso(0, 4.5, 0.25), 200, 'THE FIEF = PLATFORM') + F.sub(192, F.iso(0, 4.5, 0.25)[1] + 17, '封地 = 平台（亚马逊、应用商店）', { anchor: 'end' }),
-          { note: { en: 'Not a market: one company owns the space where buying and selling happen.', zh: '不是市场：交易发生的整个空间由一家公司拥有。' } });
+          { tip: 'k12_fief', note: { en: 'Not a market: one company owns the space where buying and selling happen.', zh: '不是市场：交易发生的整个空间由一家公司拥有。' } });
         // vassals (sellers)
         const sellers = [[0.5, 5.0], [5.0, 0.5], [0.5, 2.6]];
         let v = '';
@@ -229,6 +247,16 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
       q_en: 'Name the parts of a URL and say what each one tells the server.',
       q_zh: '说出 URL 的各个组成部分，以及每一部分告诉服务器什么。',
       src: 'MDN, “What Is a URL?”',
+      kid_en: "A URL is like the address on a package. First it says HOW to deliver it (by truck or by plane — that's https). Then WHICH building (the domain), WHICH door of the building (the port), WHICH room (the path), and a sticky note with extra requests (the query, like \"size: large\"). The part after # is a note only for you — like \"open to page 5\" — the post office never reads it.",
+      kid_zh: "URL 就像快递单上的地址。先写“怎么送”（走陆运还是空运——就是 https），再写“哪栋楼”（域名）、“楼的哪个门”（端口）、“哪个房间”（路径），再贴一张写着额外要求的便利贴（查询参数，比如“要大号”）。# 后面的部分是写给你自己的小纸条——像“翻到第 5 页”——快递员根本不看。",
+      steps: [
+        { en: "Read the URL left to right. The pink part, https, says HOW the browser and server will talk.", zh: "从左往右读。粉色的 https 说的是浏览器和服务器“用什么方式说话”。", hi: ["scheme"] },
+        { en: "Blue is the domain: WHICH server. DNS looks it up like a phone book.", zh: "蓝色是域名：找“哪台服务器”。DNS 像查电话簿一样把它查出来。", hi: ["domain"] },
+        { en: "Yellow is the port: which door on that server. Usually hidden, because 443 is the default door.", zh: "黄色是端口：服务器上的“哪扇门”。通常不写，因为 443 是默认的门。", hi: ["port"] },
+        { en: "Green is the path: WHICH page or file you want.", zh: "绿色是路径：你要“哪个页面或文件”。", hi: ["path"] },
+        { en: "Red is the query: extra key=value wishes, like a search word.", zh: "红色是查询参数：额外的“键=值”要求，比如搜索词。", hi: ["query"] },
+        { en: "Grey #section is the fragment — it never leaves your browser. The server never sees it!", zh: "灰色的 #section 是锚点——它从不离开你的浏览器，服务器根本看不到！", hi: ["fragment"] }
+      ],
       fig() {
         const parts = [
           { s: 'https', color: F.C.mag, tip: 'scheme' }, { s: '://', color: F.C.mute },
@@ -302,6 +330,14 @@ MDN 把域名 + 端口合称为 **authority（权威部分）**——说明你�
       q_en: 'What is the difference between GET and POST, and when you fill in a form on a website, which one happens?',
       q_zh: 'GET 和 POST 有什么区别？当你在网站上填写表单时，发生的是哪一个？',
       src: 'MDN, “HTTP Request Methods”',
+      kid_en: "GET is like a postcard: whatever you write is on the outside, so anyone handling it can read it — and sending it again changes nothing, you're just asking for something. POST is like a sealed envelope you drop in a box: what you wrote is inside, and it makes something happen, like signing up for a club. Send the envelope twice and you might be signed up twice! When you fill in a form, you're usually mailing that envelope: POST.",
+      kid_zh: "GET 像一张明信片：写的东西都在外面，经手的人都看得见；而且再寄一次也不会改变什么，你只是在“要”东西。POST 像一个封好的信封投进信箱：内容在里面，而且它会“让事情发生”，比如报名参加社团。同一个信封寄两次，你可能就报名了两次！填网页表单时，你通常寄的就是这个信封：POST。",
+      steps: [
+        { en: "Press G (or click the GET key). Watch the address bar: your search word appears right in the URL — that's the postcard.", zh: "按 G（或点 GET 键）。看地址栏：搜索词直接出现在网址里——这就是明信片。", hi: [] },
+        { en: "Look at the server's rows: GET didn't change anything. It only fetched a page.", zh: "看服务器里的记录行：GET 什么都没改，它只是取回一个页面。", hi: [] },
+        { en: "Now press P (POST). The data travels sealed in the body, and the server ADDS a new account row.", zh: "现在按 P（POST）。数据封在正文里送过去，服务器“新增”了一行账户记录。", hi: [] },
+        { en: "Press P again. A second account appears — that's why POST is not safe to repeat, and why browsers warn before resubmitting a form.", zh: "再按一次 P。又多了一个账户——所以 POST 不能随便重复，浏览器在重新提交表单前才会警告你。", hi: [] }
+      ],
       fig() {
         let s = '';
         const col = (x, title, zh, rows, accent, tipKey) => {
@@ -477,6 +513,14 @@ Note: POST is not encryption. It only hides data from the URL; HTTPS is what pro
       q_en: 'What is a shell, and what does the terminal show you that the GUI hides?',
       q_zh: '什么是 shell？终端向你展示了哪些图形界面（GUI）隐藏起来的东西？',
       src: 'Stephenson; The Missing Semester; Explainshell',
+      kid_en: "Using a computer with icons is like ordering at a restaurant with a picture menu: easy, but you only get what's on the pictures and you never see the kitchen. The terminal is like talking straight to the chef in words. The shell is the chef who understands your words and makes things happen. Because you talk in exact words, you see everything — hidden ingredients (hidden files), what went wrong (errors), and you can combine orders in ways the picture menu never offered.",
+      kid_zh: "用图标操作电脑，就像在餐厅看着图片菜单点菜：很方便，但你只能点图片上有的，也永远看不到厨房。终端就像直接用文字和厨师说话；shell 就是那个听懂你的话、把事情做出来的厨师。因为你用的是准确的文字，所以你什么都看得见：隐藏的配料（隐藏文件）、哪里出错了（报错），还能把好几道菜组合着点，这是图片菜单从来不提供的。",
+      steps: [
+        { en: "Click the screen and type ls, then press Enter. The terminal just shows your words.", zh: "点一下屏幕，输入 ls，按回车。终端只是把你的文字显示出来。", hi: [] },
+        { en: "Watch the light travel down: the shell reads your command, the operating system does the work, the disk answers.", zh: "看光往下走：shell 读懂你的命令，操作系统去干活，硬盘给出回答。", hi: [] },
+        { en: "Now type ls -la. The -la are 'flags': they ask for more detail, including hidden files that start with a dot.", zh: "再输入 ls -la。-la 是“选项”：要求更详细，连“.”开头的隐藏文件也列出来。", hi: [] },
+        { en: "Press Tab to switch to the GUI view: the same folder now shows only a few icons — the hidden files and the command itself disappear. That's what the GUI hides.", zh: "按 Tab 切到图形界面：同一个文件夹只剩几个图标——隐藏文件和命令本身都不见了。这就是 GUI 藏起来的东西。", hi: [] }
+      ],
       fig() {
         const L = [
           { label: 'GUI · metaphors', sub: '图形界面：图标与文件夹', tip: 'gui', pattern: 'grid', density: 4, fill: '#fff',

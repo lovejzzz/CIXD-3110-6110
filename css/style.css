@@ -639,3 +639,59 @@ svg .tiny { fill-opacity: 1; }
   .plate.has-widget .plate-hint { display: none; }
   .plate.has-widget .plate-tag { white-space: normal; }
 }
+
+/* Colorfigures embeds (hand-inked 3D, see-through) */
+.cf-plate { padding: 12px 12px 10px; background: #f2efe7; }
+.cf-cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; font: 500 10.5px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 2px 4px 8px; }
+.cf-cap .live { color: var(--mag); }
+.cf-cap .cf-name { margin-right: auto; color: var(--ink); }
+.cf-cap .cf-name .zh { text-transform: none; letter-spacing: .04em; }
+body.lang-both .cf-cap .cf-name .zh { margin-left: 8px; }
+.cf-open { color: var(--blueT); text-decoration: none; letter-spacing: .06em; }
+body.lang-both .cf-open .zh { display: none; }
+.cf-frame { display: block; width: 100%; border: 0; border-radius: 4px; background: #f2efe7; }
+.cf-hint { font: 11.5px var(--mono); color: var(--mute); margin: 8px 4px 0; }
+body.lang-both .cf-hint .zh { margin-left: 10px; }
+@media (max-width: 900px) { .cf-frame { height: 760px !important; } }
+
+/* ═══════════ ELI12 + stepper ═══════════ */
+.kid { margin: 0 0 22px; padding: 16px 20px 14px; background: #fff7e0; border-radius: 4px; border: 1px solid #f0dfa8; }
+.kid h4 { color: #8a5a00; margin-bottom: 8px; }
+.kid h4::after { display: none; }
+.kid-ico { color: var(--amber); font-size: 13px; }
+.kid .bi { font-size: 15.5px; }
+.kid .bi .en { font-family: var(--serif); font-size: 18px; line-height: 1.55; }
+.kid .bi .zh { font-size: 16px; }
+body.lang-both .kid .bi > .zh { border-left-color: #f0dfa8; }
+
+.stepper { margin: -10px 0 24px; border: 1px solid var(--hair); border-top: 0; border-radius: 0 0 4px 4px; background: #fff; padding: 10px 16px 14px; }
+.st-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.st-lbl { font: 500 10.5px var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+body.lang-both .st-lbl .zh { margin-left: 8px; letter-spacing: .04em; }
+.st-dots { display: flex; gap: 4px; margin-right: auto; }
+.st-dot { width: 24px; height: 24px; border: 0; background: none; cursor: pointer; position: relative; padding: 0; }
+.st-dot::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--hair); transition: background .15s, transform .15s; }
+.st-dot.done::after { background: #d8a9c4; }
+.st-dot.on::after { background: var(--mag); transform: scale(1.35); }
+.st-btns { display: flex; gap: 6px; }
+.st-btns button { font: 500 12px var(--mono); border: 1px solid var(--ink); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; color: var(--ink); min-height: 32px; }
+.st-btns .st-next { background: var(--ink); color: var(--paper); }
+.st-btns .st-next:hover { background: var(--mag); border-color: var(--mag); }
+.st-btns button:disabled { opacity: .35; cursor: default; }
+body.lang-both .st-next .zh { display: none; }
+.st-say { margin-top: 10px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; min-height: 46px; }
+.st-n { font: 700 12px var(--mono); color: var(--mag); padding-top: 3px; }
+.st-say .bi { font-size: 15px; }
+.st-say .bi .en { font-size: 15.5px; }
+.st-intro { grid-column: 1 / -1; color: var(--mute); font-size: 14px; }
+body.lang-both .st-intro .zh { margin-left: 12px; }
+.plate:has(+ .stepper) { border-radius: 4px 4px 0 0; margin-bottom: 10px; }
+/* highlight */
+.plate.stepping svg .part:not(.st-hl) { opacity: .18; transition: opacity .3s var(--ease-std); }
+.plate.stepping svg .part.st-hl { opacity: 1; }
+.plate.stepping svg .st-hl :is(polygon, rect, circle, path) { stroke: var(--mag); }
+.plate.stepping svg .st-hl text { fill: var(--mag); }
+.glow-plate.stepping .st-hl .face { stroke: var(--accent); }
+@media (max-width: 900px) { .st-btns { width: 100%; } .st-btns .st-next { flex: 1; } }
+.plate.stepping svg .st-hl .part { opacity: 1; }
+.kid-ico { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block; }

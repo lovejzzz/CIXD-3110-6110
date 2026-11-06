@@ -79,6 +79,15 @@ defClass({
       q_en: 'What is a Modelfile, and which of its lines change the weights and which do not?',
       q_zh: '什么是 Modelfile？其中哪些行会改变权重，哪些不会？',
       src: 'Ollama, Modelfile reference',
+      kid_en: "Think of a robot chef and a recipe card. The line **FROM** picks *which robot chef* you hire — a different chef has a different brain. **ADAPTER** is extra cooking school that chef went to; it actually changes what the chef knows how to do. Everything else on the card — **SYSTEM**, **PARAMETER**, **TEMPLATE**, **MESSAGE** — is a sticky note for the *same* chef: “talk like a poet,” “be more adventurous,” “here’s an example dish.” And **LICENSE** is just the label on the box. A **Modelfile** is that recipe card for an Ollama model.",
+      kid_zh: "想象一位机器人厨师和一张菜谱卡。**FROM** 这一行决定你雇*哪一位*机器人厨师——换一位厨师，就是换一颗“大脑”。**ADAPTER** 是这位厨师额外上过的烹饪课，它真的改变了厨师会做什么。卡片上其他的——**SYSTEM**、**PARAMETER**、**TEMPLATE**、**MESSAGE**——都是贴给*同一位*厨师的便利贴：“说话像诗人”“胆子大一点”“这里有一道示范菜”。**LICENSE** 只是盒子上的标签。**Modelfile** 就是 Ollama 模型的这张菜谱卡。",
+      steps: [
+        {"en": "Seven keys = seven kinds of Modelfile lines. On the right sits the **weights block** with an ID number; in front, the output screen.", "zh": "七个键 = 七种 Modelfile 指令。右边是带编号的**权重块**；前面是输出屏幕。", "hi": ["g81-k0", "g81-k1", "g81-k2", "g81-k3", "g81-k4", "g81-k5", "g81-k6"]},
+        {"en": "Press **1 (FROM)**. A wire lights all the way to the weights, and the ID number changes: you picked a different model — different numbers.", "zh": "按 **1（FROM）**。一根线一路亮到权重块，编号变了：你换了一个模型——数字全变了。", "hi": ["g81-k0"]},
+        {"en": "Press **2 (ADAPTER)**. The weights change again: a LoRA adapter adds learned changes on top.", "zh": "按 **2（ADAPTER）**。权重又变了：LoRA 适配器在上面叠加了学到的改动。", "hi": ["g81-k1"]},
+        {"en": "Press **3, 4, 5, 6** (PARAMETER, TEMPLATE, SYSTEM, MESSAGE). Only the screen changes — the ID stays the same. Same brain, new instructions.", "zh": "按 **3、4、5、6**（PARAMETER、TEMPLATE、SYSTEM、MESSAGE）。只有屏幕变了——编号不变。同一颗大脑，新的指示。", "hi": ["g81-k2", "g81-k3", "g81-k4", "g81-k5"]},
+        {"en": "Press **7 (LICENSE)**. Nothing lights: it’s just a label for sharing. So: FROM and ADAPTER change weights; the rest don’t.", "zh": "按 **7（LICENSE）**。什么都不亮：它只是用于分享的标签。结论：FROM 和 ADAPTER 改变权重，其余都不改。", "hi": ["g81-k6"]}
+      ],
       short_en: 'A **Modelfile** is Ollama’s **plain-text blueprint** for building a model (`ollama create name -f Modelfile`). Only **FROM** (which base weights you start from) and **ADAPTER** (a fine-tuned LoRA applied on top) **change the weights**. **PARAMETER** (temperature, num_ctx…), **TEMPLATE**, **SYSTEM**, **MESSAGE** and **LICENSE** only change how the **same weights** are prompted, sampled or labeled.',
       short_zh: '**Modelfile** 是 Ollama 用来构建模型的**纯文本蓝图**（`ollama create 名字 -f Modelfile`）。只有 **FROM**（从哪份基础权重出发）和 **ADAPTER**（叠加一个微调好的 LoRA）**会改变权重**。**PARAMETER**（温度、num_ctx 等）、**TEMPLATE**、**SYSTEM**、**MESSAGE** 和 **LICENSE** 只改变**同一组权重**被如何提示、采样或标注。',
       basis_en: 'Checked against Ollama’s Modelfile reference: instructions FROM (required), PARAMETER, TEMPLATE, SYSTEM, ADAPTER, LICENSE, MESSAGE. ADAPTER “specifies a fine tuned LoRA adapter that should apply to the base model,” and the docs warn behavior is erratic if the base differs. (Newer docs also list REQUIRES and CAPABILITY — metadata, not weights.)',
@@ -237,6 +246,15 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       q_en: 'What is an adapter, why is it small, why must it match its base, and what does it change well and badly?',
       q_zh: '什么是适配器？它为什么很小？为什么必须与它的基础模型匹配？它擅长改变什么、不擅长改变什么？',
       src: 'Variable Machine; Class 8',
+      kid_en: "Imagine a giant encyclopedia you are not allowed to rewrite. Instead you add a thin stack of sticky notes: “page 37, line 3: say it like a pirate.” That stack is a **LoRA adapter** — tiny compared with the book, because you only store the changes. But the notes only work in *that exact edition*: put them in a different printing and every page number points to the wrong place. Sticky notes are great for changing *how* the book talks (tone, style, format), but they can’t squeeze in whole new chapters of knowledge.",
+      kid_zh: "想象一套你不能改动的巨型百科全书。你只能在上面贴一叠薄薄的便利贴：“第 37 页第 3 行：用海盗的口气说。”这叠便利贴就是 **LoRA 适配器**——跟整本书比小得多，因为你只记“改动”。但便利贴只对*这一个版本*有效：换一个印刷版本，所有页码都对不上了。便利贴很适合改变书*怎么说话*（语气、风格、格式），却塞不进一整章新知识。",
+      steps: [
+        {"en": "The big grid **W** is the base model’s weights — the encyclopedia. It is **frozen**: training doesn’t touch it.", "zh": "大方格 **W** 是基础模型的权重——那套百科全书。它是**冻结的**：训练不碰它。", "hi": ["c8_frozen"]},
+        {"en": "Training learns only two **thin** strips, **B** and **A**. Multiply them and you get a small correction ΔW that gets added to W.", "zh": "训练只学两条**细长**的矩阵 **B** 和 **A**。两者相乘得到一个小修正 ΔW，加到 W 上。", "hi": ["c8_rank"]},
+        {"en": "Why it’s small: thin strips hold far fewer numbers. The base is about 2 GB; the adapter is only 10–50 MB.", "zh": "为什么小：细长条装的数字少得多。基础模型约 2 GB，适配器只有 10–50 MB。", "hi": ["c8_weights", "c8_lora"]},
+        {"en": "It must match its base, like a plug and its socket: on the exact base it was trained against, it fits.", "zh": "它必须与基础模型匹配，就像插头和插座：放在训练时针对的那个基础模型上，正好合适。", "hi": ["c82-fit"]},
+        {"en": "On a different base the shapes or meanings don’t line up, so it breaks or talks nonsense. And remember: good at style, bad at new facts.", "zh": "换一个基础模型，形状或含义对不上，要么出错、要么胡言乱语。另外记住：擅长改风格，不擅长加新知识。", "hi": ["c82-misfit"]}
+      ],
       short_en: 'An **adapter** (LoRA) is a **small set of learned changes** added on top of a **frozen base model**: for each big weight matrix it trains two **thin, low-rank matrices** whose product ΔW is added in. It is **small** because the rank is tiny (≈8 vs. 4,096) — megabytes, not gigabytes. It **must match its base** because it stores **differences relative to those exact weights and shapes** (otherwise it fails or behaves erratically). It changes **style, tone and format** well, and **new facts or reasoning** badly (and overfits small data).',
       short_zh: '**适配器**（LoRA）是叠加在**冻结的基础模型**上的**一小组学到的改动**：为每个大权重矩阵训练两个**细长的低秩矩阵**，把它们的乘积 ΔW 加进去。它**小**，因为秩极低（约 8 对 4096）——是几 MB 而不是几 GB。它**必须匹配基础模型**，因为它存的是**相对于那组特定权重和形状的差值**（否则会加载失败或行为失常）。它擅长改变**风格、语气、格式**，不擅长改变**新事实或推理能力**（小数据还容易过拟合）。',
       basis_en: 'Checked against Hu et al., “LoRA: Low-Rank Adaptation of Large Language Models” (2021): the pretrained weights are frozen and trainable rank-decomposition matrices are injected, cutting trainable parameters by up to 10,000× for GPT-3; and Ollama’s ADAPTER docs on matching the base. The “well vs. badly” split follows the Class 8 demo and common practice (a rule of thumb, not a law).',
@@ -270,10 +288,10 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
         s += F.g(F.rect(560, 102, 6, 22, { fill: F.C.mag, stroke: F.C.mag, rx: 1 }) + F.text(574, 117, 'ADAPTER ≈ 10–50 MB', { anchor: 'start', cls: 'tiny', color: F.C.mag }), { tip: 'c8_lora' });
         // plug / socket
         s += F.text(560, 166, 'MUST MATCH ITS BASE', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.sub(560, 182, '必须与基础模型严格匹配');
-        s += F.g(F.path('M562,200 h40 v10 h12 v-10 h40 v40 h-92 z', { fill: '#fff' }) + F.path('M562,248 h40 v-10 h12 v10 h40', { stroke: F.C.mag }) +
-          F.text(700, 222, '✓ fits', { cls: 'tiny', color: F.C.green }), { note: { en: 'Same architecture, same exact base: the deltas line up with the numbers they were trained against.', zh: '同样的架构、同一个基础模型：增量正好对上它训练时所针对的那些数字。' } });
-        s += F.g(F.path('M562,262 h40 v10 h12 v-10 h40 v30 h-92 z', { fill: '#fff', dash: '3 3' }) + F.path('M562,308 h30 v-10 h20 v10 h42', { stroke: F.C.red }) +
-          F.text(700, 284, '✗ other base', { cls: 'tiny', color: F.C.red }), { note: { en: 'Different base or architecture: the shapes or the meaning of each number differ, so the adapter breaks or produces nonsense.', zh: '换了基础模型或架构：矩阵形状或每个数字的含义都不同，适配器要么加载失败，要么输出乱码。' } });
+        s += '<g id="c82-fit">' + F.g(F.path('M562,200 h40 v10 h12 v-10 h40 v40 h-92 z', { fill: '#fff' }) + F.path('M562,248 h40 v-10 h12 v10 h40', { stroke: F.C.mag }) +
+          F.text(700, 222, '✓ fits', { cls: 'tiny', color: F.C.green }), { note: { en: 'Same architecture, same exact base: the deltas line up with the numbers they were trained against.', zh: '同样的架构、同一个基础模型：增量正好对上它训练时所针对的那些数字。' } }) + '</g>';
+        s += '<g id="c82-misfit">' + F.g(F.path('M562,262 h40 v10 h12 v-10 h40 v30 h-92 z', { fill: '#fff', dash: '3 3' }) + F.path('M562,308 h30 v-10 h20 v10 h42', { stroke: F.C.red }) +
+          F.text(700, 284, '✗ other base', { cls: 'tiny', color: F.C.red }), { note: { en: 'Different base or architecture: the shapes or the meaning of each number differ, so the adapter breaks or produces nonsense.', zh: '换了基础模型或架构：矩阵形状或每个数字的含义都不同，适配器要么加载失败，要么输出乱码。' } }) + '</g>';
         return F.svg(760, 320, s, { label: 'LoRA adapter anatomy' });
       },
       cap_en: 'LoRA leaves the big matrix W frozen and learns two thin matrices whose product is a small correction ΔW. The correction only makes sense on the exact W it was learned against.',
@@ -304,6 +322,15 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       q_en: 'What does the loss number tell you during training?',
       q_zh: '训练过程中，损失（loss）这个数字告诉了你什么？',
       src: 'Variable Machine; Class 8',
+      kid_en: "Imagine practising for a spelling test with the same 20 words. **Loss** is like counting how many letters you still get wrong. At first you miss a lot; then the number drops — you’re learning. But if you practise those exact 20 words forever, you can score perfectly just by memorising the sheet, and still fail a new test with different words. That is **overfitting**: training loss near zero while a fresh test (validation) gets worse. And a low score never tells you whether your *writing* is any good — you still have to read it.",
+      kid_zh: "想象你在练拼写测验，用的一直是同样的 20 个单词。**损失（loss）**就像数你还拼错了多少个字母。一开始错很多，然后数字下降——你在学习。可如果你一直只练这 20 个词，你可以靠背下整张单子拿满分，换一份新词的测验却照样不及格。这就是**过拟合**：训练损失接近零，新测验（验证集）的成绩反而变差。而且分数低从来不代表你*写得好*——你还是得亲自去读。",
+      steps: [
+        {"en": "Drag the **training steps** slider all the way to the left. Both lines start high: the model is very surprised by the right answers.", "zh": "把**训练步数**滑杆拖到最左。两条线都从高处开始：模型对正确答案非常“意外”。", "hi": []},
+        {"en": "Slide right slowly. The solid line (training loss) drops fast — the model is learning to imitate your examples.", "zh": "慢慢往右拖。实线（训练损失）下降得很快——模型正在学会模仿你的例子。", "hi": []},
+        {"en": "Keep going. Watch the dashed line (validation loss — new examples it never trained on). Around the marked point it stops falling and starts rising.", "zh": "继续拖。看虚线（验证损失——它从没训练过的新例子）。到标出的位置附近，它不再下降，反而开始上升。", "hi": []},
+        {"en": "That’s **overfitting**: training loss keeps sinking because it’s memorising, while it gets worse on anything new. The best stop is where the dashed line was lowest.", "zh": "这就是**过拟合**：训练损失还在降，是因为它在死记硬背，可对新东西却越来越差。最好的停止点就是虚线最低的地方。", "hi": []},
+        {"en": "Remember: loss measures *surprise*, not quality or taste. Even a low number needs you to read the actual outputs.", "zh": "记住：损失衡量的是*意外程度*，不是质量或品味。数字再低，也得亲自读输出。", "hi": []}
+      ],
       short_en: '**Loss** is a running measure of **how wrong the model’s next-token predictions are on the training examples** (cross-entropy: how surprised it is by the right token). **Falling** loss means it is learning to imitate the data; **flat** means it isn’t learning; **falling toward zero on a small dataset while validation loss rises** means it is **memorizing (overfitting)**. It does **not** measure quality or taste — you still have to read the outputs.',
       short_zh: '**损失**是一个持续更新的数字，衡量**模型在训练样本上预测下一个 token 错得有多厉害**（交叉熵：对正确 token 有多“意外”）。**下降**说明它在学着模仿数据；**不动**说明没在学；**在小数据集上降到接近零、同时验证损失上升**，说明它在**死记硬背（过拟合）**。它**不衡量**质量或品味——仍要亲自读输出。',
       basis_en: 'Standard definition of training loss (cross-entropy over next tokens), as watched during the Variable Machine training runs in Class 8. The lecture slides were not available; the overfitting reading (training vs. validation loss) follows standard machine-learning practice.',
@@ -399,6 +426,15 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       q_en: 'How is training on chosen/rejected pairs different from training on examples? What is the data, in that case?',
       q_zh: '用“选中/拒绝”成对数据训练，和用“例子”训练有什么不同？在这种情况下，数据是什么？',
       src: 'Variable Machine; Ouyang et al.; DPO',
+      kid_en: "Two ways a teacher can help you write better. One: the teacher hands you a model essay and says “write like this” — you copy the example. That is training on **examples**. Two: the teacher puts two of your drafts side by side and says “this one is better than that one” — no perfect answer, just a choice. Do that many times and you learn what the teacher likes. That is training on **chosen/rejected pairs**. The data in the second case isn’t essays to copy — it’s a long record of someone’s *judgment and taste*.",
+      kid_zh: "老师帮你提高写作有两种方法。第一种：老师给你一篇范文，说“照这样写”——你模仿例子。这就是用**例子**训练。第二种：老师把你的两篇草稿并排放着，说“这篇比那篇好”——没有标准答案，只有一个选择。这样重复很多次，你就学会了老师喜欢什么。这就是用**选中/拒绝的成对数据**训练。第二种情况下，数据不是供你抄写的作文，而是一长串记录下来的某个人的*判断和品味*。",
+      steps: [
+        {"en": "Left: training on an **example**. One prompt, one target answer — the model learns “answer like THIS.”", "zh": "左边：用**例子**训练。一个提示，一个目标回答——模型学的是“照这样回答”。", "hi": ["c8_sft"]},
+        {"en": "Right: the same prompt, but now with **two** answers.", "zh": "右边：同一个提示，但现在有**两个**回答。", "hi": ["c8_pair"]},
+        {"en": "A person picked this one: **chosen** (green).", "zh": "一个人选了这个：**选中**（绿色）。", "hi": ["c84-chosen"]},
+        {"en": "…and ranked this one lower: **rejected** (red). It isn’t terrible — just less preferred.", "zh": "……并把这个排在后面：**拒绝**（红色）。它并不差——只是不那么被喜欢。", "hi": ["c84-rejected"]},
+        {"en": "The model learns the *direction* between them: “more like this, less like that.” So the data is rows of {prompt, chosen, rejected} — a record of human taste.", "zh": "模型学的是两者之间的*方向*：“多像这个，少像那个。”所以数据是一行行 {提示, 选中, 拒绝}——记录下来的人类品味。", "hi": ["c8_pair"]}
+      ],
       short_en: 'Training on **examples** (SFT) shows the model **one target answer to imitate**: it learns “answer like this.” Training on **chosen/rejected pairs** (DPO, or RLHF’s reward model) shows **two answers to the same prompt** and pushes the chosen one **up relative to** the rejected one: it learns **what to prefer**, not what to copy. The data is rows of **{prompt, chosen, rejected}** — a **record of human judgment and taste**.',
       short_zh: '用**例子**训练（SFT）给模型**一个要模仿的目标回答**：它学的是“照这样答”。用**选中/拒绝对**训练（DPO，或 RLHF 里的奖励模型）给出**同一提示的两个回答**，把选中的那个**相对于**被拒绝的推高：它学的是**更偏好什么**，而不是照抄什么。数据是一行行 **{提示, 选中, 拒绝}**——是**人的判断与品味的记录**。',
       basis_en: 'Checked against Rafailov et al., “Direct Preference Optimization: Your Language Model Is Secretly a Reward Model” (NeurIPS 2023): the policy is optimized directly on preference pairs, with no separate reward model; and Ouyang et al. (InstructGPT) for RLHF: SFT on demonstrations, then a reward model trained on human comparisons. In Variable Machine this is changing a model “with taste.”',
@@ -419,8 +455,8 @@ What loss does **not** tell you: whether the output is good, true, creative or m
         s += F.text(570, 30, 'PAIRS · PREFERENCE', { cls: 'big', color: F.C.mag }) + F.sub(570, 48, '成对：更喜欢这个', { anchor: 'middle' });
         s += F.g(card(420, 66, 300, 52, 'PROMPT · 提示', 'Describe the sea.'), { tip: 'c8_pair' });
         s += F.path('M570,122 L570,132 L495,132 L495,146', { arrow: true }) + F.path('M570,132 L645,132 L645,146', { arrow: true });
-        s += card(420, 150, 145, 62, '✓ CHOSEN · 选中', 'Salt light…', { fill: F.C.greenF, stroke: F.C.green, kc: F.C.green, vc: F.C.green, note: { en: 'The answer a person preferred.', zh: '人更喜欢的那个回答。' } });
-        s += card(575, 150, 145, 62, '✗ REJECTED · 拒绝', 'The sea is…', { fill: F.C.redF, stroke: F.C.red, kc: F.C.red, vc: F.C.red, note: { en: 'A plausible answer a person ranked lower.', zh: '一个说得过去、但被人排在后面的回答。' } });
+        s += '<g id="c84-chosen">' + card(420, 150, 145, 62, '✓ CHOSEN · 选中', 'Salt light…', { fill: F.C.greenF, stroke: F.C.green, kc: F.C.green, vc: F.C.green, note: { en: 'The answer a person preferred.', zh: '人更喜欢的那个回答。' } }) + '</g>';
+        s += '<g id="c84-rejected">' + card(575, 150, 145, 62, '✗ REJECTED · 拒绝', 'The sea is…', { fill: F.C.redF, stroke: F.C.red, kc: F.C.red, vc: F.C.red, note: { en: 'A plausible answer a person ranked lower.', zh: '一个说得过去、但被人排在后面的回答。' } }) + '</g>';
         s += F.text(570, 232, '“THIS, more than THAT”', { cls: 'tiny', color: F.C.mag }) + F.sub(570, 248, '学的是：两者之间的差别', { anchor: 'middle' });
         s += F.line(380, 70, 380, 250, { stroke: F.C.mute, dash: '3 4', sw: .8 });
         // data band
@@ -450,6 +486,15 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       q_en: 'What happens when two adapters are blended at t = 0.5, and who wrote the result?',
       q_zh: '当两个适配器以 t = 0.5 混合时会发生什么？结果是谁“写”的？',
       src: 'Variable Machine; Class 8',
+      kid_en: "Mix blue paint and yellow paint half-and-half and you get green — not a half-blue, half-yellow stripe. **Blending two adapters at t = 0.5** works like that: every number in the model becomes exactly halfway between adapter A’s number and adapter B’s. The result might be a cool mix of both styles, one style might win, or it might come out muddy, so you have to try it and look. And who painted that green? Nobody mixed it by hand on purpose — the credit is shared by whoever made the blue, whoever made the yellow, and whoever chose to stir them half-and-half.",
+      kid_zh: "把蓝色颜料和黄色颜料一半一半地混合，你得到的是绿色——不是一半蓝、一半黄的条纹。**以 t = 0.5 混合两个适配器**就是这样：模型里的每个数字都正好变成 A 和 B 对应数字的中间值。结果可能是两种风格的有趣混合，可能其中一种占上风，也可能变得一团糟，所以得亲自试、亲自看。那么这片绿色是谁画的？没有人刻意亲手调出它——功劳分散在做蓝颜料的人、做黄颜料的人，以及决定“一半一半”去搅拌的那个人身上。",
+      steps: [
+        {"en": "Adapter **A** learned poems; adapter **B** learned instruction manuals. Both were trained on the same base model.", "zh": "适配器 **A** 学的是诗；适配器 **B** 学的是说明书。两者都基于同一个基础模型训练。", "hi": []},
+        {"en": "Drag **t** to 0: you get pure A. Drag it to 1: pure B. Watch the sample output change style.", "zh": "把 **t** 拖到 0：完全是 A。拖到 1：完全是 B。看示例输出的风格怎么变化。", "hi": []},
+        {"en": "Set **t = 0.5**. Look at the formula: each number is (1 − t)·A + t·B — exactly the midpoint, like mixing paint.", "zh": "把 **t** 设为 0.5。看公式：每个数字都是 (1 − t)·A + t·B——正好是中点，就像调颜料。", "hi": []},
+        {"en": "The output sits somewhere between poem and manual — but a model isn’t a straight line, so you must read it to know if it’s a nice mix or mush.", "zh": "输出落在“诗”和“说明书”之间——但模型不是一条直线，所以必须读一读，才知道是好的混合还是一团糟。", "hi": []},
+        {"en": "Who wrote it? Read the line under the slider: the people behind dataset A and B, the base model’s makers, and whoever turned the dial.", "zh": "谁写的？看滑杆下面那一行：数据集 A 和 B 背后的人、基础模型的作者，以及转动旋钮的人。", "hi": []}
+      ],
       short_en: 'Blending is **arithmetic on the weights**: W = (1 − t)·A + t·B, so at **t = 0.5 every number is the exact midpoint** of the two adapters (trained on the same base). The model behaves **somewhere between the two learned behaviors** — a hybrid, one style dominating, or mush — because the network is not linear, so you must read the outputs. **No one wrote the result directly**: authorship is **distributed** across the people behind datasets A and B, the base model’s makers and its data, and **whoever chose the adapters and t**.',
       short_zh: '混合就是**对权重做算术**：W = (1 − t)·A + t·B，所以 **t = 0.5 时每个数字都是两个适配器（同一基础模型）的正中点**。模型的表现**介于两种学到的行为之间**——可能是混血、一方占上风，或者一团糊——因为网络不是线性的，必须读输出才知道。**没有人直接写出结果**：作者身份**分散**在数据集 A 和 B 背后的人、基础模型的制作者及其数据，以及**选了适配器和 t 的那个人**身上。',
       basis_en: 'A linear merge of adapter weights, as in Variable Machine’s blend control (LoRA adapters on the same base, Hu et al.). That outputs do not mix linearly follows from the network being non-linear. “Who wrote it?” is the course’s framing — there is no single correct author; argue the distribution.',

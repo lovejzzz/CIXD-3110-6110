@@ -222,6 +222,15 @@ In class we saw the same structure used for agents: Hermes can hold a request as
       basis_zh: `Kniberg & Skarin《Kanban and Scrum》（看板 = 可视化工作流、限制在制品、衡量交付周期）；Anderson《Kanban》；大野耐一的丰田生产方式（信号卡的起源）；智能体用法见 Hermes Agent 文档“Kanban and Goals”。定义也与课程词汇表一致。`,
       links: [{ t: 'Kniberg & Skarin — Kanban and Scrum', u: 'https://www.infoq.com/minibooks/kanban-scrum-minibook/' }, { t: 'Hermes Agent — Kanban and Goals', u: 'https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban' }],
       rel: ['5.2', '6.2'],
+      kid_en: `Imagine your class is making a giant poster together. On the wall there are four sticky-note columns: “To do”, “Doing”, “Checking”, “Done”. Each sticky note is one job, like “draw the title”. The teacher has one rule: **only two notes may be in “Doing” at a time** — so nobody starts five things and finishes none. When a job is done, the empty spot pulls the next note in. That wall is a **Kanban board**, and the “only two” rule is its **WIP limit**.`,
+      kid_zh: `想象全班一起做一张大海报。墙上贴了四列便利贴：“要做”“在做”“检查”“做完”。每张便利贴是一件活，比如“画标题”。老师只定了一条规矩：**“在做”那一列最多只能放两张**——这样就没人同时开五件事、一件也做不完。做完一件，空出的位置才把下一张便利贴“拉”进来。这面墙就是**看板**，“最多两张”就是它的 **WIP 上限**。`,
+      steps: [
+        { en: 'Look at the four columns. Each one is a “stage” a job passes through, left to right.', zh: '先看四列。每一列是一件工作要经过的一个“阶段”，从左往右走。', hi: [] },
+        { en: 'Each small block is one card = one job. Press N to try pushing a new job into DOING.', zh: '每个小方块是一张卡 = 一件工作。按 N，试着把新工作塞进“进行中”。', hi: [] },
+        { en: 'See the lights blink? DOING already has 2 cards — the WIP limit says “no more”. That is the rule!', zh: '看到灯在闪了吗？“进行中”已经有 2 张——WIP 上限说“不能再多了”。这就是规则！', hi: [] },
+        { en: 'Now press space: one review card finishes, a slot opens, and the board PULLS the next card forward by itself.', zh: '现在按空格：完成一张审查卡，空出一个位置，看板自己就把下一张卡“拉”过来了。', hi: [] },
+        { en: 'So a board tracks: what is waiting, what is being worked on, what is stuck, and what is done.', zh: '所以看板能追踪：哪些在等、哪些在做、哪些卡住了、哪些做完了。', hi: [] }
+      ],
       hook_en: 'Columns = states, cards = work, WIP limit = the rule. Stop starting, start finishing.',
       hook_zh: '列 = 状态，卡片 = 工作，WIP 上限 = 规则。少开新头，多做完成。',
       trap_en: 'A to-do list with columns is not quite Kanban — mention the WIP limit / pull, which is what the sources say defines it.',
@@ -234,9 +243,9 @@ In class we saw the same structure used for agents: Hermes can hold a request as
       fig() {
         let s = '';
         // request bubble
-        s += F.rect(30, 40, 200, 70, { fill: F.C.blueF, stroke: F.C.blue, rx: 10, note: { en: 'One big, fuzzy request from a person.', zh: '人提出的一个又大又模糊的请求。' } });
+        s += `<g id="s52-req" class="part">` + F.rect(30, 40, 200, 70, { fill: F.C.blueF, stroke: F.C.blue, rx: 10, note: { en: 'One big, fuzzy request from a person.', zh: '人提出的一个又大又模糊的请求。' } });
         s += F.text(130, 64, '“Build me a study', { cls: 'mono', color: F.C.blue }) + F.text(130, 82, 'site for my midterm”', { cls: 'mono', color: F.C.blue });
-        s += F.text(130, 132, 'REQUEST', { cls: 'lt', color: F.C.blue }) + F.sub(130, 148, '请求', { anchor: 'middle' });
+        s += F.text(130, 132, 'REQUEST', { cls: 'lt', color: F.C.blue }) + F.sub(130, 148, '请求', { anchor: 'middle' }) + `</g>`;
         s += F.arrow(236, 75, 286, 75);
         // checklist file
         const X = 290, Y = 30;
@@ -255,13 +264,14 @@ In class we saw the same structure used for agents: Hermes can hold a request as
         // loop on right
         const lx = 640;
         const loop = [['READ PLAN', '读计划'], ['DO NEXT STEP', '做下一步'], ['CHECK RESULT', '检查结果'], ['TICK + UPDATE', '打勾并更新']];
+        s += `<g id="s52-loop" class="part">`;
         loop.forEach(([e, z], i) => {
           const y = 50 + i * 72;
           s += F.rect(lx - 75, y, 150, 46, { fill: i === 1 ? F.C.magF : '#fff', stroke: i === 1 ? F.C.mag : F.C.ink, rx: 23 });
           s += F.text(lx, y + 20, e, { cls: 'tiny', color: i === 1 ? F.C.mag : F.C.ink }) + F.sub(lx, y + 36, z, { anchor: 'middle' });
           if (i < 3) s += F.arrow(lx, y + 48, lx, y + 70);
         });
-        s += F.path(`M${lx + 76},${50 + 3 * 72 + 23} C${lx + 120},${50 + 3 * 72} ${lx + 120},${73} ${lx + 78},${73}`, { stroke: F.C.mag, dash: '4 3', arrow: true });
+        s += F.path(`M${lx + 76},${50 + 3 * 72 + 23} C${lx + 120},${50 + 3 * 72} ${lx + 120},${73} ${lx + 78},${73}`, { stroke: F.C.mag, dash: '4 3', arrow: true }) + `</g>`;
         s += F.path(`M${X + 252},${Y + 150} H${lx - 78}`, { stroke: F.C.mute, dash: '3 3' });
         s += F.g(F.text(155, 300, 'lives OUTSIDE the context window', { cls: 'tiny', color: F.C.mute }) + F.sub(155, 316, '存在于上下文窗口之外', { anchor: 'middle' }), { tip: 'c5_context' });
         return F.svg(760, 340, s, { label: 'agent keeping a request as a checklist plan' });
@@ -294,6 +304,14 @@ Before acting, the agent breaks the request into an ordered list of concrete ste
       basis_zh: `第 5 课的框架：计划、看板等生产力结构就是智能体的“挽具”。“计划是一份文件”的说法来自规格驱动开发的资料（plan.md = “怎么做”），以及 Agno 把上下文窗口描述为 1 级智能体唯一知识来源。没有讲义原件；本答案依据课程读物与词汇表。`,
       links: [{ t: 'Anthropic — Building Effective AI Agents', u: 'https://www.anthropic.com/engineering/building-effective-agents' }],
       rel: ['5.1', '6.1', '6.2'],
+      kid_en: `Your mom says: “Clean your room.” That is huge and fuzzy, so you grab a paper and write a checklist: make the bed, put clothes away, take out the trash. Then you do one line, tick it, look at the list again, do the next. Even if your friend calls and you forget where you were, the list remembers for you — and mom can peek at it to see how far you got. An AI agent does the same: it turns a request into a **written plan** and ticks it off step by step.`,
+      kid_zh: `妈妈说：“把房间收拾干净。”这件事又大又模糊，所以你拿张纸写了个清单：叠被子、把衣服收好、倒垃圾。然后做一行、打个勾、再看一眼清单、做下一行。就算中途朋友打电话来、你忘了做到哪，清单也替你记着——妈妈也可以瞄一眼，看你做到哪一步了。AI 智能体也一样：它把请求变成一份**写下来的计划**，一步一步打勾完成。`,
+      steps: [
+        { en: 'It starts with one big, fuzzy request from a person.', zh: '一开始，是人提出的一个又大又模糊的请求。', hi: ['s52-req'] },
+        { en: 'The agent writes it down as a checklist: green = done, pink = doing now, empty = still to do.', zh: '智能体把它写成一份清单：绿色 = 做完，粉色 = 正在做，空框 = 还没做。', hi: ['c5_plan'] },
+        { en: 'Then it goes round and round this loop: read the plan, do the next step, check, tick it off.', zh: '然后它一圈圈地转这个循环：读计划、做下一步、检查、打勾。', hi: ['s52-loop'] },
+        { en: 'The list is written OUTSIDE the AI’s short memory, so on a long job nothing gets forgotten.', zh: '这份清单写在 AI 短暂的记忆“之外”，所以活儿再长也不会忘。', hi: ['c5_context'] }
+      ],
       hook_en: 'The plan is the agent’s memory that doesn’t fade and the human’s window into what it is doing.',
       hook_zh: '计划是智能体不会遗忘的记忆，也是人观察它在做什么的窗口。',
       trap_en: 'The question says “pick one” — commit to one structure and explain HOW it helps (memory, decomposition, verification, oversight), not just what it is.',
@@ -307,7 +325,7 @@ Before acting, the agent breaks the request into an ordered list of concrete ste
         const C = F.C; let s = '';
         const folder = (x, y, w, h, o = {}) => F.path(`M${x},${y + 12} v${h - 12} h${w} v${-h + 4} h${-w * 0.55} l-10,-10 h${-w * 0.45 + 10} z`, { fill: o.fill || '#fff', stroke: o.stroke || C.ink, ...o });
         // ── left: app over file
-        s += F.text(170, 24, 'APP OVER FILE', { cls: 'big', color: C.red }) + F.sub(170, 41, '应用优先：笔记锁在别人的服务器里', { anchor: 'middle' });
+        s += `<g id="s53-left" class="part">` + F.text(170, 24, 'APP OVER FILE', { cls: 'big', color: C.red }) + F.sub(170, 41, '应用优先：笔记锁在别人的服务器里', { anchor: 'middle' });
         let L = F.rect(50, 64, 240, 130, { rx: 14, fill: '#f6f5f2', dash: '5 4' });
         L += F.text(170, 84, 'COMPANY SERVER · DATABASE', { cls: 'tiny', color: C.mute });
         [[78, 100], [148, 100], [218, 100], [78, 146], [148, 146]].forEach(([x, y]) => { L += F.rect(x, y, 56, 34, { fill: '#fff', rx: 3 }) + F.text(x + 28, y + 17, 'note', { cls: 'tiny', color: C.mute }); });
@@ -316,7 +334,7 @@ Before acting, the agent breaks the request into an ordered list of concrete ste
         s += F.rect(110, 226, 120, 38, { text: 'THE APP', note: { en: 'The only door to your notes. If it changes, closes or raises its price, the door shuts.', zh: '通往笔记的唯一一扇门。它改版、倒闭或涨价，门就关上了。' } });
         s += F.line(170, 194, 170, 226, { sw: 1.2 });
         s += F.path('M156,203 l28,16 M184,203 l-28,16', { stroke: C.red, sw: 2 });
-        s += F.text(170, 286, 'app shuts down → notes locked away', { cls: 'tiny', color: C.red }) + F.sub(170, 302, '应用一停，笔记就拿不回来', { anchor: 'middle' });
+        s += F.text(170, 286, 'app shuts down → notes locked away', { cls: 'tiny', color: C.red }) + F.sub(170, 302, '应用一停，笔记就拿不回来', { anchor: 'middle' }) + `</g>`;
         s += F.line(380, 20, 380, 310, { dash: '3 4', stroke: C.mute, sw: 0.8 });
         // ── right: file over app
         s += F.text(575, 24, 'FILE OVER APP', { cls: 'big', color: C.green }) + F.sub(575, 41, '文件优先：笔记就是你硬盘上的文件', { anchor: 'middle' });
@@ -328,13 +346,14 @@ Before acting, the agent breaks the request into an ordered list of concrete ste
         });
         s += F.g(R, { tip: 'c5_vault' });
         const apps = [['OBSIDIAN', 418, 70, true], ['VS CODE', 650, 70], ['TEXT EDITOR', 418, 262], ['AI AGENT · MCP', 640, 262]];
+        s += `<g id="s53-apps" class="part">`;
         apps.forEach(([n, x, y, gone]) => {
           const w = n.length * 7.6 + 22, cx = x + w / 2;
           s += F.line(cx, y + (y < 150 ? 32 : 0), Math.max(512, Math.min(638, cx)), y < 150 ? 120 : 230, { stroke: gone ? C.mute : C.green, dash: gone ? '4 3' : null, sw: 1 });
           s += F.rect(x, y, w, 32, { text: n, dash: gone ? '4 3' : null, stroke: gone ? C.mute : C.ink, tcolor: gone ? C.mute : C.ink,
             note: gone ? { en: 'Remove any app — even Obsidian — and every file is still there, still readable.', zh: '拿掉任何一个应用——就算是 Obsidian——文件都还在，照样能读。' } : { en: 'Any tool that reads plain text can open the same notes.', zh: '任何能读纯文本的工具都能打开同样的笔记。' } });
         });
-        s += F.text(418, 62, 'remove it → files stay', { cls: 'tiny', color: C.mute, anchor: 'start' });
+        s += F.text(418, 62, 'remove it → files stay', { cls: 'tiny', color: C.mute, anchor: 'start' }) + `</g>`;
         s += F.g(F.text(575, 318, 'apps are replaceable · the files are yours', { cls: 'tiny', color: C.green }) + F.sub(575, 334, '应用可替换 · 文件归你', { anchor: 'middle' }), { tip: 'c5_foa' });
         return F.svg(760, 345, s, { label: 'app over file versus file over app' });
       },
@@ -356,6 +375,14 @@ What it means for ownership: **you own your notes, not the app.** The app is a r
       basis_zh: `已对照 Steph Ango 的《File over app》（stephango.com）：要长久保存，必须是“你能掌控的文件，采用易于读取的格式”；工具开发者应接受软件是暂时的。库的结构依据 Obsidian 帮助文档。`,
       links: [{ t: 'Steph Ango — File over app', u: 'https://stephango.com/file-over-app' }, { t: 'Obsidian help — links', u: 'https://obsidian.md/help/links' }],
       rel: ['1.2', '5.4', '6.4'],
+      kid_en: `Imagine writing your diary inside a game. If the game shuts down, your diary is gone forever — you could only read it through the game. Now imagine writing it in a normal notebook that sits on your own shelf. You can read it with any lamp, in any room, in 30 years. An **Obsidian vault** is that notebook: just a folder of plain text files on your computer. **“File over app”** means: keep your work as files you own, so no app can lock it away.`,
+      kid_zh: `想象你把日记写在一个游戏里面。游戏一关服，日记就永远没了——你只能通过那个游戏才能看到它。再想象你把日记写在一本普通本子上，放在自己的书架上：在哪个房间、用哪盏灯都能读，30 年后也还能看。**Obsidian 库**就是那本本子：只是你电脑上一个装着纯文本文件的文件夹。**“文件优先于应用”**的意思是：把作品存成你自己拥有的文件，这样没有任何应用能把它锁起来。`,
+      steps: [
+        { en: 'Left side: your notes are locked in a company’s database. The app is the only door.', zh: '左边：笔记锁在一家公司的数据库里，应用是唯一的那扇门。', hi: ['s53-left'] },
+        { en: 'Right side: the vault is just a folder on YOUR computer, full of simple .md text files.', zh: '右边：库只是你自己电脑上的一个文件夹，里面装满简单的 .md 文本文件。', hi: ['c5_vault'] },
+        { en: 'Any app can open those files. Remove one app — even Obsidian — and the files are still there.', zh: '任何应用都能打开这些文件。拿掉一个应用——就算是 Obsidian——文件也还在。', hi: ['s53-apps'] },
+        { en: 'That is “file over app”: apps come and go, the files are yours.', zh: '这就是“文件优先于应用”：应用来来去去，文件是你的。', hi: ['c5_foa'] }
+      ],
       hook_en: 'Vault = a folder of .md files you own. File over app = the files outlive the app, so you — not the company — own your notes.',
       hook_zh: '库 = 你拥有的一文件夹 .md 文件。文件优先于应用 = 文件比应用活得久，所以拥有笔记的是你，而不是公司。',
       trap_en: 'Don’t describe Obsidian’s features. The point is ownership and durability: local, plain-text, app-independent files.',
@@ -376,7 +403,7 @@ What it means for ownership: **you own your notes, not the app.** The app is a r
           if (lv) t += F.path(`M${x - 16},${y - 22} V${y - 4} H${x - 4}`, { stroke: F.C.mute, sw: 0.8 });
           t += F.text(x, y, (lv ? '' : '▸ ') + n, { anchor: 'start', cls: 'mono', color: lv ? F.C.ink : F.C.mute });
         });
-        s += F.g(t, { note: { en: 'A hierarchy: each note sits in exactly one branch. Relations across branches are invisible.', zh: '层级结构：每条笔记只属于一个分支，跨分支的关系是看不见的。' } });
+        s += `<g id="s54-tree" class="part">` + F.g(t, { note: { en: 'A hierarchy: each note sits in exactly one branch. Relations across branches are invisible.', zh: '层级结构：每条笔记只属于一个分支，跨分支的关系是看不见的。' } }) + `</g>`;
         s += F.line(300, 30, 300, 330, { stroke: '#ccc', dash: '3 4' });
         // right: graph
         s += F.text(330, 30, 'GRAPH · LINKS BETWEEN NOTES', { anchor: 'start', cls: 'tiny', color: F.C.mute }) + F.sub(330, 46, '图谱：笔记之间的链接');
@@ -392,8 +419,10 @@ What it means for ownership: **you own your notes, not the app.** The app is a r
         s += F.g(`<ellipse cx="412" cy="165" rx="52" ry="88" fill="${F.C.redF}" opacity=".55"/>` + `<ellipse cx="650" cy="175" rx="50" ry="100" fill="${F.C.blueF}" opacity=".7"/>`, { tip: 'c5_community' });
         Object.values(N).forEach(([x, y, n, c]) => {
           const hub = n === 'training-data';
+          if (hub) s += `<g id="s54-hub" class="part">`;
           s += F.circle(x, y, hub ? 15 : 9, { fill: hub ? F.C.magF : '#fff', stroke: c, tip: hub ? null : 'c5_graphview', note: hub ? { en: 'A hub: the note most things connect to — invisible in the folder tree, where it hides in Class 7.', zh: '枢纽节点：大多数笔记都连到它——在文件夹树里却看不出来，它被藏在 Class 7 里。' } : null });
           s += F.text(x, y + (hub ? 32 : 24), n, { cls: 'tiny' });
+          if (hub) s += `</g>`;
         });
         s += F.text(530, 336, '— stated link   - - inferred link', { cls: 'tiny', color: F.C.mute });
         return F.svg(760, 350, s, { label: 'folder tree versus knowledge graph' });
@@ -426,6 +455,15 @@ Obsidian 的[[c5_graphview]]把你自己写的链接画成圆点和线；Graphif
       basis_zh: `Obsidian 帮助文档：关系图谱把笔记画成圆点、链接画成线。Graphify（graphify.net）：可查询的知识图谱，用 Leiden 算法做社群检测，并区分 EXTRACTED 与 INFERRED 的边——两者都与课程词汇表一致。“层级 vs 网络”的对比来自第 2 课的 Wright。`,
       links: [{ t: 'Graphify', u: 'https://graphify.net/' }, { t: 'Obsidian help', u: 'https://obsidian.md/help/links' }],
       rel: ['2.2', '2.5', '5.3'],
+      kid_en: `Your school bag has folders: Math, Science, History. Each worksheet can only go in ONE folder. But what if your science worksheet about volcanoes connects to a history worksheet about Pompeii? The folders can’t show that. Now imagine a map of strings pinned between all your worksheets: you’d see which ones are connected, which one has the most strings (the most important idea), and which sit alone. That string map is a **knowledge graph**.`,
+      kid_zh: `你的书包里有几个文件夹：数学、科学、历史。每张作业纸只能放进**一个**文件夹。可是，如果科学课讲火山的那张，和历史课讲庞贝古城的那张其实有关系呢？文件夹显示不出来。现在想象你用毛线把所有作业纸互相连起来：你就能看到哪些有关系、哪张连的线最多（最重要的想法）、哪张孤零零的。这张“毛线图”就是**知识图谱**。`,
+      steps: [
+        { en: 'Left: a folder tree. Every note lives in exactly one place — like one worksheet in one folder.', zh: '左边：文件夹树。每条笔记只住在一个地方——就像一张作业纸只能放一个文件夹。', hi: ['s54-tree'] },
+        { en: 'Right: the same notes as dots. Each line is a link between two notes.', zh: '右边：同样的笔记变成了点，每条线是两条笔记之间的链接。', hi: ['c5_graphview'] },
+        { en: 'This big dot has the most lines — a hub. In the folder it was hidden inside “Class 7”!', zh: '这个大点连的线最多——它是枢纽。在文件夹里，它却藏在“Class 7”里看不出来！', hi: ['s54-hub'] },
+        { en: 'Colored clouds are groups of notes that stick together — themes the links reveal.', zh: '彩色的云是一群群抱在一起的笔记——是链接自己显出来的主题。', hi: ['c5_community'] },
+        { en: 'Dashed lines are links a tool guessed; solid ones you wrote yourself.', zh: '虚线是工具猜出来的链接；实线是你自己写的。', hi: ['c5_provenance'] }
+      ],
       hook_en: 'A folder answers “where is it?” A graph answers “what is it connected to?”',
       hook_zh: '文件夹回答“它在哪？”；图谱回答“它和什么相连？”',
       trap_en: 'Use the hierarchy vs. network contrast (it links back to Wright in Class 2), and name at least two concrete things: connections, hubs, clusters, orphans.',
@@ -448,7 +486,7 @@ Obsidian 的[[c5_graphview]]把你自己写的链接画成圆点和线；Graphif
         // scattered scores
         let sc = '';
         [2, 5, 3, 6, 1, 4, 5, 2, 6, 3].forEach((v, i) => { sc += `<circle cx="${400 + v * 50}" cy="${80 + (i % 3) * 9}" r="5" fill="${F.C.redF}" stroke="${F.C.red}"/>`; });
-        s += F.g(sc + F.text(550, 138, 'ten models disagree · far from experts', { cls: 'tiny', color: F.C.red }), { note: { en: 'Each model uses its own private idea of “creative” — scores scatter and drift from expert ratings.', zh: '每个模型都用自己私有的“创意”标准——分数分散，且偏离专家评分。' } });
+        s += `<g id="s55-scatter" class="part">` + F.g(sc + F.text(550, 138, 'ten models disagree · far from experts', { cls: 'tiny', color: F.C.red }), { note: { en: 'Each model uses its own private idea of “creative” — scores scatter and drift from expert ratings.', zh: '每个模型都用自己私有的“创意”标准——分数分散，且偏离专家评分。' } }) + `</g>`;
         // axis
         s += F.line(400, 104, 700, 104, { stroke: '#bbb' }) + [0, 1, 2, 3, 4, 5, 6].map(v => F.text(400 + v * 50, 116, String(v), { cls: 'tiny', color: F.C.mute })).join('');
         s += F.line(30, 150, 730, 150, { stroke: '#ccc', dash: '3 4' });
@@ -500,6 +538,14 @@ Why write it *first*:
       basis_zh: `已对照 Zhang、Han 与 Ahmed-Kristensen《Exploring the use of LLMs to evaluate design creativity》（ICED25）：78 个设计想法由两位专家评分（CAT）；十个模型的平均分数标准差从 0.970 降到 0.822（新颖性）、从 0.946 降到 0.881（有用性），多数模型与专家的一致性提高。`,
       links: [{ t: 'Zhang, Han & Ahmed-Kristensen (Cambridge Core)', u: 'https://www.cambridge.org/core/product/B7D16E2612A33C0A9DE1B1922E054639/core-reader' }],
       rel: ['4.5', '4.4'],
+      kid_en: `Imagine a drawing contest where the judges just say “score how creative it is, 0 to 6.” One judge loves bright colors, another loves funny ideas — the scores are all over the place. Now the teacher hands every judge the same checklist first: “Is it something new? Does it work? Yes or no?” plus a table that turns the answers into a score. Suddenly the judges agree much more. That checklist, written **before** judging, is a **rubric** — and it works the same way when the judge is an AI.`,
+      kid_zh: `想象一场画画比赛，评委只被告诉：“按 0 到 6 分给它的创意打分。”一个评委喜欢鲜艳的颜色，另一个喜欢搞笑的点子——分数乱成一团。现在老师先发给每个评委同一张清单：“它新不新？好不好用？回答是或否”，再加一张把答案换算成分数的表格。评委们的分数一下子就接近多了。这张**在评分之前**写好的清单，就是**评分标准（rubric）**——评委换成 AI 也一样有效。`,
+      steps: [
+        { en: 'Lane A: the AI only gets the design and “rate it 0–6”.', zh: 'A 道：AI 只拿到设计和一句“按 0–6 打分”。', hi: ['c5_baseline'] },
+        { en: 'Ten AIs give scores all over the place — each uses its own secret idea of “creative”.', zh: '十个 AI 打出的分数东一个西一个——每个都用自己私藏的“创意”标准。', hi: ['s55-scatter'] },
+        { en: 'Lane B: first we write the rules — what “new” and “useful” mean, yes/no questions, and a score table.', zh: 'B 道：先把规则写好——“新”和“有用”是什么意思、是/否问题、以及打分表。', hi: ['c5_novelty', 'c5_usefulness', 'c5_rubric'] },
+        { en: 'Now the scores bunch together and land closer to the human experts.', zh: '这下分数挤到了一起，也更接近人类专家的评分。', hi: ['c5_cat'] }
+      ],
       hook_en: 'Define “good” before you look — otherwise the model (or the output) defines it for you.',
       hook_zh: '在看结果之前先定义“好”——否则就会由模型（或输出本身）替你来定义。',
       trap_en: 'Cite the study’s structure (definitions + yes/no questions + rule table vs. baseline) and its result (more consistent, closer to experts). “It’s more organized” alone is too vague.',

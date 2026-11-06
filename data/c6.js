@@ -83,13 +83,13 @@ defClass({
         s += F.g(F.rect(80, 70, 140, 40, { text: 'PROMPT' }) + F.arrow(150, 110, 150, 146) +
           F.rect(80, 148, 140, 50, { text: 'MODEL', fill: '#f3f2ee' }) + F.arrow(150, 198, 150, 236) +
           F.rect(80, 238, 140, 40, { text: 'ANSWER' }), { tip: 'c6_chatbot' });
-        s += F.g(F.path('M80,258 Q30,258 30,175 Q30,90 78,90', { dash: '4 3', arrow: true, stroke: C.blue }) +
-          F.text(26, 175, 'YOU', { cls: 'tiny', color: C.blue, anchor: 'end' }), { note: { en: 'The human is the loop: you read the answer and decide what to ask next.', zh: '人就是那个循环：你读完回答，再决定下一步问什么。' } });
+        s += `<g id="s61-you" class="part">` + F.g(F.path('M80,258 Q30,258 30,175 Q30,90 78,90', { dash: '4 3', arrow: true, stroke: C.blue }) +
+          F.text(26, 175, 'YOU', { cls: 'tiny', color: C.blue, anchor: 'end' }), { note: { en: 'The human is the loop: you read the answer and decide what to ask next.', zh: '人就是那个循环：你读完回答，再决定下一步问什么。' } }) + `</g>`;
         s += F.sub(150, 308, '人是循环 · 模型不会行动', { anchor: 'middle' });
         s += F.line(300, 20, 300, 320, { dash: '3 4', stroke: C.mute, sw: 0.8 });
         // right: agent loop
         s += F.text(540, 26, 'AGENT', { cls: 'big', color: C.mag }) + F.sub(540, 43, '智能体 · 循环行动', { anchor: 'middle' });
-        s += F.g(F.rect(480, 58, 120, 34, { text: 'GOAL' }) + F.sub(472, 79, '目标', { anchor: 'end' }), { note: { en: 'You give a task, not a question.', zh: '你交给它的是一个任务，而不是一个问题。' } });
+        s += `<g id="s61-goal" class="part">` + F.g(F.rect(480, 58, 120, 34, { text: 'GOAL' }) + F.sub(472, 79, '目标', { anchor: 'end' }), { note: { en: 'You give a task, not a question.', zh: '你交给它的是一个任务，而不是一个问题。' } }) + `</g>`;
         s += F.arrow(540, 92, 540, 128);
         s += F.circle(540, 175, 45, { text: 'LLM\nPLAN', fill: C.magF, stroke: C.mag, tip: 'c6_agent' });
         s += F.arrow(586, 175, 618, 175);
@@ -100,7 +100,7 @@ defClass({
         s += F.g(F.rect(340, 155, 120, 40, { text: 'OBSERVE', fill: C.greenF, stroke: C.green }) + F.sub(400, 146, '观察结果', { anchor: 'middle' }), { tip: 'c6_loop' });
         s += F.arrow(460, 175, 493, 175);
         s += F.path('M572,143 Q600,96 640,82', { arrow: true, stroke: C.mag, dash: '4 3' });
-        s += F.g(F.rect(642, 62, 103, 34, { text: 'RESULT', stroke: C.mag }) + F.sub(694, 112, '完成即停', { anchor: 'middle' }), { note: { en: 'The model itself decides when the task is done (or a checkpoint asks a human).', zh: '由模型自己判断任务何时完成（或在检查点交给人确认）。' } });
+        s += `<g id="s61-result" class="part">` + F.g(F.rect(642, 62, 103, 34, { text: 'RESULT', stroke: C.mag }) + F.sub(694, 112, '完成即停', { anchor: 'middle' }), { note: { en: 'The model itself decides when the task is done (or a checkpoint asks a human).', zh: '由模型自己判断任务何时完成（或在检查点交给人确认）。' } }) + `</g>`;
         return F.svg(760, 340, s, { label: 'chatbot vs agent loop' });
       },
       cap_en: 'A chatbot is one straight line, and you are the loop. An agent closes the loop itself: plan → call a tool → observe what really happened → plan again, until it decides the goal is met.',
@@ -127,6 +127,16 @@ So: chatbot = conversation; agent = delegation.`,
       basis_zh: `Anthropic《Building Effective AI Agents》：智能体是由 LLM 动态决定自身流程与工具使用的系统；工作流则沿预先写好的代码路径运行。Agno 的“5 个层级”补充：没有工具，LLM 只能推理、不能行动。两者都收录在课程词汇表中。`,
       links: [{ t: 'Anthropic — Building Effective AI Agents', u: 'https://www.anthropic.com/engineering/building-effective-agents' }],
       rel: ['6.2', '6.3', '3.4'],
+      kid_en: `A chatbot is like a friend you text: you ask “how do I bake cookies?”, they text back the recipe, and then YOU do everything. An agent is like a friend who actually comes into your kitchen: you say “make cookies”, and they look in the fridge, notice there’s no butter, go buy some, bake, taste one, and stop when the cookies are good. The difference is not that the agent is smarter — it can **use tools**, **see what happened**, and **decide the next step itself, over and over**.`,
+      kid_zh: `聊天机器人就像你发消息问的朋友：你问“饼干怎么烤？”，他回你一份食谱，然后**所有事都是你自己做**。智能体则像一个真的走进你家厨房的朋友：你说“烤点饼干”，他打开冰箱，发现没黄油，就去买，烤好后尝一块，觉得好了才停下。区别不在于智能体更聪明，而在于它会**用工具**、**看到结果**、并且**一遍又一遍地自己决定下一步**。`,
+      steps: [
+        { en: 'Left: a chatbot. Prompt goes in, an answer comes out. One straight line.', zh: '左边：聊天机器人。问题进去，回答出来，就是一条直线。', hi: ['c6_chatbot'] },
+        { en: 'Who decides what happens next? YOU do. You are the loop.', zh: '下一步谁决定？是你。你自己就是那个循环。', hi: ['s61-you'] },
+        { en: 'Right: an agent gets a goal — a job, not a question.', zh: '右边：智能体拿到的是一个目标——一件活，而不是一个问题。', hi: ['s61-goal'] },
+        { en: 'It plans, then calls a tool to really do something in the world.', zh: '它先计划，再调用工具，真的在外部世界里动手。', hi: ['c6_agent', 'c6_tool_call', 'c6_tools'] },
+        { en: 'It looks at what actually happened, and plans again. Round and round.', zh: '它看看真正发生了什么，再重新计划。一圈又一圈。', hi: ['c6_loop'] },
+        { en: 'When it decides the goal is met, it stops and gives the result.', zh: '当它判断目标达成，就停下来交出结果。', hi: ['s61-result'] }
+      ],
       hook_en: 'Chatbot: you are the loop. Agent: the model runs the loop — tools + feedback + its own decisions.',
       hook_zh: '聊天机器人：你是循环；智能体：模型自己跑循环——工具 + 反馈 + 自主决定。',
       trap_en: '“It’s smarter” or “it uses a bigger model” is wrong. The difference is tools + a loop with environmental feedback + the model choosing its own steps.',
@@ -145,13 +155,13 @@ So: chatbot = conversation; agent = delegation.`,
         const box = (x, y, w, en, zh, o = {}) => F.g(F.rect(x, y, w, 46, { fill: o.fill || '#fff', stroke: o.stroke || C.ink, rx: 6 }) +
           F.text(x + w / 2, y + 19, en, { cls: 'tiny', color: o.stroke || C.ink }) + F.sub(x + w / 2, y + 35, zh, { anchor: 'middle' }), { tip: o.tip, note: o.note });
         s += box(52, 70, 150, 'CONTEXT', '上下文：它看到什么', { tip: 'c6_context' });
-        s += box(52, 270, 150, 'STATE · MEMORY', '状态：记忆 待办 文件', { note: { en: 'Where state lives between turns: memory files, CLAUDE.md, a task board, the files on disk.', zh: '轮与轮之间状态存在哪：记忆文件、CLAUDE.md、任务看板、磁盘上的文件。' } });
-        s += box(52, 170, 150, 'STOP RULES', '停止条件：何时结束', { note: { en: 'Goal met, turn or budget limit reached, or a human says stop.', zh: '目标达成、轮数或预算用完，或人喊停。' }, stroke: C.mute });
+        s += `<g id="s62-state" class="part">` + box(52, 270, 150, 'STATE · MEMORY', '状态：记忆 待办 文件', { note: { en: 'Where state lives between turns: memory files, CLAUDE.md, a task board, the files on disk.', zh: '轮与轮之间状态存在哪：记忆文件、CLAUDE.md、任务看板、磁盘上的文件。' } }) + `</g>`;
+        s += `<g id="s62-stop" class="part">` + box(52, 170, 150, 'STOP RULES', '停止条件：何时结束', { note: { en: 'Goal met, turn or budget limit reached, or a human says stop.', zh: '目标达成、轮数或预算用完，或人喊停。' }, stroke: C.mute }) + `</g>`;
         s += box(404, 70, 156, 'PERMISSIONS', '权限：要不要先问人', { fill: C.amberF, stroke: C.amber, tip: 'c6_permission' });
         s += box(404, 170, 156, 'TOOLS · EXECUTE', '工具：真正执行', { fill: C.blueF, stroke: C.blue, tip: 'c6_tools' });
-        s += box(404, 270, 156, 'VALIDATION', '校验与恢复：测试 重试', { fill: C.greenF, stroke: C.green, note: { en: 'Run checks (tests, linters); on failure retry, roll back or ask.', zh: '运行检查（测试、语法检查）；失败就重试、回滚或询问。' } });
+        s += `<g id="s62-valid" class="part">` + box(404, 270, 156, 'VALIDATION', '校验与恢复：测试 重试', { fill: C.greenF, stroke: C.green, note: { en: 'Run checks (tests, linters); on failure retry, roll back or ask.', zh: '运行检查（测试、语法检查）；失败就重试、回滚或询问。' } }) + `</g>`;
         // model
-        s += F.circle(303, 192, 50, { text: 'MODEL', fill: C.magF, stroke: C.mag, tcolor: C.mag, note: { en: 'The only part that is the model. It reads the context and proposes text or a tool call — it never executes anything itself. Swap Claude for a local Ollama model and the harness stays.', zh: '唯一属于“模型”的部分。它读上下文、提议文字或工具调用——自己从不执行任何东西。把 Claude 换成本地 Ollama 模型，harness 不变。' } });
+        s += `<g id="s62-model" class="part">` + F.circle(303, 192, 50, { text: 'MODEL', fill: C.magF, stroke: C.mag, tcolor: C.mag, note: { en: 'The only part that is the model. It reads the context and proposes text or a tool call — it never executes anything itself. Swap Claude for a local Ollama model and the harness stays.', zh: '唯一属于“模型”的部分。它读上下文、提议文字或工具调用——自己从不执行任何东西。把 Claude 换成本地 Ollama 模型，harness 不变。' } }) + `</g>`;
         s += F.sub(303, 258, '只负责“提议”', { anchor: 'middle' });
         // the loop
         s += F.path('M202,93 C250,93 270,120 283,146', { arrow: true });
@@ -171,8 +181,8 @@ So: chatbot = conversation; agent = delegation.`,
         s += F.text(170, 146, '7 next turn', { cls: 'tiny', color: C.mute });
         s += F.path('M262,214 C230,220 214,206 204,196', { arrow: true, dash: '3 3', stroke: C.mute });
         // world outside
-        s += F.g(F.rect(640, 150, 104, 92, { rx: 8, fill: '#f3f2ee' }) + F.text(692, 178, 'THE WORLD', { cls: 'tiny' }) + F.text(692, 198, 'files · shell', { cls: 'tiny', color: C.mute }) + F.text(692, 214, 'web · APIs', { cls: 'tiny', color: C.mute }) + F.sub(692, 232, '外部世界', { anchor: 'middle' }),
-          { note: { en: 'Outside the harness: what the tools actually touch.', zh: 'harness 之外：工具真正动到的东西。' } });
+        s += `<g id="s62-world" class="part">` + F.g(F.rect(640, 150, 104, 92, { rx: 8, fill: '#f3f2ee' }) + F.text(692, 178, 'THE WORLD', { cls: 'tiny' }) + F.text(692, 198, 'files · shell', { cls: 'tiny', color: C.mute }) + F.text(692, 214, 'web · APIs', { cls: 'tiny', color: C.mute }) + F.sub(692, 232, '外部世界', { anchor: 'middle' }),
+          { note: { en: 'Outside the harness: what the tools actually touch.', zh: 'harness 之外：工具真正动到的东西。' } }) + `</g>`;
         s += F.text(612, 176, '4 run', { cls: 'tiny', color: C.blue });
         return F.svg(760, 350, s, { label: 'agent harness loop around a model' });
       },
@@ -204,6 +214,16 @@ So: chatbot = conversation; agent = delegation.`,
       basis_zh: `Pan 等人《Natural-Language Agent Harnesses》（arXiv 2603.25723）——harness 的定义收录在课程词汇表中。两个例子分别依据 Hermes Agent 文档（可驱动云端或本地 Ollama 模型）和 Claude Code 文档。`,
       links: [{ t: 'Pan et al. — Natural-Language Agent Harnesses', u: 'https://arxiv.org/abs/2603.25723' }, { t: 'Hermes Agent — Security & approvals', u: 'https://hermes-agent.nousresearch.com/docs/user-guide/security' }],
       rel: ['6.1', '5.2', '6.5'],
+      kid_en: `Think of the AI model as a car engine. An engine alone can roar, but it can’t take you anywhere. The **harness** is the rest of the car built around it: the steering wheel (what the model gets to see), the wheels (tools that touch the real world), the brakes (asking permission), the dashboard (logs and checks), and the rule about when to park (when to stop). Claude Code and Hermes are cars; the model is the engine inside.`,
+      kid_zh: `把 AI 模型想成汽车的发动机。光有发动机，它能轰轰响，却哪儿也去不了。**Harness** 就是围着发动机造出来的整辆车：方向盘（模型能看到什么）、车轮（能碰到真实世界的工具）、刹车（先问人）、仪表盘（日志和检查），还有什么时候该停车的规矩。Claude Code 和 Hermes 是车；模型是里面的发动机。`,
+      steps: [
+        { en: 'Everything inside the dashed line is the harness — the “car”.', zh: '虚线里面的所有东西就是 harness——也就是那辆“车”。', hi: ['c6_harness'] },
+        { en: 'In the middle sits the model, the engine. It only SUGGESTS what to do — it never does it itself.', zh: '中间是模型，也就是发动机。它只“建议”做什么——自己从不动手。', hi: ['s62-model'] },
+        { en: 'First the harness packs what the model gets to see: instructions, files, history.', zh: '首先，harness 把模型能看到的东西打包好：指令、文件、历史记录。', hi: ['c6_context'] },
+        { en: 'When the model asks for a tool, the harness checks: is this allowed, or should we ask the human?', zh: '模型要用工具时，harness 先检查：这个允许吗？还是要先问人？', hi: ['c6_permission'] },
+        { en: 'Then the harness really runs the tool out in the world, and checks the result.', zh: '然后 harness 真的在外部世界执行工具，并检查结果。', hi: ['c6_tools', 's62-world', 's62-valid'] },
+        { en: 'It saves what happened, starts the next turn — until a stop rule says “park”.', zh: '它把发生的事存下来，开始下一轮——直到停止规则说“停车”。', hi: ['s62-state', 's62-stop'] }
+      ],
       hook_en: 'Model = engine. Harness = the car around it: steering (context), wheels (tools), brakes (permissions), dashboard (logs), and the rule for when to park (stop).',
       hook_zh: '模型是发动机，harness 是整辆车：方向盘（上下文）、车轮（工具）、刹车（权限）、仪表盘（日志），以及什么时候停车（停止条件）。',
       trap_en: 'Don’t say “Hermes is a model.” Hermes and Claude Code are harnesses that call a model. Explain the loop: context → model → tool call → execute → result back.',
@@ -353,6 +373,14 @@ So: chatbot = conversation; agent = delegation.`,
       basis_zh: `Anthropic《Introducing the Model Context Protocol》（2024）：过去每接一个新数据源都要单独实现；MCP 用一个协议取代零散的对接。MCP 规范 Tools 部分（名称 + JSON schema 参数，结果返回给客户端）。MCP 现由 Agentic AI Foundation 托管。`,
       links: [{ t: 'Anthropic — Introducing MCP', u: 'https://www.anthropic.com/news/model-context-protocol' }, { t: 'MCP spec — Tools', u: 'https://modelcontextprotocol.io/specification/2025-06-18/server/tools' }],
       rel: ['6.4', '6.2'],
+      kid_en: `A **tool call** is like the model writing a note: “Please look up tomorrow’s weather.” It can’t do it itself — the program around it reads the note, does the job, and hands back the answer. Now imagine every phone needed a different charger for every brand of outlet: chaos! **MCP** is like one standard plug (think USB-C): each AI app learns the plug once, each tool offers the plug once, and everything fits everything.`,
+      kid_zh: `**工具调用**就像模型写了张纸条：“请帮我查一下明天的天气。”它自己做不到——外面的程序读了纸条、把事办了，再把答案交回来。再想象一下：每部手机配每个牌子的插座都要不同的充电器——乱成一团！**MCP** 就像一个统一的插头标准（想想 USB-C）：每个 AI 应用只学一次这个插头，每个工具也只做一次这个插口，然后谁都能插谁。`,
+      steps: [
+        { en: 'Click a tool server on the right (or press 1–4). That sends a tool call — the model’s “note”.', zh: '点右边的一个工具服务器（或按 1–4），就发出了一次工具调用——模型的“纸条”。', hi: [] },
+        { en: 'Watch the light travel out through the MCP hub, and the result come back to the AI.', zh: '看光点经过中间的 MCP 枢纽跑出去，结果再跑回 AI 那里。', hi: [] },
+        { en: 'Press M to switch MCP off: now every app needs its own wire to every tool — 12 wires!', zh: '按 M 关掉 MCP：现在每个应用都要给每个工具单独接一根线——12 根！', hi: [] },
+        { en: 'Press M again: with one shared plug it’s only 7. That is the problem MCP solves.', zh: '再按一次 M：有了统一插头只要 7 根。这就是 MCP 解决的问题。', hi: [] }
+      ],
       hook_en: 'Tool call = the model writes a request, the harness runs it. MCP = one plug shape for every tool: N × M → N + M.',
       hook_zh: '工具调用 = 模型写请求，harness 去执行。MCP = 所有工具统一一种插头：N × M → N + M。',
       trap_en: 'Don’t say the model “runs” the tool or that MCP is a model/app. MCP is a protocol (a standard), between clients and servers.',
@@ -376,7 +404,7 @@ So: chatbot = conversation; agent = delegation.`,
         s += F.rect(X, Y, 300, 150, { rx: 4 });
         s += F.g(F.rect(X + 8, Y + 8, 284, 40, { fill: C.magF, stroke: C.mag, rx: 3 }) + F.text(X + 18, Y + 23, 'name: report-style', { anchor: 'start', cls: 'tiny', color: C.mag }) + F.text(X + 18, Y + 38, 'description: use for course reports…', { anchor: 'start', cls: 'tiny', color: C.mag }), { tip: 'c6_progressive' });
         let body = ''; for (let i = 0; i < 5; i++) body += F.line(X + 18, Y + 64 + i * 15, X + 18 + [240, 200, 260, 180, 220][i], Y + 64 + i * 15, { stroke: '#bbb', sw: 3 });
-        s += F.g(body, { note: { en: 'The instructions: steps, order, examples. Read only when the task matches the description.', zh: '具体做法：步骤、顺序、示例。只有任务和描述对上时才读。' } });
+        s += `<g id="s64-body" class="part">` + F.g(body, { note: { en: 'The instructions: steps, order, examples. Read only when the task matches the description.', zh: '具体做法：步骤、顺序、示例。只有任务和描述对上时才读。' } }) + `</g>`;
         // level brackets
         const lv = (y1, y2, n, en, zh, col, w) => F.path(`M342,${y1} h8 V${y2} h-8`, { stroke: col }) + F.text(360, (y1 + y2) / 2 - 2, n + '  ' + en, { anchor: 'start', cls: 'tiny', color: col }) + F.sub(360, (y1 + y2) / 2 + 13, zh) +
           `<rect x="360" y="${(y1 + y2) / 2 + 20}" width="${w}" height="4" rx="2" fill="${col}"/>`;
@@ -389,7 +417,7 @@ So: chatbot = conversation; agent = delegation.`,
         s += F.arrow(646, 104, 646, 146, { both: true }) + F.text(656, 128, 'protocol', { anchor: 'start', cls: 'tiny', color: C.mute });
         s += F.rect(560, 148, 172, 54, { text: 'MCP SERVER\n(separate process)', fill: C.blueF, stroke: C.blue, tip: 'c6_mcp_server' });
         s += F.arrow(646, 202, 646, 238, { both: true });
-        s += F.rect(560, 240, 172, 40, { text: 'GITHUB · DB · API', fill: '#f3f2ee', note: { en: 'The outside system it reaches: data and actions the agent could not touch otherwise.', zh: '它连到的外部系统：没有它，智能体根本碰不到这些数据和操作。' } });
+        s += `<g id="s64-ext" class="part">` + F.rect(560, 240, 172, 40, { text: 'GITHUB · DB · API', fill: '#f3f2ee', note: { en: 'The outside system it reaches: data and actions the agent could not touch otherwise.', zh: '它连到的外部系统：没有它，智能体根本碰不到这些数据和操作。' } }) + `</g>`;
         s += F.text(200, 338, 'KNOW-HOW · text the model reads', { cls: 'tiny', color: C.mag }) + F.text(646, 312, 'ACCESS · software the harness calls', { cls: 'tiny', color: C.blue }) + F.sub(646, 328, '能连：工具与数据', { anchor: 'middle' });
         return F.svg(760, 350, s, { label: 'skill folder with progressive disclosure vs MCP server' });
       },
@@ -421,6 +449,15 @@ Anthropic 的总结：MCP 把智能体连到数据上；技能教它拿这些数
       basis_zh: `Anthropic《Equipping agents for the real world with Agent Skills》与《Skills explained》（技能 = 带 SKILL.md 的文件夹，渐进加载；MCP 连接数据，技能教它拿数据做什么）；开放规范见 agentskills.io。课程例子：kepano 的 obsidian-skills 与 mcp-obsidian 服务器。`,
       links: [{ t: 'Anthropic — Agent Skills (engineering)', u: 'https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills' }, { t: 'Agent Skills spec', u: 'https://agentskills.io/specification' }],
       rel: ['6.3', '5.3'],
+      kid_en: `A **skill** is like a recipe card in a kitchen drawer. The cook only reads the title (“Pancakes”) until someone asks for pancakes — then reads the steps, and only grabs the extra notes if needed. An **MCP server** is different: it’s a new appliance plugged into the kitchen, like a waffle iron. The recipe teaches **how**; the appliance gives you **something new you can use**.`,
+      kid_zh: `**技能**像厨房抽屉里的一张菜谱卡。厨师平时只看标题（“松饼”），等有人点松饼了才去读步骤，需要时才翻附加的小纸条。**MCP 服务器**不一样：它像厨房里新插上的一台电器，比如华夫饼机。菜谱教你**怎么做**；电器让你**多了一样能用的东西**。`,
+      steps: [
+        { en: 'A skill is just a folder with a SKILL.md file inside — plus maybe some scripts.', zh: '技能就是一个文件夹，里面有一个 SKILL.md 文件——可能还有一些脚本。', hi: ['c6_skill'] },
+        { en: 'Only the name and one-line description are always in the AI’s head. Like a recipe title.', zh: 'AI 脑子里一直只放名字和一句描述，就像菜谱的标题。', hi: ['c6_progressive'] },
+        { en: 'The full steps are read only when the job matches. Extra files only when really needed.', zh: '活儿对上了才读完整步骤；真的需要时才打开附加文件。', hi: ['s64-body'] },
+        { en: 'Right side: an MCP server is a separate running program — like a new appliance.', zh: '右边：MCP 服务器是一个单独运行的程序——就像一台新电器。', hi: ['c6_mcp_client', 'c6_mcp_server'] },
+        { en: 'It connects the AI to things it couldn’t reach before: GitHub, a database, an app.', zh: '它把 AI 连到以前碰不到的东西：GitHub、数据库、某个应用。', hi: ['s64-ext'] }
+      ],
       hook_en: 'Skill = a recipe card (know-how). MCP server = a new appliance plugged into the kitchen (access).',
       hook_zh: '技能 = 一张菜谱（会做）；MCP 服务器 = 厨房里新插上的一台电器（能用）。',
       trap_en: 'Say both halves: what a skill IS (folder + SKILL.md, loaded progressively) and the contrast (instructions vs. a running server that provides tools/data).',
@@ -554,6 +591,15 @@ The model is roughly the same in every product; the permission model is what mak
       basis_zh: `已对照 Claude Code 权限模式文档（plan、default/manual、acceptEdits、auto、dontAsk、bypassPermissions；拒绝规则在所有模式下有效）和 Hermes Agent 安全文档（审批模式 manual / smart / off；允许一次 / 本会话 / 永久；始终生效的硬性黑名单；容器沙盒；记录已执行命令的会话数据库）。自主度滑杆：卡帕西《Software 3.0》。`,
       links: [{ t: 'Claude Code — permission modes', u: 'https://code.claude.com/docs/en/permission-modes' }, { t: 'Hermes Agent — Security', u: 'https://hermes-agent.nousresearch.com/docs/user-guide/security' }, { t: 'Karpathy on Software 3.0', u: 'https://www.latent.space/p/s3' }],
       rel: ['3.4', '6.2', '9.3'],
+      kid_en: `Imagine a babysitter in your house. Some things they can just do: get a snack, read a book. Some things they must call your parents first: leaving the house, using the stove. And everything goes in a little notebook your parents read later. Deciding which list each thing goes on IS the whole job of trust. An AI agent is the same: what **runs without asking**, what **stops for approval**, and what gets **written in the log** decides how safe and how useful it is.`,
+      kid_zh: `想象家里来了个保姆。有些事他可以直接做：拿零食、读故事书。有些事必须先打电话问你爸妈：出门、用炉子。所有事都写进一个小本子，爸妈回来再看。决定每件事放进哪一份清单，就是“信任”这件事的全部。AI 智能体也一样：什么**直接执行**、什么**先停下等批准**、什么**写进日志**，决定了它有多安全、又有多好用。`,
+      steps: [
+        { en: 'Start in “default” mode. Look at the three columns: just do it / ask first / write it down.', zh: '先看“default”模式。注意三列：直接做 / 先问 / 记下来。', hi: [] },
+        { en: 'Click “plan”: the agent may only look and suggest — edits are blocked. Very safe, very slow.', zh: '点“plan”：智能体只能看和提建议——改文件被禁止。很安全，也很慢。', hi: [] },
+        { en: 'Click “acceptEdits”: file edits move to “just do it”. Faster, but you trust it more.', zh: '点“acceptEdits”：改文件挪到“直接做”。更快，但你更信任它了。', hi: [] },
+        { en: 'Click “bypassPermissions”: almost everything runs without asking. Notice the red deny rule still blocks the scariest command.', zh: '点“bypassPermissions”：几乎一切都不问就执行。注意红色的拒绝规则仍然挡着最危险的命令。', hi: [] },
+        { en: 'The slider shows the trade-off: more autonomy = faster, but less human checking. Where you set it IS the design.', zh: '滑杆显示取舍：越自主越快，但人检查得越少。你把它放在哪里，就是设计本身。', hi: [] }
+      ],
       hook_en: 'Reversible → just do it. Irreversible → ask. Everything → log. Where you draw those lines IS the product.',
       hook_zh: '可撤销 → 直接做；不可撤销 → 先问；所有操作 → 记录。线画在哪里，产品就是什么样。',
       trap_en: 'Give concrete examples for each tier AND argue “why central”: the agent acts with your authority, so the line sets safety, usefulness, accountability and trust.',
