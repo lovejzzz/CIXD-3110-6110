@@ -201,11 +201,7 @@
       if (np && c.quiz && c.quiz.length && passed(c.n)) np.dataset.quiz = best[c.n] + '%';
     });
     document.body.classList.toggle('tutor', TUTOR);
-    // the zine follows the same locks
-    const lockedNs = CL.filter(c => { const sec = $('#c' + c.n); return sec && sec.classList.contains('locked'); }).map(c => c.n);
-    let st = $('#zine-locks'); if (!st) { st = document.createElement('style'); st.id = 'zine-locks'; document.head.appendChild(st); }
-    st.textContent = lockedNs.map(n => `[data-cls="${n}"]{display:none!important}`).join('');
-    const zl = $('#zine-locknote'); if (zl) zl.hidden = !lockedNs.length;
+    // the zine is always fully open (not tied to chapter locks)
   }
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   function buildQuiz(c) {
@@ -349,7 +345,7 @@
     L.hidden = !on;
     // nav links point to lecture sections while teaching
     $$('.nav-c').forEach(a => { const n = a.dataset.c; if (!a.dataset.href0) a.dataset.href0 = a.getAttribute('href'); a.setAttribute('href', on && $('#l' + n) ? '#l' + n : a.dataset.href0); });
-    if (on) { document.body.classList.add('tutor'); CL.forEach(c => { const s = $('#c' + c.n); s && s.classList.remove('locked'); const a = $(`.nav-c[data-c="${c.n}"]`); a && a.classList.remove('locked'); }); $('#zine-locks') && ($('#zine-locks').textContent = ''); window.scrollTo(0, 0); }
+    if (on) { document.body.classList.add('tutor'); CL.forEach(c => { const s = $('#c' + c.n); s && s.classList.remove('locked'); const a = $(`.nav-c[data-c="${c.n}"]`); a && a.classList.remove('locked'); }); window.scrollTo(0, 0); }
     else { applyLocks(); }
   }
   document.addEventListener('click', e => {
