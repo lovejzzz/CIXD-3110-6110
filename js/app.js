@@ -250,6 +250,72 @@
   // following a link into a locked chapter lands on its lock panel; flashcards skip locked chapters
   window.__isLocked = id => { const q = qById[id]; const sec = q && $('#c' + q._c.n); return sec && sec.classList.contains('locked'); };
 
+  /* ── teacher mode: triple-click the ◇, password → lecture view ─────────── */
+  const brand = $('.brand'); let clicks = [];
+  const pw = $('#pw'), pwIn = $('#pw-in');
+  const openPw = () => { pw.hidden = false; $('.pw-err').hidden = true; pwIn.value = ''; setTimeout(() => pwIn.focus(), 30); };
+  const closePw = () => { pw.hidden = true; };
+  brand.addEventListener('click', e => {
+    const now = Date.now(); clicks = clicks.filter(t => now - t < 900); clicks.push(now);
+    if (clicks.length >= 3) { e.preventDefault(); clicks = []; document.body.classList.contains('teacher') ? setTeacher(false) : openPw(); }
+  });
+  pw.querySelector('.pw-cancel').onclick = closePw;
+  pw.addEventListener('click', e => { if (e.target === pw) closePw(); });
+  pw.addEventListener('keydown', e => { if (e.key === 'Escape') closePw(); });
+  pw.querySelector('form').onsubmit = e => {
+    e.preventDefault();
+    if (pwIn.value.trim().toLowerCase() === 'sky') { closePw(); setTeacher(true); }
+    else { $('.pw-err').hidden = false; pwIn.select(); pw.querySelector('.pw-box').classList.remove('shake'); void pw.offsetWidth; pw.querySelector('.pw-box').classList.add('shake'); }
+  };
+
+  function lectureHTML() {
+    const sec = c => {
+      const qs = c.qs.map(q => {
+        let fig = ''; try { fig = q.fig ? q.fig() : ''; } catch (e) { }
+        const blk = (k, cls, en, zh) => q[k + '_en'] ? `<div class="lx ${cls}"><div class="lx-k"><span class="en">${en}</span><span class="zh">${zh}</span></div>${two(q[k + '_en'], q[k + '_zh'])}</div>` : '';
+        return `<article class="lq" id="lq${q.id.replace('.', '-')}">
+          <div class="lq-h"><span class="lq-id">${q.id}</span><h3><span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></h3><a class="lq-jump" href="${qAnchor(q.id)}" data-exit-lecture><span class="en">student view</span><span class="zh">学生视图</span> ↗</a></div>
+          <p class="lq-q"><span class="en">${esc(q.q_en)}</span><span class="zh">${esc(q.q_zh)}</span></p>
+          ${blk('lec_open', 'lx-open', 'Open with', '开场先问')}
+          ${blk('lec_why', 'lx-why', 'The why', '讲清“为什么”')}
+          ${fig ? `<details class="lx-fig"><summary><span class="en">Show the drawing</span><span class="zh">展开示意图</span></summary><div class="lx-figbox">${fig}</div></details>` : ''}
+          ${blk('lec_trap', 'lx-trap', 'Where students go wrong — and why', '学生容易错在哪，为什么')}
+          ${blk('lec_ask', 'lx-ask', 'Check understanding', '检查理解')}
+          ${blk('lec_bridge', 'lx-bridge', 'Bridge', '衔接')}
+          ${!q.lec_why_en ? `<div class="lx lx-fallback">${two(q.short_en, q.short_zh)}</div>` : ''}
+        </article>`;
+      }).join('');
+      return `<section class="lsec" id="l${c.n}">
+        <div class="lsec-h"><div class="lsec-n">${c.n}</div><div><h2><span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></h2>
+        ${c.lec_en ? `<div class="lsec-why">${two(c.lec_en, c.lec_zh)}</div>` : ''}</div></div>${qs}
+        ${c.lec_faq && c.lec_faq.length ? `<div class="lfaq"><h3><span class="en">Questions she might ask</span><span class="zh">她可能会问的问题</span></h3>
+          ${c.lec_faq.map(f => `<details class="lfaq-i"><summary><span class="lfaq-q">Q</span><span><span class="en">${esc(f.q_en)}</span><span class="zh">${esc(f.q_zh)}</span></span></summary>${two(f.a_en, f.a_zh)}</details>`).join('')}</div>` : ''}</section>`;
+    };
+    return `<header class="lhead"><div class="lhead-tag">LECTURE · TEACHER MODE</div>
+      <h1><span class="en">Why it works the way it does</span><span class="zh">不只是“是什么”，更是“为什么”</span></h1>
+      <p><span class="en">Your teaching script for every exam question: what to ask first, the reasoning to walk through, where students slip, and how to check they got it.</span><span class="zh">每道考题的讲课稿：先问什么、要讲清的道理、学生容易卡在哪，以及怎样确认他真的懂了。</span></p>
+      <div class="lsize"><span class="en">Text size</span><span class="zh">字号</span><button data-lsz="-1" aria-label="smaller">A−</button><button data-lsz="1" aria-label="larger">A+</button><button class="lexit" data-exit-lecture><span class="en">Exit teacher mode</span><span class="zh">退出教师模式</span></button></div></header>` +
+      CL.map(sec).join('');
+  }
+  let lecBuilt = false;
+  function setTeacher(on) {
+    document.body.classList.toggle('teacher', on);
+    store.set('teacher', on);
+    const L = $('#lecture');
+    if (on && !lecBuilt) { L.innerHTML = lectureHTML(); lecBuilt = true; }
+    L.hidden = !on;
+    // nav links point to lecture sections while teaching
+    $$('.nav-c').forEach(a => { const n = a.dataset.c; if (!a.dataset.href0) a.dataset.href0 = a.getAttribute('href'); a.setAttribute('href', on && $('#l' + n) ? '#l' + n : a.dataset.href0); });
+    if (on) { document.body.classList.add('tutor'); CL.forEach(c => { const s = $('#c' + c.n); s && s.classList.remove('locked'); const a = $(`.nav-c[data-c="${c.n}"]`); a && a.classList.remove('locked'); }); $('#zine-locks') && ($('#zine-locks').textContent = ''); window.scrollTo(0, 0); }
+    else { applyLocks(); }
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-lsz]'); if (b) { const v = Math.max(-2, Math.min(4, (store.get('lsz', 0)) + +b.dataset.lsz)); store.set('lsz', v); document.documentElement.style.setProperty('--lsz', v); }
+    if (e.target.closest('[data-exit-lecture]')) setTeacher(false);
+  });
+  document.documentElement.style.setProperty('--lsz', store.get('lsz', 0));
+  if (store.get('teacher', false)) setTeacher(true);
+
   /* zine sample */
   if (window.renderZine) { try { renderZine($('#zine-pages')); } catch (e) { console.error('zine', e); } }
   $('#zine-print') && $('#zine-print').addEventListener('click', () => {

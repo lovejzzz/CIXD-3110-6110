@@ -58,6 +58,18 @@ defTerms({
 
 defClass({
   order: 7, n: '7',
+  lec_en: "Class 7 asks one big question: **where does a model actually live, and what is it made of?** Until now the student has used AI through a chat box owned by a company. Today we pull the model down onto the laptop and discover that a model is just **a file**, and that file is a compressed record of its training data. Every question in this class follows from that: if it is a file, you can choose where it runs (7.1), what license it comes with (7.2), how big you make it (7.3), what paperwork should travel with it (7.4), and which pages of the web it was built from (7.5). For a designer this matters because the file you choose quietly decides privacy, cost, voice and bias before you write a single prompt. In class we ran **the same five prompts through four small open-weight models from four labs** (llama3.2:3b, qwen2.5:3b, olmo2:7b, deepseek-r1:8b) and watched the answers diverge with nothing changed but the file — then used the local model as an **instrument** to probe for gaps, leans and anomalies a designer can build on.",
+  lec_zh: "第 7 课只问一个大问题：**模型到底“住”在哪里，它又是由什么做成的？** 之前学生一直是通过某家公司的聊天框在用 AI。今天我们把模型下载到自己的电脑上，会发现：模型其实就是**一个文件**，而这个文件是它训练数据的一种压缩记录。这一课的每道题都从这里展开：既然它是文件，你就能决定它在哪儿运行（7.1）、带着什么许可证（7.2）、要做多大（7.3）、应该附带什么说明文件（7.4），以及它是用网上哪些页面造出来的（7.5）。对设计师来说这很重要，因为在你写第一个提示词之前，你选的那个文件就已经悄悄决定了隐私、成本、语气和偏见。课上我们把**同样的五个提示词，喂给来自四个实验室的四个小型开放权重模型**（llama3.2:3b、qwen2.5:3b、olmo2:7b、deepseek-r1:8b），除了文件什么都没变，答案却各不相同——然后把本地模型当成一件**仪器**，去探测它的空白、倾向和异常，这些都是设计师可以拿来做文章的地方。",
+  lec_faq: [
+    { q_en: "Why did the four models in class answer the same prompts so differently?", q_zh: "课上四个模型，为什么同样的提示词答得那么不一样？", a_en: "Nothing changed but the file — and each file was built differently: different labs, training data and filters, sizes, and fine-tuning (DeepSeek's distill even 'thinks out loud'). The differences are clues: gaps and leans point straight back to each model's data and choices.", a_zh: "除了文件什么都没变——而每个文件的造法都不同：不同的实验室、训练数据和过滤规则、大小和微调（DeepSeek 的蒸馏版甚至会“把思考过程说出来”）。这些差别就是线索：空白和倾向直接指回每个模型的数据和选择。" },
+    { q_en: "What does it mean to use a model as an 'instrument'?", q_zh: "把模型当“仪器”用是什么意思？", a_en: "Instead of asking it for answers, you ask it questions designed to reveal what it doesn't know, what it leans toward, and where it acts strangely — like a microscope for its training data. Those gaps and anomalies can become design material.", a_zh: "不是向它要答案，而是专门设计问题去暴露它不知道什么、偏向什么、在哪里表现奇怪——就像一台照向它训练数据的显微镜。这些空白和异常可以变成设计素材。" },
+    { q_en: "If local models are private, why doesn't everyone use them?", q_zh: "既然本地模型更隐私，为什么不是人人都用？", a_en: "Because they're smaller and weaker — your laptop has a few GB of memory, a data center has racks of GPUs. For hard tasks the hosted model is simply better. It's a trade: control and privacy versus raw capability.", a_zh: "因为它们更小、更弱——你的笔记本只有几 GB 内存，数据中心有一排排 GPU。遇到难的任务，云端模型就是更强。这是一种交换：控制权和隐私，换原始能力。" },
+    { q_en: "Is ChatGPT open weights or open source?", q_zh: "ChatGPT 是开放权重还是开源？", a_en: "Neither — it's closed. You can't download its weights or its data; you can only send prompts to it. Open weights would let you download it; open source would also show you its data and code.", a_zh: "都不是——它是闭源的。你下载不到它的权重，也看不到数据，只能给它发提示词。开放权重是能下载；开源是还能看到数据和代码。" },
+    { q_en: "Does quantization make the model forget things?", q_zh: "量化会让模型忘掉东西吗？", a_en: "It doesn't delete anything — every weight is still there, just rounded. You may notice slightly worse answers on hard reasoning or rare facts, but most everyday answers look almost the same.", a_zh: "它不删除任何东西——每个权重都还在，只是被取整了。在难推理或冷门事实上可能稍微差一点，但日常回答几乎看不出区别。" },
+    { q_en: "What's the difference between a model card and a dataset card in one sentence?", q_zh: "模型卡和数据集卡，一句话怎么区分？", a_en: "A model card is the label on the cake (what it's for, how well it does, its limits); a dataset card is the label on the ingredients (what's in the data, where it came from, how it was cleaned).", a_zh: "模型卡是蛋糕上的标签（用途、表现、局限）；数据集卡是配料上的标签（数据里有什么、从哪来、怎么清洗的）。" },
+    { q_en: "Could my own website be in Common Crawl?", q_zh: "我自己的网站可能在 Common Crawl 里吗？", a_en: "Quite possibly, if it was public and not blocked by robots.txt. That's exactly why tools like the C4 search and Have I Been Trained exist — so people can check.", a_zh: "很有可能，只要它是公开的、没有用 robots.txt 屏蔽。正因为这样才会有 C4 搜索和 Have I Been Trained 这类工具——让人们能自己查。" },
+    { q_en: "Why can't we trace ChatGPT back to its data?", q_zh: "为什么没法把 ChatGPT 追溯回它的数据？", a_en: "Because the chain is broken at the first link: no public dataset card, no dataset viewer. You can only trace models whose makers publish their data — like OLMo with its open training mixes.", a_zh: "因为链条第一环就断了：没有公开的数据集卡，没有数据查看器。只有公开数据的模型才能追溯——比如公开了训练数据组合的 OLMo。" }
+  ],
   t_en: 'Running a Local LLM', t_zh: '运行本地大语言模型',
   intro_en: '“A model is a file, and the file is its data.” We pulled four small open-weight models onto our laptops, sent them the same prompts, watched them diverge, and then walked each one back to where its data lives.',
   intro_zh: '“模型就是一个文件，而文件就是它的数据。”我们把四个小型开放权重模型下载到笔记本上，给它们发同样的提示，看着答案各不相同，然后把每个模型一路追溯回它的数据来源。',
@@ -145,6 +157,16 @@ defClass({
   ],
   qs: [
     {
+      lec_open_en: "Story time: imagine writing your diary, sealing it in an envelope, and mailing it to a company so they can tell you what it means. That's a hosted chatbot. Ask: \"Where does your sentence physically go — and who can open the envelope?\"",
+      lec_open_zh: "讲个场景：你写完日记，装进信封，寄给一家公司，请他们告诉你日记是什么意思。这就是云端聊天机器人。问：“你打的那句话在物理上去了哪儿？谁能拆开这个信封？”",
+      lec_why_en: "With a [[c7_hosted]] model, the prompt leaves your machine, crosses the internet and is processed on the company's servers. That is **why** you can only see the output: the weights, the hidden system prompt, the safety filters and the logs all live on their side. You are renting a service, so you get the controls they decide to give you.\n\nWith a [[c7_local]] model (Ollama), the same prompt never leaves the laptop. **Why** does that change everything? Because now the [[c7_weights]] are a file on your disk. You can open the model card, read the Modelfile, change the system prompt and temperature, swap the model, and run it with Wi‑Fi off.\n\nThe trade-off has a reason too: hosted models are huge because they run on data-center GPUs; your laptop only has a few GB of memory, so local models are **smaller and weaker**. So the real lesson is about **control versus capability**: who holds the file decides what you can see and change.\n\nRemember the in-class experiment: same five prompts, four local models, four different answers. **Why could we even run that?** Because locally you can line models up side by side and see that the **file is the difference** — something a single chat box never shows you.",
+      lec_why_zh: "用[[c7_hosted]]时，提示词离开你的电脑，穿过互联网，在公司的服务器上被处理。**这就是为什么**你只能看到输出：权重、隐藏的系统提示词、安全过滤、日志，全都在他们那边。你是在“租”一项服务，所以你只能用他们愿意给你的那些控制项。\n\n用[[c7_local]]（Ollama）时，同一个提示词根本不会离开电脑。**为什么这一下全变了？**因为现在[[c7_weights]]就是你硬盘上的一个文件。你可以打开模型卡、读 Modelfile、改系统提示词和 temperature、换模型，甚至关掉 Wi‑Fi 照样跑。\n\n这个取舍也有原因：云端模型很大，因为它们跑在数据中心的 GPU 上；你的笔记本只有几 GB 内存，所以本地模型**更小、能力更弱**。所以真正要讲的是**控制权和能力之间的交换**：谁握着这个文件，谁就决定了你能看到什么、能改什么。\n\n回想课上的实验：同样五个提示词，四个本地模型，四种不同的答案。**为什么我们能做这个实验？**因为在本地你可以把模型并排摆开，亲眼看到**差别就在那个文件里**——这是单一聊天框永远不会让你看到的。",
+      lec_trap_en: "Students answer only \"local is private\". The question has three parts — where it goes, what you can see, what you can change — and a full answer needs all three, plus the honest cost (smaller model). It's tempting because privacy is the headline everyone has heard.",
+      lec_trap_zh: "学生常常只答“本地更隐私”。可这题有三部分——去哪里、能看到什么、能改什么——完整答案三点都要有，还要说出代价（模型更小）。会犯这个错，是因为“隐私”是大家听得最多的那句标语。",
+      lec_ask_en: "Ask: \"If you turn Wi‑Fi off, which one still works, and why?\" — Listen for: the local one, because the weights are on the laptop.\nAsk: \"Name one thing you can change locally that you can't change in ChatGPT.\" — Listen for: the system prompt, temperature, or the model itself.",
+      lec_ask_zh: "问：“关掉 Wi‑Fi，哪个还能用？为什么？”——要听到：本地的那个，因为权重就在电脑上。\n问：“说一样你在本地能改、在 ChatGPT 里改不了的东西。”——要听到：系统提示词、temperature，或者干脆换模型。",
+      lec_bridge_en: "If the model is a file we can download, the next question is: what exactly are we allowed to do with that file? That's the license — 7.2.",
+      lec_bridge_zh: "既然模型是个能下载的文件，下一个问题就是：我们到底被允许拿这个文件做什么？这就是许可证——7.2。",
       id: '7.1',
       embeds: [{ src: 'cf/laptop-llm.html', h: 680,
         name_en: 'Inside the laptop: where a local model lives', name_zh: '笔记本里面：本地模型住在哪',
@@ -311,6 +333,16 @@ defClass({
       trap_zh: '三问都要明确回答——去了哪里 / 能看到什么 / 能改变什么——并提到取舍（能力 vs. 隐私与控制）。'
     },
     {
+      lec_open_en: "Ask: \"If a bakery gives you a free cake, does that mean you know the recipe?\"",
+      lec_open_zh: "先问：“面包店免费送你一个蛋糕，你就知道它的配方了吗？”",
+      lec_why_en: "[[c7_open_weights]] means the company gives you the finished cake: the trained numbers you can download and run. But the recipe — the training data, the training code, the decisions about what to filter — stays private. **Why would a company do that?** Because releasing weights builds an ecosystem around their model while the data (the expensive, legally risky part) stays secret.\n\n[[c7_open_source]] in the strict sense releases the whole recipe: weights + data + code + training logs, under an OSI-style [[c7_license]]. OLMo 2 from Ai2 is the example we ran: Apache 2.0, with its training mixes published.\n\n**Why does the difference matter?** Only with the data can you answer \"why does this model talk like this?\" or \"was my work in it?\". And the license decides what you may build: Llama 3.2 has a community license with conditions, Qwen2.5‑3B a research license, the DeepSeek‑R1 Llama distill is MIT but sits on a Llama base. \"Free to download\" is not the same as \"free to do anything with\".",
+      lec_why_zh: "[[c7_open_weights]]是公司给你做好的蛋糕：训练好的那堆数字，你可以下载、运行。但配方——训练数据、训练代码、过滤了什么——仍然不公开。**公司为什么要这样做？**因为放出权重能让大家围着它的模型建生态，而数据（最贵、法律风险最大的那部分）继续保密。\n\n严格意义上的[[c7_open_source]]会把整份配方都放出来：权重 + 数据 + 代码 + 训练日志，用 OSI 认可的[[c7_license]]。我们跑过的 OLMo 2（Ai2）就是例子：Apache 2.0，训练数据组合也公开了。\n\n**这个区别为什么重要？**只有拿到数据，你才能回答“这个模型为什么这样说话？”或者“我的作品在不在里面？”。而许可证决定你能拿它做什么：Llama 3.2 是带条件的社区许可证，Qwen2.5‑3B 是研究许可证，DeepSeek‑R1 的 Llama 蒸馏版是 MIT，但底子是 Llama。“能免费下载”不等于“能随便用”。",
+      lec_trap_en: "Calling Llama \"open source\". It's tempting because the press does it constantly — but without the training data and with use restrictions, it is open weights.",
+      lec_trap_zh: "把 Llama 叫作“开源”。很容易犯，因为媒体天天这么叫——但它没有公开训练数据、还有使用限制，所以只是开放权重。",
+      lec_ask_en: "Ask: \"Which of the four models we ran could you rebuild from scratch, and why only that one?\" — Listen for: OLMo 2, because its data and code are released.",
+      lec_ask_zh: "问：“我们跑的四个模型里，哪一个你理论上能从零重新训练出来？为什么只有它？”——要听到：OLMo 2，因为它的数据和代码都公开了。",
+      lec_bridge_en: "Once you have the weights, you can also shrink them to fit your laptop. Why does a smaller copy still work? That's quantization — 7.3.",
+      lec_bridge_zh: "拿到权重以后，你还可以把它“压小”塞进笔记本。为什么压小了还能用？这就是量化——7.3。",
       id: '7.2', t_en: 'Open weights vs. open source', t_zh: '开放权重 vs. 开源',
       q_en: 'What is the difference? Name one model you ran in each category and its license.',
       q_zh: '两者有什么区别？各举一个你运行过的模型，并说出它的许可证。',
@@ -382,6 +414,16 @@ So “open” on a model card can mean very different things — check what is a
       trap_zh: '题目要求每类各给一个模型**及其许可证**。“Llama 是开源的”是典型错误——它是开放权重，用的是自定义许可证。'
     },
     {
+      lec_open_en: "Ask: \"If I measure your height with a ruler that only has marks every 10 cm, do I still know roughly how tall you are?\"",
+      lec_open_zh: "先问：“如果我用一把每 10 厘米才有一个刻度的尺子量你身高，我还能大概知道你多高吗？”",
+      lec_why_en: "A model is billions of numbers. Stored at 16 bits each, a 3B model is about 6.4 GB — too big for many laptops. [[c7_quant]] stores each number with fewer bits (8, or about 4 with Q4_K_M), so every weight gets **rounded** to the nearest mark on a coarser ruler.\n\n**Why doesn't that destroy the model?** Because the knowledge isn't in any single number; it's spread across billions of them, and tiny rounding errors mostly cancel out. You lose a little precision on hard reasoning, rare facts and long answers, but the model's overall behavior survives.\n\n**Why do it?** The file becomes 2–3× smaller (6.4 → 3.4 → 2.0 GB), fits in RAM, and runs faster. For a designer, that's the difference between \"needs a data center\" and \"runs on my laptop offline\".\n\nFun fact to drop: a 4‑bit weight can only take **16 different values** — and yet a model made of them can still write a sonnet. That's how much redundancy there is in billions of numbers.",
+      lec_why_zh: "一个模型就是几十亿个数字。每个用 16 位存，一个 3B 模型大约 6.4 GB——很多笔记本放不下。[[c7_quant]]就是每个数字用更少的位来存（8 位，或者 Q4_K_M 大约 4 位），于是每个权重都被**取整**到一把更粗的尺子上最近的那个刻度。\n\n**为什么这样模型不会坏掉？**因为知识不在某一个数字里，而是分散在几十亿个数字中，小小的取整误差大多会互相抵消。你会在难的推理、冷门事实、长回答上损失一点精度，但模型整体的行为保留下来了。\n\n**为什么要这样做？**文件小了 2–3 倍（6.4 → 3.4 → 2.0 GB），塞得进内存，跑得更快。对设计师来说，这就是“需要数据中心”和“我的笔记本离线就能跑”之间的差别。\n\n可以顺口抛一个冷知识：一个 4 位的权重只能取 **16 种值**——可由它们组成的模型照样能写十四行诗。几十亿个数字里的冗余就是这么多。",
+      lec_trap_en: "Saying quantization \"removes parts of the model\" or \"makes it dumber at everything\". It keeps every weight; it just stores each one less precisely. The loss is small and uneven, not across the board.",
+      lec_trap_zh: "说量化“删掉了模型的一部分”或者“让它什么都变笨了”。其实每个权重都还在，只是存得没那么精确。损失很小，而且不是全面变差。",
+      lec_ask_en: "Ask: \"Gain and loss, one word each?\" — Listen for: gain = smaller/faster/fits; loss = a bit of precision/accuracy.",
+      lec_ask_zh: "问：“得到什么、失去什么，各用一个词说？”——要听到：得到＝更小／更快／放得下；失去＝一点精度／准确度。",
+      lec_bridge_en: "A smaller file is still a mystery box unless it comes with documentation. What should that paperwork say? 7.4.",
+      lec_bridge_zh: "文件再小，如果没有说明，依然是个黑盒子。这份“说明书”应该写什么？7.4。",
       id: '7.3', t_en: 'Quantization', t_zh: '量化',
       q_en: 'What is quantization, and what do you gain and lose by running a smaller version of a model?',
       q_zh: '什么是量化？运行一个“更小版本”的模型，你得到了什么、失去了什么？',
@@ -526,6 +568,16 @@ Note the other kind of “smaller version”: fewer [[c7_params]] (3B vs. 70B). 
       trap_zh: '要定义为“每个权重用更少的位数”（不是“更少的权重”），然后同时写出得与失。加分项：区分量化和参数量变小。'
     },
     {
+      lec_open_en: "Ask: \"Would you eat a snack with no ingredients list? Would you let a kid play a board game with no rules sheet?\"",
+      lec_open_zh: "先问：“一包零食没有配料表，你敢吃吗？一盒桌游没有说明书，你会让小孩玩吗？”",
+      lec_why_en: "A [[c7_model_card]] (Mitchell et al., 2019) is the label for a model: who made it, what it's for and not for, what data trained it, how it was evaluated, and its limits and biases. A [[c7_dataset_card]] or datasheet (Gebru et al.) is the label for the data: why it was collected, what's in it, how it was gathered and cleaned, what uses are appropriate, who maintains it.\n\n**Why were these invented?** Because models and datasets travel far from the people who made them. Without a card, a designer downstream can't know that a face model was trained mostly on light-skinned faces, or that a corpus was scraped without consent.\n\n**Why two cards?** Because a model's behavior comes from its data. The model card's training-data section should point to a dataset card — that link is how you trace a model back to its sources (7.5).",
+      lec_why_zh: "[[c7_model_card]]（Mitchell 等，2019）是模型的标签：谁做的、适合干什么不适合干什么、用什么数据训练的、怎么评测的、有什么局限和偏见。[[c7_dataset_card]]（Gebru 等的 datasheet）是数据的标签：为什么收集、里面有什么、怎么收集和清洗的、适合什么用途、谁在维护。\n\n**为什么会发明这两种卡？**因为模型和数据集会流传到离制作者很远的地方。没有卡片，下游的设计师根本不知道某个人脸模型主要是用浅肤色的脸训练的，或者某个语料是没经同意就抓下来的。\n\n**为什么要两张卡？**因为模型的行为来自它的数据。模型卡里“训练数据”那一节应该指向一张数据集卡——这条链接，就是你把模型追溯回源头（7.5）的路径。",
+      lec_trap_en: "Listing the sections without saying what each card is supposed to DISCLOSE (limits, intended use, composition, consent). The exam asks \"what is each supposed to disclose\" — answer with disclosures, not headings.",
+      lec_trap_zh: "只罗列章节名，没说每张卡**要披露**什么（局限、预期用途、组成、同意）。题目问的是“应该披露什么”——要答披露的内容，不是标题。",
+      lec_ask_en: "Ask: \"You find a great image model with no model card. What's the risk of using it in a client project?\" — Listen for: unknown data, licenses, biases and failure cases.",
+      lec_ask_zh: "问：“你找到一个很好用的图像模型，但没有模型卡。把它用在客户项目里有什么风险？”——要听到：数据、许可证、偏见、失效情况都不知道。",
+      lec_bridge_en: "The dataset card points to the data. So where does the data of almost every model start? Common Crawl — 7.5.",
+      lec_bridge_zh: "数据集卡指向数据。那几乎所有模型的数据是从哪里开始的？Common Crawl——7.5。",
       id: '7.4', t_en: 'Model card / dataset card', t_zh: '模型卡 / 数据集卡',
       q_en: 'What is each one supposed to disclose?',
       q_zh: '这两种文档各自应该披露什么？',
@@ -622,6 +674,16 @@ In class we read real cards on Hugging Face. What a card leaves out — “train
       trap_zh: '两者要分开写：模型卡讲模型的用途和表现；数据集卡讲数据的来源、组成和采集。最好写出作者（Mitchell；Gebru）。'
     },
     {
+      lec_open_en: "Surprise opener: \"Somewhere inside the training data of today's chatbots there are probably old forum posts, recipe blogs, maybe even a teenager's fan fiction from 2012. How did they get there?\"",
+      lec_open_zh: "用一个意外开场：“今天这些聊天机器人的训练数据里，很可能有老论坛帖子、菜谱博客，甚至某个中学生 2012 年写的同人小说。它们是怎么跑进去的？”",
+      lec_why_en: "[[c7_cc]] is that pile: a nonprofit that crawls billions of web pages and publishes the raw snapshots. It is huge and messy — spam, duplicates, boilerplate.\n\n**Why do C4, FineWeb and Dolma exist?** Because nobody trains on raw Common Crawl. Each is a different **cleaned cut** of it: [[c7_c4]] (Google, for T5) filtered for clean English; [[c7_fineweb]] (Hugging Face) is a heavily filtered and deduplicated ~15‑trillion‑token version; [[c7_dolma]] (Ai2) mixes Common Crawl with code, papers and books for OLMo. Each team's filters are **choices**, and those choices shape what the model knows and whose voices it learns.\n\n**How do you trace a model back?** Model card → its dataset card → the dataset viewer on Hugging Face → search tools like the Washington Post's C4 search or Have I Been Trained. If any link in that chain is missing (a closed model), the trail goes cold — which is exactly why open data matters.\n\nThis is also **why the four models in class answered differently**: different labs, different data mixes and filters, different fine-tuning. Probing a local model for gaps and leans is really probing its corpus.",
+      lec_why_zh: "[[c7_cc]]就是那一大堆：一个非营利组织，持续抓取几十亿个网页，把原始快照公开。它巨大又杂乱——垃圾信息、重复内容、模板文字都有。\n\n**为什么会有 C4、FineWeb、Dolma？**因为没人直接拿原始 Common Crawl 训练。它们是对同一堆东西的不同**清洗版本**：[[c7_c4]]（Google，为 T5 做的）过滤出干净的英文；[[c7_fineweb]]（Hugging Face）是大量过滤、去重后约 15 万亿 token 的版本；[[c7_dolma]]（Ai2）把 Common Crawl 和代码、论文、书混在一起，用来训练 OLMo。每个团队的过滤规则都是**选择**，而这些选择决定了模型知道什么、学会了谁的声音。\n\n**怎么把模型追溯回数据？**模型卡 → 它的数据集卡 → Hugging Face 上的数据集查看器 → 再用华盛顿邮报的 C4 搜索或 Have I Been Trained 这类工具去查。链条上只要断一环（比如闭源模型），线索就断了——这正是开放数据重要的原因。\n\n这也解释了**课上四个模型为什么答得不一样**：不同的实验室、不同的数据组合和过滤规则、不同的微调。去探测一个本地模型的空白和倾向，本质上就是在探测它的语料。",
+      lec_trap_en: "Treating the four as competitors or as four separate crawls. Three of them are **derived from** Common Crawl; the relationship is \"source and filtered cuts\".",
+      lec_trap_zh: "把这四个当成互相竞争的东西，或者当成四次独立的抓取。其中三个都是**从 Common Crawl 衍生**出来的；关系是“原料和不同的清洗版本”。",
+      lec_ask_en: "Ask: \"Draw the family tree of these four on paper.\" — Listen for: Common Crawl at the root, C4/FineWeb/Dolma as branches, models as leaves.",
+      lec_ask_zh: "问：“在纸上画出这四个的家谱。”——要看到：Common Crawl 是树根，C4／FineWeb／Dolma 是树枝，模型是树叶。",
+      lec_bridge_en: "We've seen where a model's data comes from. Next class we change the model ourselves — starting with the Modelfile (8.1).",
+      lec_bridge_zh: "我们已经看到模型的数据从哪来。下一课我们要亲手改模型——从 Modelfile 开始（8.1）。",
       id: '7.5', t_en: 'Training corpus', t_zh: '训练语料',
       q_en: 'Common Crawl, C4, FineWeb, Dolma: how do these relate, and how do you trace a model back to its data?',
       q_zh: 'Common Crawl、C4、FineWeb、Dolma 之间是什么关系？你如何把一个模型追溯回它的数据？',

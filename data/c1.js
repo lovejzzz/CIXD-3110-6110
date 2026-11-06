@@ -85,6 +85,16 @@ defTerms({
 
 defClass({
   order: 1, n: '1',
+  lec_en: `This class asks one uncomfortable question: **who is the product when the service is free?** We answer it twice. First as economics: Zuboff's [[surv_cap]] and Varoufakis's [[technofeudalism]] explain why our behavior became raw material and why platforms charge rent instead of competing. Then as plumbing: a URL, a GET or POST, and a shell show *where* that data actually travels and what the friendly screen hides. The point for a designer is that every interface choice — a free tier, a form, a hidden setting — sits inside this economy, so you can't design responsibly without seeing it.`,
+  lec_zh: `这一课只问一个让人不太舒服的问题：**服务免费的时候，谁才是产品？** 我们从两个角度回答。先讲经济：祖博夫的[[surv_cap]]和瓦鲁法基斯的[[technofeudalism]]解释了为什么我们的行为变成了原材料，为什么平台靠收租而不是靠竞争赚钱。再讲“管道”：URL、GET/POST 和 shell，让我们看到数据*到底*流向哪里、友好的界面藏起了什么。对设计师来说，每一个界面决定——免费版、一个表单、一个藏起来的设置——都发生在这个经济里，看不见它，就谈不上负责任地设计。`,
+  lec_faq: [
+    { q_en: `Is it surveillance if I clicked 'I agree'?`, q_zh: `我点了“同意”，还算被监视吗？`, a_en: `Zuboff would say yes. The terms are long, unreadable and take-it-or-leave-it, so you never really choose what surplus is taken or how predictions are sold. Agreeing to a service isn't agreeing to be the raw material.`, a_zh: `祖博夫会说算。条款又长又难懂，要么全收、要么别用，你根本没法真正选择哪些剩余被拿走、预测怎么被卖。同意使用服务，不等于同意成为原材料。` },
+    { q_en: `Are surveillance capitalism and technofeudalism just two names for the same thing?`, q_zh: `监视资本主义和技术封建主义只是同一件事的两个名字吗？`, a_en: `No — related, not identical. Zuboff explains the mechanism (extract → predict → modify) and still calls it capitalism. Varoufakis says the result replaces markets with fiefs that earn rent. Exam phrase: mechanism vs. economic structure.`, a_zh: `不是——有关联，但不一样。祖博夫解释机制（提取 → 预测 → 矫正），仍称之为资本主义；瓦鲁法基斯说结果是用收租的“封地”取代了市场。考试关键词：机制 vs 经济结构。` },
+    { q_en: `Does the server really never see the #part of a URL?`, q_zh: `服务器真的看不到网址里 # 后面的部分吗？`, a_en: `Right — the browser keeps the fragment and uses it to jump inside the page. (A page's own JavaScript can read it and send it somewhere, but the request itself doesn't carry it.)`, a_zh: `对——锚点由浏览器自己保留，用来在页面内跳转。（页面上的 JavaScript 可以读到它再发出去，但请求本身不会带上它。）` },
+    { q_en: `So is POST safer than GET?`, q_zh: `那 POST 比 GET 更安全吗？`, a_en: `Only in one small way: the data isn't in the address bar, history or logs. It is not encrypted by POST — HTTPS does that for both. The real difference is retrieve vs. change something.`, a_zh: `只在一个小地方更好：数据不出现在地址栏、历史记录和日志里。POST 本身不加密——两者的加密都靠 HTTPS。真正的区别是“取东西”还是“改东西”。` },
+    { q_en: `Do I need to memorize terminal commands for the exam?`, q_zh: `考试需要背终端命令吗？`, a_en: `No. You need to explain what a shell is (an interpreter for typed commands) and what the terminal shows that the GUI hides. One example command like ls -la is a nice touch.`, a_zh: `不用。你要能解释 shell 是什么（解释你输入的命令的程序），以及终端显示了哪些 GUI 藏起来的东西。举一个例子命令（比如 ls -la）会加分。` },
+    { q_en: `Why is a URL lesson in a class about capitalism?`, q_zh: `为什么讲资本主义的课要讲网址？`, a_en: `Because the economics travels through the plumbing. Tracking IDs ride in query strings, form data goes by POST, and the shell lets you see what's really there. Understanding the pipes is how you see the surveillance.`, a_zh: `因为经济就是顺着这些“管道”流动的。追踪编号藏在查询参数里，表单数据走 POST，而 shell 让你看到底下真正有什么。懂了管道，才看得见监视。` }
+  ],
   t_en: 'Surveillance Capitalism', t_zh: '监视资本主义',
   intro_en: 'The first class names the economic dilemma we design inside of — data extraction and platform power — and then opens the hood of the Web itself: what a URL says, what a request carries, and what the command line shows that the screen hides.',
   intro_zh: '第一课先命名我们所处的经济困境——数据攫取与平台权力；然后打开网络本身的“引擎盖”：URL 在说什么、一次请求带着什么，以及命令行显示了哪些屏幕隐藏的东西。',
@@ -132,7 +142,33 @@ defClass({
   ],
   qs: [
     {
-      id: '1.1', t_en: 'Surveillance capitalism', t_zh: '监视资本主义',
+      id: '1.1',
+      lec_open_en: `Ask: "Instagram, Google Maps and TikTok cost you nothing. So who is paying for the servers — and what are they buying?"`,
+      lec_open_zh: `先问：“Instagram、谷歌地图、TikTok 都不收你钱。那服务器的钱是谁付的？他们到底在买什么？”`,
+      lec_why_en: `Start from the business problem. Advertising used to be a guess: you bought a magazine page and hoped the right people saw it. Whoever could **predict behavior** better could sell ads for more. That is why data became valuable — not the data you *need* to give, but everything extra.
+
+That extra is [[behav_surplus]]. Google discovered that the traces left behind by searches — typos, timing, clicks — were useless for improving search but excellent for predicting what you'll do. Zuboff's key move is to call this a **new raw material**: human experience, taken without asking, refined into [[pred_products]] and sold in [[behav_futures]].
+
+Why does it end in [[behav_mod]]? Because the surest prediction is one you cause. If a company can nudge you — a notification at the right moment, a feed tuned to keep you scrolling — its predictions come true and are worth more. So the logic slides from *watching* to *steering*.
+
+That's why Zuboff says it is not just "privacy": it is an **asymmetry of knowledge and power**. They know us in detail; we can't see them. For a designer, every free feature is worth asking: what surplus does this collect, and who is it really for?
+
+**Fun fact:** in 2012 a US store famously sent baby-product coupons to a teenager before her own father knew she was pregnant — the shopping data predicted it. That's behavioral surplus doing its job a little *too* well.`,
+      lec_why_zh: `从商业问题讲起。广告以前全靠猜：你买一页杂志版面，希望对的人能看到。谁能更准地**预测行为**，谁的广告就能卖得更贵。所以数据才值钱——不是你*必须*给的那部分，而是所有多出来的部分。
+
+多出来的就是[[behav_surplus]]。谷歌发现，搜索留下的痕迹——打错的字、停留的时间、点了什么——对改进搜索没什么用，但用来预测你下一步会做什么却非常好用。祖博夫的关键一步，是把它叫作**一种新的原材料**：人的经验，没问过你就被拿走，加工成[[pred_products]]，在[[behav_futures]]里卖掉。
+
+为什么最后会走到[[behav_mod]]？因为最准的预测，是你亲手促成的预测。如果公司能推你一把——在恰好的时刻推送一条通知、把信息流调到让你停不下来——它的预测就会成真，也就更值钱。于是逻辑从“看着你”滑向了“操纵你”。
+
+所以祖博夫说，这不只是“隐私”问题，而是**知识和权力的不对称**：他们把我们看得一清二楚，我们却看不见他们。对设计师来说，每个免费功能都值得问一句：它收集了什么剩余？真正服务的是谁？
+
+**冷知识：**2012 年，美国一家超市给一个高中女生寄去了婴儿用品优惠券——她爸爸都还不知道她怀孕了，购物数据却已经“猜”出来了。这就是行为剩余把活干得*太好*了。`,
+      lec_trap_en: `Students say "companies collect data to show ads." That's tempting because it's true but too shallow — it misses that the *surplus* is the raw material, that predictions are the product, and that the system moves toward modifying behavior.`,
+      lec_trap_zh: `学生常写“公司收集数据来投放广告”。这句话诱人，因为它没错，但太浅了——它漏掉了“剩余”才是原材料、“预测”才是产品，以及系统会走向修改行为这几层。`,
+      lec_ask_en: `Ask: "Why would a company want to change your behavior, not just watch it?" — Listen for: because a caused behavior is a guaranteed prediction, and guaranteed predictions sell for more.`,
+      lec_ask_zh: `问：“为什么公司不满足于看着你，还要改变你的行为？”——听他说出：因为被促成的行为就是有保证的预测，有保证的预测卖得更贵。`,
+      lec_bridge_en: `If surveillance capitalism is how the raw material is taken, the next question is what kind of economy that builds — Varoufakis says it's not capitalism anymore.`,
+      lec_bridge_zh: `如果监视资本主义讲的是原材料怎么被拿走，那下一个问题就是：这样建起来的是一种什么经济？瓦鲁法基斯说，那已经不是资本主义了。`, t_en: 'Surveillance capitalism', t_zh: '监视资本主义',
       q_en: 'Describe surveillance capitalism.', q_zh: '描述“监视资本主义”。',
       src: 'Zuboff; AI and Humanity (AH)',
       kid_en: "Imagine a school café that gives you free lunch. While you eat, a quiet helper writes down everything: what you pick, how long you stare at the dessert, who you sit with. A little of that list is used to make the menu better for you. Most of it goes into a notebook of guesses — \"Mia will want chocolate milk on Friday\" — and the café sells those guesses to snack companies. Then the café starts nudging you (a sign, a coupon) so the guess comes true. That business is surveillance capitalism: you are not the customer, you are the material.",
@@ -212,7 +248,29 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
       trap_zh: '不要只写“公司收集数据”。要写出完整链条：经验 → 行为剩余 → 预测产品 → 卖给广告主 → 行为矫正。'
     },
     {
-      id: '1.2', t_en: 'Technofeudalism', t_zh: '技术封建主义',
+      id: '1.2',
+      lec_open_en: `Ask: "If you sell handmade earrings on Amazon or Etsy, are you in a market — or are you renting a stall in someone's castle?"`,
+      lec_open_zh: `先问：“如果你在亚马逊或 Etsy 上卖手工耳环，你是在一个市场里，还是在别人的城堡里租了个摊位？”`,
+      lec_why_en: `Capitalism, in the textbook picture, runs on **markets and profit**: many sellers compete, the best product wins, profit is the reward. Varoufakis asks: does that still describe Amazon? On Amazon, Amazon owns the marketplace, sets the rules, sees every transaction, and takes a cut of every sale. That is not profit from competing; it is **rent** for access.
+
+That's why he reaches for the word *feudal*. In feudalism, lords owned the land and peasants paid to work it. Today the "land" is [[cloud_capital]] — servers, algorithms, the platform itself. Sellers are vassals paying [[cloud_rent]]; users are [[cloud_serfs]] whose unpaid posting, rating and scrolling keeps improving the algorithm that owns them.
+
+Why does this matter next to Zuboff? Both start from the same engine — **extraction of behavior as data**. Zuboff explains the mechanism (extract → predict → modify) and still calls it a form of capitalism. Varoufakis says the result is so powerful it **replaces markets** with fiefdoms. Mechanism vs. structure: that's the relationship the exam wants.
+
+**Picture it:** a medieval lord didn't need to grow better wheat than his neighbors — he just owned the field. Amazon doesn't need to sell better earrings than you. It owns the field you sell them in.`,
+      lec_why_zh: `按教科书的说法，资本主义靠的是**市场和利润**：很多卖家竞争，最好的产品胜出，利润是奖赏。瓦鲁法基斯问：这还能描述亚马逊吗？在亚马逊上，市场本身归亚马逊所有，规则它定，每笔交易它都看得见，每笔还要抽成。这不是靠竞争赚来的利润，而是为“进门”付的**地租**。
+
+所以他用了“封建”这个词。封建时代，领主拥有土地，农民交租才能种地。今天的“土地”是[[cloud_capital]]——服务器、算法、平台本身。卖家是交[[cloud_rent]]的附庸；用户是[[cloud_serfs]]，我们免费发帖、评分、刷屏，不断把那个“拥有”我们的算法养得更好。
+
+为什么要把它和祖博夫放在一起？两人起点相同——**把行为当作数据来攫取**。祖博夫解释机制（提取 → 预测 → 矫正），仍把它看成资本主义的一种形态；瓦鲁法基斯则说，这个结果强大到**取代了市场**，变成了封地。一个讲机制，一个讲结构——这就是考试要的关系。
+
+**想象一下：**中世纪的领主不需要比邻居种出更好的小麦——他只要拥有那块地。亚马逊也不需要卖出比你更好的耳环，它拥有的是你卖耳环的那块地。`,
+      lec_trap_en: `Students treat technofeudalism as a synonym for surveillance capitalism. It's tempting because both are about Big Tech and data — but the key word is **rent vs. profit**, and the relationship is mechanism vs. economic structure.`,
+      lec_trap_zh: `学生常把技术封建主义当成监视资本主义的同义词。这很诱人，因为两者讲的都是科技巨头和数据——但关键词是**地租 vs 利润**，两者的关系是“机制”与“经济结构”。`,
+      lec_ask_en: `Ask: "What do Amazon sellers pay, and why is that rent and not profit?" — Listen for: a cut of every sale just to exist inside the platform; they pay for access, not because they out-competed anyone.`,
+      lec_ask_zh: `问：“亚马逊卖家付的是什么钱？为什么那是地租而不是利润？”——听他说出：每笔交易被抽成，只为能在平台里存在；付的是准入费，不是因为赢了竞争。`,
+      lec_bridge_en: `Now let's leave the economics and follow the data itself — starting with the address every request travels to: the URL.`,
+      lec_bridge_zh: `现在先放下经济学，跟着数据本身走——从每个请求都要去的那个地址开始：URL。`, t_en: 'Technofeudalism', t_zh: '技术封建主义',
       q_en: 'What does technofeudalism highlight? How does it relate to surveillance capitalism?',
       q_zh: '“技术封建主义”强调了什么？它与监视资本主义有什么关系？',
       src: 'Varoufakis, Technofeudalism',
@@ -285,7 +343,33 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
       trap_zh: '关键词是“地租”（相对于利润）。要提到云资本，以及用户的无偿活动在建造它。'
     },
     {
-      id: '1.3', t_en: 'URL', t_zh: 'URL 网址',
+      id: '1.3',
+      lec_open_en: `Ask: "When you type a web address, how does a computer on the other side of the world know exactly which page you want?"`,
+      lec_open_zh: `先问：“你输入一个网址，地球另一边的电脑怎么就知道你要的是哪一页？”`,
+      lec_why_en: `A URL exists because the Web needed **one string that can locate any resource anywhere**. To do that, it has to answer several questions in order — and each part of the URL answers exactly one.
+
+**How** do we talk? The [[scheme]] (https) says which protocol. **Who** do we talk to? The [[domain]] names the server, and DNS turns it into an IP address. **Which door?** The [[port]] — usually invisible because 443 and 80 are agreed defaults. **What** do we want? The [[path]]. **With what conditions?** The [[query]] — key=value pairs like a search term or a filter.
+
+Why is the [[fragment]] different? Because it's about a spot *inside* the page you already got — the server has nothing to do with it, so the browser never sends it. That detail shows you understand the URL as a conversation with a server, not just a string.
+
+For a designer the why is practical and political: query strings carry search terms and tracking IDs (?utm_source=…), so the URL is also where surveillance hitches a ride.
+
+**Try it live:** paste any shopping link into a notes app and look at everything after the ?. Half of it is usually tracking — utm_source, ref, click IDs. The URL is quietly telling the store how you found it.`,
+      lec_why_zh: `URL 存在，是因为网络需要**一个能定位世界上任何资源的字符串**。要做到这一点，它必须按顺序回答几个问题——URL 的每一段正好回答一个。
+
+**怎么说话？**[[scheme]]（https）说明用哪种协议。**跟谁说？**[[domain]]指明服务器，DNS 再把它翻译成 IP 地址。**走哪扇门？**[[port]]——平时看不到，因为 443 和 80 是约定好的默认值。**要什么？**[[path]]。**附带什么条件？**[[query]]——像搜索词、筛选条件这样的 键=值。
+
+为什么[[fragment]]不一样？因为它说的是你已经拿到的那一页*里面*的某个位置——跟服务器无关，所以浏览器根本不会把它发出去。答出这个细节，说明你把 URL 理解成了“和服务器的一次对话”，而不只是一串字。
+
+对设计师来说，这个“为什么”既实用也有政治意味：查询参数里会带着搜索词和追踪编号（?utm_source=…），所以 URL 也是监视顺路搭车的地方。
+
+**现场试一下：**随便把一个购物链接粘到备忘录里，看看 ? 后面那一大串。通常一半都是追踪参数——utm_source、ref、各种点击编号。网址在悄悄告诉商店你是怎么找过来的。`,
+      lec_trap_en: `Students list the parts but not what each *tells the server* — and forget that the fragment tells it nothing. It's tempting to just label the pieces because that looks complete.`,
+      lec_trap_zh: `学生常只列出各部分名字，没说每部分“告诉服务器什么”，还忘了锚点什么也不告诉服务器。只贴标签看起来很完整，所以容易掉进去。`,
+      lec_ask_en: `Ask: "Point at ?q=jazz and #reviews in a URL — which one does the server see, and why?" — Listen for: the query is sent and used to build the answer; the fragment stays in the browser.`,
+      lec_ask_zh: `问：“指着网址里的 ?q=jazz 和 #reviews——服务器能看到哪个？为什么？”——听他说出：查询参数会发出去，服务器用它生成回应；锚点留在浏览器里。`,
+      lec_bridge_en: `The URL says where to go; the next question is what the browser says when it gets there — GET or POST.`,
+      lec_bridge_zh: `URL 说的是“去哪”；下一个问题是浏览器到了那里说什么——GET 还是 POST。`, t_en: 'URL', t_zh: 'URL 网址',
       q_en: 'Name the parts of a URL and say what each one tells the server.',
       q_zh: '说出 URL 的各个组成部分，以及每一部分告诉服务器什么。',
       src: 'MDN, “What Is a URL?”',
@@ -368,7 +452,33 @@ MDN 把域名 + 端口合称为 **authority（权威部分）**——说明你�
       trap_zh: '题目问“每部分告诉服务器什么”——要特别指出：锚点（#）什么也不告诉服务器。'
     },
     {
-      id: '1.4', t_en: 'GET vs. POST', t_zh: 'GET 与 POST',
+      id: '1.4',
+      lec_open_en: `Ask: "Why does your browser warn you 'Confirm form resubmission' when you refresh after buying something — but never when you refresh a Google search?"`,
+      lec_open_zh: `先问：“为什么买完东西刷新页面，浏览器会警告‘确认重新提交表单’，刷新谷歌搜索却从来不会？”`,
+      lec_why_en: `HTTP gives every request a **verb**, because the server needs to know whether you are *asking* or *changing something*. That's the whole reason GET and POST exist.
+
+[[get]] means "give me." It should only retrieve, so it's [[idempotent]]: do it ten times, nothing changes. Because it changes nothing, it's safe to put the data in the URL, bookmark it, cache it, and refresh freely — that's why a Google search is a GET and shows ?q= in the address bar.
+
+[[post]] means "take this and act on it." It changes the server's state — an account is created, an order is placed — so repeating it is *not* safe (two orders!). That's exactly why the browser warns before resubmitting. The data goes in the [[req_body]], not the URL, so it doesn't land in history, logs or bookmarks.
+
+So when you fill in a form — sign up, log in, check out — it's usually POST, *because* the action has side effects. And a key nuance: POST is not encryption. Only HTTPS protects the data in transit.
+
+**A tiny drama:** every developer has a story about a buy button that was a GET — and a search-engine robot that "visited" every link and accidentally ordered the whole catalog. That's why verbs matter.`,
+      lec_why_zh: `HTTP 给每个请求一个**动词**，因为服务器需要知道你是在*要东西*，还是在*改东西*。GET 和 POST 存在的全部理由就在这里。
+
+[[get]]的意思是“给我”。它只应该用来取数据，所以它是[[idempotent]]的：做十次，什么也不会变。正因为什么都不改，把数据放进 URL、收藏、缓存、随便刷新都没关系——所以谷歌搜索用的是 GET，地址栏里会出现 ?q=。
+
+[[post]]的意思是“收下这个，然后去处理”。它会改变服务器的状态——创建账户、生成订单——所以重复执行*不安全*（会下两次单！）。这正是浏览器在重新提交前警告你的原因。数据放在[[req_body]]里，不进 URL，也就不会留在历史记录、日志或书签里。
+
+所以填写表单时——注册、登录、结账——通常是 POST，*因为*这个动作有副作用。还有一个关键细节：POST 不等于加密，真正在传输中保护数据的只有 HTTPS。
+
+**一个小剧场：**几乎每个程序员都听过这种故事：购买按钮被做成了 GET，结果搜索引擎的爬虫把每个链接都“逛”了一遍，不小心把整个商品目录都下单了。所以“动词”很重要。`,
+      lec_trap_en: `Students write "POST is secure, GET is not." Tempting because POST hides data from the URL — but hiding isn't encrypting; the real difference is retrieving vs. changing state.`,
+      lec_trap_zh: `学生常写“POST 安全，GET 不安全”。这很诱人，因为 POST 确实把数据藏在了 URL 外面——但“藏起来”不等于“加密”，真正的区别是“取数据”还是“改状态”。`,
+      lec_ask_en: `Ask: "Why is a search box GET but a sign-up form POST?" — Listen for: searching changes nothing and is fine to bookmark/repeat; signing up creates an account, a side effect you don't want repeated.`,
+      lec_ask_zh: `问：“为什么搜索框用 GET，注册表单用 POST？”——听他说出：搜索不改变任何东西，可以收藏、重复；注册会创建账户，这种副作用不该重复发生。`,
+      lec_bridge_en: `We've seen what the browser says to the server. The shell lets us say things to our own computer directly — without the friendly buttons.`,
+      lec_bridge_zh: `我们看到了浏览器怎么跟服务器说话。shell 则让我们不用那些友好的按钮，直接跟自己的电脑说话。`, t_en: 'GET vs. POST', t_zh: 'GET 与 POST',
       q_en: 'What is the difference between GET and POST, and when you fill in a form on a website, which one happens?',
       q_zh: 'GET 和 POST 有什么区别？当你在网站上填写表单时，发生的是哪一个？',
       src: 'MDN, “HTTP Request Methods”',
@@ -551,7 +661,33 @@ Note: POST is not encryption. It only hides data from the URL; HTTPS is what pro
       trap_zh: '不要写“POST 是安全的”。要说清数据放在哪（URL 还是正文），以及请求是否会改变服务器。'
     },
     {
-      id: '1.5', t_en: 'Command line / shell', t_zh: '命令行 / Shell',
+      id: '1.5',
+      lec_open_en: `Ask: "Your Finder or desktop shows you folders. Do you think it shows you *everything* in them?"`,
+      lec_open_zh: `先问：“你的访达或桌面给你看文件夹。你觉得它把里面的东西*全部*给你看了吗？”`,
+      lec_why_en: `The [[gui]] was invented to make computers easy, and it does that with **metaphors**: a desktop, folders, a trash can. Neal Stephenson's point is that every metaphor is also a filter — to make things simple, it hides how they really work.
+
+The [[shell]] is the older, more direct layer: you type a command, it interprets it and asks the operating system to run a program. The [[terminal]] is just the window showing that conversation. Why does that matter? Because the command line shows you **the real thing behind the button**: the actual program, its [[cli_args]], full file paths, hidden dot-files, permissions, raw errors.
+
+It also lets you **compose**: connect tools with a [[pipe]], write scripts, automate. A GUI rarely lets you do that, because each button was designed for one job.
+
+Why this belongs in a class about surveillance: the course keeps asking what interfaces hide. The terminal is the habit of looking underneath — the same habit you need to see where data goes. It's also the native language of the agents we meet later: Claude Code and Hermes work by running shell commands.
+
+**Stephenson's joke:** the GUI is like Disneyland — a beautiful, simplified world built on top of the real machinery, and you're not supposed to see the tunnels underneath. The terminal is the door to the tunnels.`,
+      lec_why_zh: `[[gui]]的发明是为了让电脑变好用，它靠的是**隐喻**：桌面、文件夹、废纸篓。尼尔·斯蒂芬森的观点是：每个隐喻同时也是一道滤镜——为了让事情变简单，它把事情真正怎么运作藏了起来。
+
+[[shell]]是更老、更直接的一层：你输入命令，它解释命令，再请操作系统去运行程序。[[terminal]]只是显示这场对话的窗口。为什么这很重要？因为命令行让你看到**按钮背后的真东西**：真正的程序、它的[[cli_args]]、完整路径、隐藏的“.”文件、权限、原始报错。
+
+它还让你可以**组合**：用[[pipe]]把工具串起来、写脚本、自动化。GUI 很少允许这样，因为每个按钮只为一件事而设计。
+
+为什么这一题出现在讲监视的这一课？因为整门课一直在问：界面藏起了什么？终端就是“往底下看”的习惯——正是看清数据去向所需要的那个习惯。它也是我们后面会遇到的智能体的母语：Claude Code 和 Hermes 就是靠运行 shell 命令来干活的。
+
+**斯蒂芬森的比喻：**GUI 就像迪士尼乐园——在真实机器之上搭出来的、简化又漂亮的世界，你不该看到下面的地道。终端就是通往地道的那扇门。`,
+      lec_trap_en: `Students confuse the terminal with the shell, and list vague things like "more control." Tempting because the two always appear together — but the terminal is the window; the shell is the interpreter. Name concrete hidden things.`,
+      lec_trap_zh: `学生常把终端和 shell 混为一谈，还写些“更多控制”这种空话。这很诱人，因为两者总是一起出现——但终端是窗口，shell 是解释器。要说出具体被隐藏的东西。`,
+      lec_ask_en: `Ask: "Name two things ls -la shows you that the Finder doesn't." — Listen for: hidden dot-files, permissions, exact sizes/dates, the actual command and its flags.`,
+      lec_ask_zh: `问：“说出 ls -la 能显示、而访达不显示的两样东西。”——听他说出：隐藏的点文件、权限、精确的大小/日期、真正的命令和选项。`,
+      lec_bridge_en: `That closes Class 1. Next class steps back in time: before computers, how did people organize information at all?`,
+      lec_bridge_zh: `第 1 课到这里结束。下一课我们回到过去：在电脑出现之前，人们是怎么组织信息的？`, t_en: 'Command line / shell', t_zh: '命令行 / Shell',
       q_en: 'What is a shell, and what does the terminal show you that the GUI hides?',
       q_zh: '什么是 shell？终端向你展示了哪些图形界面（GUI）隐藏起来的东西？',
       src: 'Stephenson; The Missing Semester; Explainshell',

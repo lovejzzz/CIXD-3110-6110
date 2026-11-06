@@ -70,6 +70,16 @@ defTerms({
 
 defClass({
   order: 8, n: '8',
+  lec_en: "Class 8 moves from using a model to **changing** one, and the key idea is that there are three very different ways to change a model's behavior: with **words** (the system prompt and settings in a Modelfile), with **examples** (fine-tuning a small LoRA adapter), and with **taste** (preference pairs: this answer, not that one). The deep question running through the class is **what actually changes the weights, and what only changes how we ask** — and then, once weights can be trained and even blended by arithmetic, **who is the author** of what comes out. This is where the student's own design judgment enters the machine.",
+  lec_zh: "第 8 课从“用模型”走到“改模型”。核心观点是：改变模型行为有三种完全不同的办法——用**话**（Modelfile 里的系统提示词和设置）、用**例子**（微调一个小小的 LoRA 适配器）、用**品味**（偏好对：要这个回答，不要那个）。贯穿整课的深层问题是：**到底什么会改变权重，什么只是改变了我们“问”的方式？**再往下：当权重可以被训练、甚至可以用算术混合时，**输出的作者到底是谁？**这是学生自己的设计判断进入机器的地方。",
+  lec_faq: [
+    { q_en: "If SYSTEM doesn't change the weights, why does the model act so differently?", q_zh: "既然 SYSTEM 不改权重，为什么模型表现差那么多？", a_en: "Because the model always responds to everything in front of it. A system prompt is extra text placed before your message every time, so the same weights produce different continuations — like the same actor reading a different script.", a_zh: "因为模型永远是对它眼前的所有文字做反应。系统提示词每次都被放在你的消息前面，所以同一份权重会接出不同的下文——就像同一个演员拿到了不同的剧本。" },
+    { q_en: "Is fine-tuning the same as training a model from scratch?", q_zh: "微调和从零训练模型一样吗？", a_en: "No. From scratch means learning billions of weights from trillions of tokens — months and millions of dollars. Fine-tuning with LoRA starts from a finished model and learns a tiny correction on a laptop in minutes.", a_zh: "不一样。从零训练要用上万亿个 token 学几十亿个权重——几个月、几百万美元。用 LoRA 微调是从一个现成的模型出发，在笔记本上几分钟学一个很小的修正。" },
+    { q_en: "Why would my adapter make the model worse?", q_zh: "为什么我的适配器反而让模型变差了？", a_en: "Usually overfitting: too few or too similar examples, trained too long. It learns to parrot your examples and loses its general ability. More varied data or stopping earlier helps.", a_zh: "通常是过拟合：例子太少或太相似，训练太久。它学会了鹦鹉学舌，丢了通用能力。用更多样的数据、早点停，会有帮助。" },
+    { q_en: "What's a 'good' loss number?", q_zh: "损失多少算“好”？", a_en: "There's no magic number — what matters is the shape: going down, then flattening. Compare it with validation loss; and always read real outputs, because loss can't judge quality.", a_zh: "没有神奇的数字——重要的是曲线形状：先降，再变平。拿它和验证损失比；而且一定要看实际输出，因为损失判断不了质量。" },
+    { q_en: "Is preference tuning how ChatGPT got so polite?", q_zh: "ChatGPT 那么有礼貌，就是偏好调优调出来的吗？", a_en: "Largely, yes — RLHF used huge numbers of human comparisons between answers. That's also why its 'personality' reflects the tastes and rules of the people who did the rating.", a_zh: "很大程度上是的——RLHF 用了海量的人工比较（两个回答哪个更好）。这也是为什么它的“性格”反映了打分那些人的品味和规则。" },
+    { q_en: "If I choose t = 0.5, am I the author?", q_zh: "如果是我选了 t = 0.5，那我就是作者吗？", a_en: "Partly — that choice is the only fully intentional act in the blend. But the voices came from other people's data and the base model's makers. A good exam answer says authorship is shared or distributed.", a_zh: "部分是——这个选择是混合过程中唯一完全有意的动作。但那些声音来自别人的数据和基础模型的制作者。好的考试答案会说：作者身份是共享的、分散的。" }
+  ],
   t_en: 'Weights and Data', t_zh: '权重与数据',
   intro_en: 'A model is a file, and the file is its data. In Variable Machine we changed small models three ways — with words, with examples, and with taste — and watched which changes reach the weights and which only wrap them.',
   intro_zh: '模型就是一个文件，而文件就是它的数据。我们在 Variable Machine 里用三种方式改变小模型——用“话”、用“例子”、用“品味”——并观察哪些改动真正触及权重，哪些只是包在外面。',
@@ -157,6 +167,16 @@ defClass({
   ],
   qs: [
     {
+      lec_open_en: "Ask: \"If you give a chef a new recipe card, did the chef's skills change, or just tonight's dish?\"",
+      lec_open_zh: "先问：“你给厨师一张新菜谱卡，是厨师的手艺变了，还是只是今晚这道菜变了？”",
+      lec_why_en: "A Modelfile is Ollama's recipe card: a short text file that tells Ollama how to build a model you can run. **Why have it?** So that a customised model is reproducible — anyone with the file gets the same setup.\n\nOnly two lines touch the actual numbers: [[c8_from]] picks which weights to start from, and [[c8_adapter_line]] adds a trained LoRA on top. **Why only these?** Because they are the only lines that load a different weight file.\n\nEverything else — [[c8_system]], [[c8_parameter]] (like [[c8_temperature]]), TEMPLATE, MESSAGE, LICENSE — leaves the weights **exactly the same**. They change the words wrapped around your prompt and how the next word is sampled. That's **why** a Modelfile can make a model sound like a poet without it learning anything new.",
+      lec_why_zh: "Modelfile 就是 Ollama 的菜谱卡：一个短短的文本文件，告诉 Ollama 怎样搭出一个可以运行的模型。**为什么要有它？**为了让定制过的模型可以复现——任何人拿到这个文件，都能得到一样的配置。\n\n只有两行会碰到真正的数字：[[c8_from]]决定从哪份权重开始，[[c8_adapter_line]]在上面再加一个训练好的 LoRA。**为什么只有它们？**因为只有这两行会加载不同的权重文件。\n\n其余的——[[c8_system]]、[[c8_parameter]]（比如[[c8_temperature]]）、TEMPLATE、MESSAGE、LICENSE——都让权重**一模一样**。它们改的是包在你提示词外面的话，以及下一个词怎么被抽样。**这就是为什么** Modelfile 能让模型说话像诗人，却没让它学到任何新东西。",
+      lec_trap_en: "Thinking SYSTEM \"teaches\" the model. It's tempting because the behavior changes so visibly — but the same weights are underneath; delete the line and the old behavior is back.",
+      lec_trap_zh: "以为 SYSTEM 能“教会”模型。很容易这么想，因为行为变化太明显了——但底下还是同一份权重，删掉那一行，原来的行为就回来了。",
+      lec_ask_en: "Ask: \"Which two lines would I need to change to get a genuinely different set of weights?\" — Listen for: FROM and ADAPTER.",
+      lec_ask_zh: "问：“要得到一份真正不同的权重，我得改哪两行？”——要听到：FROM 和 ADAPTER。",
+      lec_bridge_en: "So what is that ADAPTER line pointing to — and why is it so tiny? 8.2.",
+      lec_bridge_zh: "那 ADAPTER 这一行指向的到底是什么？为什么它那么小？8.2。",
       id: '8.1', t_en: 'Modelfile', t_zh: 'Modelfile',
       q_en: 'What is a Modelfile, and which of its lines change the weights and which do not?',
       q_zh: '什么是 Modelfile？其中哪些行会改变权重，哪些不会？',
@@ -324,6 +344,16 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       trap_zh: 'SYSTEM 不会“重新训练”任何东西，温度也不是权重。至少要写出 FROM、ADAPTER、PARAMETER、SYSTEM，并正确归类。'
     },
     {
+      lec_open_en: "Ask: \"If you want an encyclopedia to talk like a pirate, do you rewrite the whole encyclopedia, or stick notes in the margins?\"",
+      lec_open_zh: "先问：“想让一套百科全书说话像海盗，你是把整套书重写一遍，还是在页边贴便利贴？”",
+      lec_why_en: "A [[c8_lora]] adapter is the sticky notes. The base weights stay [[c8_frozen]]; training only learns two thin matrices whose product is a small correction added on top. **Why is it small?** Because a low [[c8_rank]] correction can capture a style or format with a few million numbers instead of billions — megabytes, not gigabytes.\n\n**Why must it match its base?** Because the correction is defined relative to those exact weights, shape for shape. Put the notes into a different encyclopedia and they point to the wrong pages: the result is nonsense or errors.\n\n**What does it change well and badly?** Well: tone, style, format, vocabulary, a recurring persona — patterns that show up in every example. Badly: new facts, real reasoning skill, things the base never knew — a small nudge can't add a whole library. And with too little data it can overfit and just parrot the examples.",
+      lec_why_zh: "[[c8_lora]]适配器就是那些便利贴。基础权重保持[[c8_frozen]]；训练只学两个很“细”的矩阵，它们相乘得到一个小小的修正，叠加在原权重上。**为什么它这么小？**因为一个低[[c8_rank]]的修正，用几百万个数字就能抓住一种风格或格式，而不是几十亿个——是几 MB，不是几 GB。\n\n**为什么必须和基础模型匹配？**因为这个修正是相对于那份**确切的**权重来定义的，形状一一对应。把便利贴贴到另一套百科全书里，它们就指错了页：结果要么是胡言乱语，要么直接报错。\n\n**它擅长改什么、不擅长改什么？**擅长：语气、风格、格式、用词、固定人设——那些每个例子里都会出现的模式。不擅长：新事实、真正的推理能力、基础模型从来不知道的东西——轻轻推一下没法塞进一整座图书馆。数据太少的话，它还会过拟合，只会鹦鹉学舌。",
+      lec_trap_en: "Saying fine-tuning is how you \"add knowledge\" to a model. It's tempting because people say \"train it on my documents\" — but for facts, retrieval works better; adapters change how it talks.",
+      lec_trap_zh: "说微调是用来给模型“加知识”的。很容易这么说，因为大家都讲“用我的文档训练它”——但要加事实，检索效果更好；适配器改的是它怎么说话。",
+      lec_ask_en: "Ask: \"Why can't I use a Llama adapter on Qwen?\" — Listen for: the correction is defined on Llama's exact weights and shapes.",
+      lec_ask_zh: "问：“为什么 Llama 的适配器不能用在 Qwen 上？”——要听到：修正是针对 Llama 那份确切的权重和形状定义的。",
+      lec_bridge_en: "While the adapter trains, a number ticks down on screen. What is it telling us? Loss — 8.3.",
+      lec_bridge_zh: "适配器训练的时候，屏幕上有个数字一直往下走。它在告诉我们什么？损失——8.3。",
       id: '8.2', t_en: 'Fine-tuning / LoRA adapter', t_zh: '微调 / LoRA 适配器',
       q_en: 'What is an adapter, why is it small, why must it match its base, and what does it change well and badly?',
       q_zh: '什么是适配器？它为什么很小？为什么必须与它的基础模型匹配？它擅长改变什么、不擅长改变什么？',
@@ -400,6 +430,16 @@ Test: if you make a model that only changes SYSTEM, Ollama re-uses the same weig
       trap_zh: '四个小问都要答：是什么（冻结的底座 + 小的可学习矩阵）、为什么小（低秩）、为什么要匹配（增量相对于特定权重和形状）、擅长与不擅长（风格 vs. 事实）。'
     },
     {
+      lec_open_en: "Scene: two students before a test. One memorises last year's answer key word for word; the other understands why each answer is right. Day of the test — new questions. Who wins? \"Loss is the teacher watching them practise. Which student can it catch?\"",
+      lec_open_zh: "场景：考前两个学生。一个把去年的答案背得一字不差；另一个弄懂了每个答案为什么对。考试那天——题全是新的。谁赢？“损失就是看着他们练习的老师。它能抓住哪个学生？”",
+      lec_why_en: "[[c8_loss]] measures how wrong the model's next-token guesses are on the training examples. Lower means its guesses match the examples better. **Why watch it?** Because it's the only live signal that learning is happening at all: a falling curve means the adapter is picking up the pattern; a flat curve means nothing is being learned.\n\n**Why isn't lower always better?** Because the training examples are like last year's quiz. If loss keeps dropping while the loss on held-out [[c8_validation]] examples starts rising, the model is [[c8_overfit]] — memorising instead of generalising.\n\nAnd loss measures **match, not quality**. It can't tell whether the output is beautiful, true or useful — that still takes your judgment, which is why we look at actual outputs too.",
+      lec_why_zh: "[[c8_loss]]衡量的是：模型在训练例子上猜下一个词猜得有多错。越低，说明它的猜测和例子越吻合。**为什么要盯着它？**因为它是“到底有没有在学”的唯一实时信号：曲线往下走，说明适配器在学到规律；曲线是平的，说明什么也没学到。\n\n**为什么不是越低越好？**因为训练例子就像去年的小测。如果训练损失还在降，而留出来的[[c8_validation]]例子上的损失开始上升，模型就[[c8_overfit]]了——在死记硬背，而不是举一反三。\n\n而且损失衡量的是**吻合程度，不是质量**。它没法判断输出好不好看、对不对、有没有用——这仍然要靠你的判断，所以我们也要看实际的输出。",
+      lec_trap_en: "Saying \"low loss = good model\". Tempting because lower numbers feel like better grades — but very low loss can mean memorisation, and loss never measures taste.",
+      lec_trap_zh: "说“损失低＝模型好”。很容易这样想，因为数字越低感觉分数越好——但极低的损失可能意味着死记硬背，而且损失从来不衡量品味。",
+      lec_ask_en: "Ask: \"Training loss falls, validation loss rises. What's happening and what do you do?\" — Listen for: overfitting; stop earlier or add more varied data.",
+      lec_ask_zh: "问：“训练损失在降，验证损失在升。发生了什么？你该怎么办？”——要听到：过拟合；提早停，或者加更多样的数据。",
+      lec_bridge_en: "Loss tells us how well the model copies examples. But what if we don't want copying — we want it to prefer one answer over another? 8.4.",
+      lec_bridge_zh: "损失告诉我们模型模仿例子模仿得多好。可如果我们要的不是模仿，而是让它“更喜欢”某个回答呢？8.4。",
       id: '8.3', t_en: 'Loss', t_zh: '损失（Loss）',
       q_en: 'What does the loss number tell you during training?',
       q_zh: '训练过程中，损失（loss）这个数字告诉了你什么？',
@@ -504,6 +544,16 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       trap_zh: '不要把损失说成“准确率”或“质量”。要说它是训练数据上的误差，应该下降，而且可能误导（过拟合）。'
     },
     {
+      lec_open_en: "Ask: \"Is it easier to write the perfect essay yourself, or to read two essays and say which is better?\"",
+      lec_open_zh: "先问：“自己写一篇完美的作文容易，还是读两篇作文、说出哪篇更好容易？”",
+      lec_why_en: "Training on examples ([[c8_sft]]) says \"answer like this\" — the data is prompt + one target response, and the model learns to imitate it.\n\nPreference tuning ([[c8_dpo]], or RLHF) says \"**this one, more than that one**\". The data is a [[c8_pair]]: a prompt, a chosen response and a rejected response. The model learns the **direction** of the difference — nudging probability toward the chosen and away from the rejected.\n\n**Why is this powerful?** Because most of what we care about — tone, taste, honesty, helpfulness — is easier to judge than to write. So the data in preference tuning is really **human judgment**: a record of what a person preferred. That's also why it matters who does the choosing: their taste becomes the model's taste.",
+      lec_why_zh: "用例子训练（[[c8_sft]]）是在说“照这样回答”——数据是一个提示加一个目标回答，模型学着模仿它。\n\n偏好调优（[[c8_dpo]]，或 RLHF）是在说“**这个，比那个好**”。数据是一个[[c8_pair]]：一个提示、一个被选中的回答、一个被拒绝的回答。模型学到的是两者之间差别的**方向**——把概率往被选中的那边推，远离被拒绝的那边。\n\n**为什么这招厉害？**因为我们在乎的大部分东西——语气、品味、诚实、有用——判断起来比写出来容易得多。所以偏好调优里的数据，本质上是**人的判断**：一份“某个人更喜欢什么”的记录。这也是为什么“谁来选”很重要：选的人的品味，就变成了模型的品味。",
+      lec_trap_en: "Describing the data as \"good examples\". The defining feature is the **pair** — chosen AND rejected for the same prompt.",
+      lec_trap_zh: "把数据描述成“好的例子”。它的关键特征是**成对**——同一个提示下，有被选中的，也有被拒绝的。",
+      lec_ask_en: "Ask: \"What three things are in one row of preference data?\" — Listen for: prompt, chosen, rejected.",
+      lec_ask_zh: "问：“偏好数据的一行里有哪三样东西？”——要听到：提示、选中的回答、拒绝的回答。",
+      lec_bridge_en: "Now we have adapters trained on different data and different tastes. What if we mix two of them with simple arithmetic? 8.5.",
+      lec_bridge_zh: "现在我们有了用不同数据、不同品味训练出来的适配器。如果用简单的算术把两个混在一起呢？8.5。",
       id: '8.4', t_en: 'Preference tuning', t_zh: '偏好调优',
       q_en: 'How is training on chosen/rejected pairs different from training on examples? What is the data, in that case?',
       q_zh: '用“选中/拒绝”成对数据训练，和用“例子”训练有什么不同？在这种情况下，数据是什么？',
@@ -564,6 +614,16 @@ What loss does **not** tell you: whether the output is good, true, creative or m
       trap_zh: '第二问“数据是什么”——既要字面回答（提示 + 选中 + 拒绝），也要概念上回答（人的偏好/品味）。'
     },
     {
+      lec_open_en: "Ask: \"If you mix blue paint and yellow paint half and half, who 'painted' the green?\"",
+      lec_open_zh: "先问：“蓝颜料和黄颜料一半一半混在一起，那个绿色是谁‘画’的？”",
+      lec_why_en: "An adapter is a set of numbers. A [[c8_merge]] at [[c8_t]] = 0.5 computes, for every single weight, W = (1−t)·A + t·B — the exact average of adapter A and adapter B. **Why does that produce a mix of behaviors at all?** Because both adapters are corrections on the same base, so averaging the corrections averages the nudges: often you get a hybrid style (half poem, half manual).\n\n**Why isn't it always a clean blend?** Because the network isn't linear — averaging numbers doesn't guarantee averaging meaning. Sometimes one style dominates, sometimes you get mush. You have to look at outputs.\n\n**Who wrote the result?** Nobody directly. No one wrote that text or trained that blend. Authorship is **distributed**: the people whose data trained A and B, the lab that made the base model, and the person who chose t — the last one being the only fully intentional act. That's the question the instructor wants students to sit with.\n\nA little drama for the end: this is the first time in the course that **a dial, not a person, decides the voice**. Ask her how she'd feel signing her name under a t = 0.5 poem.",
+      lec_why_zh: "适配器就是一组数字。在[[c8_t]] = 0.5 处做[[c8_merge]]，就是对每一个权重计算 W = (1−t)·A + t·B——正好是适配器 A 和 B 的平均值。**为什么这样就能得到“混合”的行为？**因为两个适配器都是对同一个基础模型的修正，修正取平均，就是推力取平均：常常会得到一种混合风格（一半诗意，一半说明书）。\n\n**为什么不总是干净的混合？**因为神经网络不是线性的——数字取平均不保证意思也取平均。有时候某一种风格占上风，有时候变成一团糊。你得看实际输出。\n\n**结果是谁写的？**没有人直接写。没人写过那段文字，也没人训练过这个混合版本。作者身份是**分散的**：训练 A 和 B 的数据的作者、做基础模型的实验室，以及选择 t 的那个人——最后这一个是唯一完全有意图的动作。这正是老师想让学生好好想一想的问题。\n\n结尾加一点戏剧性：这是整门课第一次**由一个旋钮、而不是一个人，来决定作品的声音**。问问她：在一首 t = 0.5 的诗下面签上自己的名字，会是什么感觉？",
+      lec_trap_en: "Answering only the math and skipping \"who wrote the result\", or answering \"the AI wrote it\". The exam wants the distributed-authorship idea.",
+      lec_trap_zh: "只答数学部分，跳过“谁写的”；或者答“AI 写的”。考题要的是“作者身份分散”这个观点。",
+      lec_ask_en: "Ask: \"At t = 0, what do you get? At t = 1?\" — Listen for: pure A, pure B. Then: \"So whose decision is t = 0.5?\" — Listen for: yours.",
+      lec_ask_zh: "问：“t = 0 时得到什么？t = 1 呢？”——要听到：纯 A，纯 B。再问：“那 t = 0.5 是谁的决定？”——要听到：你自己的。",
+      lec_bridge_en: "If a person's choices end up inside the model, then the design of how people and AI interact matters enormously. Class 9 gives us 18 guidelines for that.",
+      lec_bridge_zh: "既然人的选择会进到模型里，那人与 AI 如何互动的设计就极其重要。第 9 课给了我们 18 条准则。",
       id: '8.5', t_en: 'Merge / blend', t_zh: '合并 / 混合',
       q_en: 'What happens when two adapters are blended at t = 0.5, and who wrote the result?',
       q_zh: '当两个适配器以 t = 0.5 混合时会发生什么？结果是谁“写”的？',

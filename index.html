@@ -14,6 +14,15 @@
 <body class="lang-both">
 <a class="skip" href="#content">Skip to questions · 跳到题目</a>
 <div id="tip" role="tooltip"></div>
+<div id="pw" class="pw" hidden>
+  <form class="pw-box" role="dialog" aria-modal="true" aria-label="Teacher mode">
+    <div class="pw-mark">◇</div>
+    <label for="pw-in"><span class="en">Teacher mode</span><span class="zh">教师模式</span></label>
+    <input id="pw-in" type="password" autocomplete="off" placeholder="password · 密码">
+    <p class="pw-err" hidden><span class="en">Not quite.</span><span class="zh">密码不对。</span></p>
+    <div class="pw-btns"><button type="button" class="pw-cancel"><span class="en">Cancel</span><span class="zh">取消</span></button><button type="submit" class="pw-ok"><span class="en">Enter</span><span class="zh">进入</span></button></div>
+  </form>
+</div>
 <div id="flash" class="flash" hidden>
   <div class="fc-box" role="dialog" aria-modal="true" aria-label="Flashcards">
     <div class="fc-top">
@@ -64,6 +73,7 @@
   </nav>
 
   <main id="top">
+    <div id="lecture" hidden></div>
     <section class="hero">
       <div class="hero-txt">
         <p class="kicker">CIXD 3110/6110 · Fall 2026 · Midterm</p>
@@ -74,6 +84,33 @@
         </div>
       </div>
       <figure class="hero-fig plate" id="hero-fig"></figure>
+    </section>
+    <section class="brief" id="brief">
+      <div class="brief-h"><span class="brief-tag">ABOUT THIS MIDTERM</span><h2><span class="en">How the exam works</span><span class="zh">考试须知</span></h2></div>
+      <div class="brief-grid">
+        <div class="brief-col">
+          <ul class="brief-list">
+            <li><b class="en">Take-home, open book.</b><b class="zh">在家完成，开卷。</b> <span class="en">Due <b>Friday, November 20, 2026, 5:00 pm</b>.</span><span class="zh">截止 <b>2026 年 11 月 20 日（周五）下午 5:00</b>。</span></li>
+            <li><b class="en">It is long.</b><b class="zh">题量大。</b> <span class="en">Spread it over several days — one class per sitting works well.</span><span class="zh">分几天做，一次做一课比较合适。</span></li>
+            <li><b class="en">Type everything.</b><b class="zh">全部手打。</b> <span class="en">Copy and paste are disabled in the web form.</span><span class="zh">网页表单禁用了复制粘贴。</span></li>
+            <li><b class="en">Or make the zine.</b><b class="zh">或者做成小册子。</b> <span class="en">Print with the zine button, paste or hand-write answers, add drawings or collage, clip with the binder clips provided: <b>+5 points</b>. <a href="#zine">See the sample</a>.</span><span class="zh">用 zine 按钮打印，剪贴或手写答案，加手绘或拼贴，用老师发的长尾夹夹好：<b>加 5 分</b>。<a href="#zine">看范例</a>。</span></li>
+            <li><b class="en">How it's marked.</b><b class="zh">怎么判分。</b> <span class="en">A question counts as wrong if it is blank, or if it doesn't state the concept the way the class sources define it. The hints under each question name those sources.</span><span class="zh">留空，或者没有按课上资料的定义来表述，就算错。每题下面的提示写了出处。</span></li>
+            <li><b class="en">Part 0 · Who you are.</b><b class="zh">第 0 部分 · 个人信息。</b> <span class="en">Your name, GW email, and section (CIXD 3110 or 6110).</span><span class="zh">姓名、GW 邮箱、班级（CIXD 3110 或 6110）。</span></li>
+          </ul>
+        </div>
+        <div class="brief-col">
+          <p class="brief-sub"><span class="en">The exam opens by listing what we did this term. Each one is behind a question:</span><span class="zh">考卷开头列出了这学期做过的事，每一件都对应着考题：</span></p>
+          <ul class="brief-map">
+            <li><a href="#q1-3">1.3</a><span class="en">traced a URL</span><span class="zh">追踪一个网址</span></li>
+            <li><a href="#q2-3">2.3</a><a href="#q2-5">2.5</a><span class="en"><span class="term" data-note-en="Knolling: laying objects out at right angles on a flat surface so every piece is visible at once — a physical way to sort things into categories. In class it was used to build a taxonomy by hand." data-note-zh="Knolling（规整排列）：把物品以直角整齐地铺在平面上，让每一件都一眼可见——一种动手分类的方法。课上用它亲手搭了一套分类。">knolled</span> a taxonomy</span><span class="zh">把物品“规整排列”（knolling）做成分类</span></li>
+            <li><a href="#q3-1">3.1</a><span class="en">watched a network learn to draw a line (TensorFlow Playground)</span><span class="zh">看一个神经网络学会画出分界线（TensorFlow Playground）</span></li>
+            <li><a href="#q4-4">4.4</a><span class="en">typed the same prompt into four products</span><span class="zh">把同一个提示词输入四个产品</span></li>
+            <li><a href="#q5-3">5.3</a><a href="#q5-4">5.4</a><span class="en">built a vault an agent can read</span><span class="zh">建了一个智能体能读的笔记库</span></li>
+            <li><a href="#q7-1">7.1</a><a href="#q7-2">7.2</a><span class="en">ran four models on your own laptop</span><span class="zh">在自己的电脑上跑了四个模型</span></li>
+            <li><a href="#q8-2">8.2</a><span class="en">trained an adapter</span><span class="zh">训练了一个适配器</span></li>
+          </ul>
+        </div>
+      </div>
     </section>
     <div id="content"></div>
     <section class="cls glossary" id="glossary">

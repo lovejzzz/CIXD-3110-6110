@@ -51,6 +51,16 @@ defTerms({
 
 defClass({
   order: 9, n: '9',
+  lec_en: "Class 9 turns the camera around: after eight classes about how AI works, we ask **how it should behave with people**. Amershi et al. (Microsoft, CHI 2019) distilled **18 guidelines** from 20+ years of research and tested them with designers on real products. The clever part is how they're organised — by **when** they apply: Initially, During interaction, When wrong, and Over time. **Why time?** Because AI is uncertain: it will be wrong sometimes, and it changes as it learns. A good design plans for the first meeting, the everyday use, the mistake, and the long relationship — not just the demo where everything works.",
+  lec_zh: "第 9 课把镜头掉转过来：前八课讲 AI 怎么运作，这一课问的是**它应该怎样对待人**。Amershi 等人（微软，CHI 2019）从二十多年的研究里提炼出 **18 条准则**，并让设计师在真实产品上检验过。巧妙之处在于它的分组方式——按**什么时候**适用来分：初始、交互中、出错时、长期使用。**为什么按时间分？**因为 AI 是不确定的：它有时会出错，也会随着学习而改变。好的设计要为第一次见面、日常使用、犯错的那一刻、以及长期关系都做好计划——而不是只为一切都顺利的演示做设计。",
+  lec_faq: [
+    { q_en: "Do I have to memorise all 18 guidelines?", q_zh: "18 条准则都要背下来吗？", a_en: "No — know the four groups and be able to explain one or two from each in your own words. It's open book, so you can look up exact wording; what earns points is explaining what it asks of the designer.", a_zh: "不用——记住四个分组，每组能用自己的话讲一两条就行。考试是开卷，原话可以查；得分的关键是讲清它要求设计师做什么。" },
+    { q_en: "Why are they grouped by time instead of by topic?", q_zh: "为什么按时间分组，而不是按主题？", a_en: "Because using AI is a relationship that unfolds: first meeting, daily use, mistakes, and change over months. Grouping by time makes designers ask 'what does the person need right now?'", a_zh: "因为使用 AI 是一段逐步展开的关系：初次见面、日常使用、出错、几个月里的变化。按时间分组，会逼设计师去问“这个人此刻需要什么？”" },
+    { q_en: "Is it bad if an AI makes mistakes?", q_zh: "AI 出错就是坏的吗？", a_en: "Mistakes are guaranteed with AI. The guidelines judge how the design handles them: can you dismiss it easily, correct it, understand why it did that? A system that's wrong but easy to fix can be better than one that's rarely wrong but impossible to fix.", a_zh: "AI 出错是必然的。准则评判的是设计怎么处理错误：能不能轻松关掉、纠正、理解它为什么这么做？一个会错但容易纠正的系统，可能比一个很少错但没法纠正的系统更好。" },
+    { q_en: "Can one product follow some guidelines and break others?", q_zh: "一个产品可以遵守一些准则、同时违反另一些吗？", a_en: "Yes — almost every product does. That's exactly what 9.3 asks you to show: one done well, one broken, and a fix.", a_zh: "可以——几乎每个产品都是这样。9.3 要你展示的正是这个：一条做得好，一条违反了，再加一个修改方案。" },
+    { q_en: "Where do I find the examples for 9.2?", q_zh: "9.2 的例子去哪里找？", a_en: "In Table 1 of Amershi et al. (CHI 2019) — each guideline has an example product category the participants tested, like activity trackers, navigation, email, autocomplete and voice assistants.", a_zh: "在 Amershi 等人论文（CHI 2019）的表 1 里——每条准则都配了受试者测试过的产品类别，比如活动追踪器、导航、邮件、自动补全和语音助手。" },
+    { q_en: "What's 'Variable Machine' — can I use it for 9.3?", q_zh: "“Variable Machine”是什么？9.3 能用它吗？", a_en: "It's the instructor's app for changing small models with words, examples and taste, showing the real command behind every click. Yes — it's on the list; it applies G11-style transparency well because it shows what it actually runs.", a_zh: "是老师做的 App，用“话、例子、品味”来改小模型，每次点击都显示背后真实运行的命令。可以用——它就在题目列表里；它把“让人明白系统在做什么”（类似 G11）做得很好，因为它把实际运行的东西都展示出来了。" }
+  ],
   t_en: 'Guidelines for Human-AI Interaction', t_zh: '人机交互设计准则',
   intro_en: 'Amershi et al. turned two decades of advice into 18 testable guidelines, grouped by when they matter: initially, during interaction, when the system is wrong, and over time. Here we use them as a lens on products — including the tools we used this term.',
   intro_zh: 'Amershi 等人把二十年来的建议整理成 18 条可检验的准则，并按“什么时候起作用”分组：初始、交互中、出错时、随时间推移。我们把它们当作透镜来审视产品——包括本学期用过的工具。',
@@ -138,10 +148,20 @@ defClass({
   ],
   qs: [
     {
+      lec_open_en: "Scene: a new robot assistant arrives at school. On day one, what do you need to know? When it's helping you mid-homework? When it gets your name wrong? After a month together? \"Those four moments are the four groups.\"",
+      lec_open_zh: "场景：学校来了一个新的机器人助手。第一天，你需要知道什么？它在你写作业中途帮忙时呢？它叫错你名字时呢？相处一个月以后呢？“这四个时刻，就是四组准则。”",
+      lec_why_en: "**Initially** — G1 *Make clear what the system can do*. **Why first?** Because people's expectations of AI are wildly off — either \"it can do anything\" or \"it's useless\". If you don't set expectations at the start, every later surprise feels like betrayal.\n\n**During interaction** — G4 *Show contextually relevant information*. **Why?** Because AI's value is knowing the moment: the right info now, not a pile of everything.\n\n**When wrong** — G9 *Support efficient correction*. **Why is \"wrong\" a whole group?** Because AI is probabilistic — mistakes aren't bugs you can fully fix, they're guaranteed. The design question becomes: how cheap is it to fix?\n\n**Over time** — G17 *Provide global controls*. **Why?** Because the system learns and changes; people need one place to say \"less of this\" or \"stop\".\n\nThe guidelines ask the designer to design the **whole relationship**, including the bad days.",
+      lec_why_zh: "**初始阶段**——G1 *讲清楚系统能做什么*。**为什么放在第一条？**因为人们对 AI 的预期常常离谱——要么“它无所不能”，要么“它没用”。一开始不把预期设好，之后每一次意外都会让人觉得被骗了。\n\n**交互过程中**——G4 *显示与情境相关的信息*。**为什么？**因为 AI 的价值在于“懂时机”：此刻给对的信息，而不是一堆什么都有。\n\n**出错时**——G9 *支持高效纠正*。**为什么“出错”能单独成一组？**因为 AI 是概率性的——错误不是能彻底修掉的 bug，而是一定会发生的。设计问题就变成：纠正起来有多省事？\n\n**长期使用**——G17 *提供全局控制*。**为什么？**因为系统会学习、会变；人需要一个地方说“少一点这个”或者“停下”。\n\n这些准则要求设计师设计的是**整段关系**，包括不顺利的日子。",
+      lec_trap_en: "Copying the guideline titles without saying \"what it asks of the designer\". Each answer needs a verb for the designer: show, explain, make it easy to undo, give a switch.",
+      lec_trap_zh: "只抄准则标题，没说“它要求设计师做什么”。每一条都要有给设计师的动作：显示、说明、让撤销变容易、给一个开关。",
+      lec_ask_en: "Ask: \"Why is there a whole group just for when the AI is wrong?\" — Listen for: because AI mistakes are inevitable, so the design must make them cheap to fix.",
+      lec_ask_zh: "问：“为什么要专门有一组准则讲 AI 出错的时候？”——要听到：因为 AI 出错是必然的，所以设计要让纠错代价很低。",
+      lec_bridge_en: "Guidelines are abstract until you see them in a product. The paper gives an example for each — 9.2.",
+      lec_bridge_zh: "准则只有在产品里看到才具体。论文给每一条都配了例子——9.2。",
       id: '9.1', t_en: 'When the guidelines apply', t_zh: '准则适用的时机',
       q_en: 'The 18 guidelines are grouped by when they apply: Initially, During interaction, When wrong, and Over time. Choose one guideline from each group and say in your own words what it asks of the designer.',
       q_zh: '18 条准则按适用时机分组：初始阶段、交互过程中、出错时、随时间推移。从每组各选一条准则，用你自己的话说明它对设计者提出了什么要求。',
-      src: 'Amershi et al., CHI 2019, Table 1',
+      src: 'Amershi et al., "Guidelines for Human-AI Interaction," CHI 2019, Table 1',
       fig() {
         const G = window.__AMERSHI;
         const SHORT = ['What it can do', 'How well it can do', 'Time by context', 'Relevant info', 'Social norms', 'Mitigate bias', 'Easy to invoke', 'Easy to dismiss', 'Easy to correct', 'Scope when unsure', 'Explain why', 'Remember recent', 'Learn from user', 'Adapt cautiously', 'Granular feedback', 'Show consequences', 'Global controls', 'Notify of changes'];
@@ -254,6 +274,16 @@ The grouping itself is the lesson: an AI product is not designed once at the fir
       trap_zh: '每条准则要放对组（G1–2 / G3–6 / G7–11 / G12–18），并用自己的话说明设计者要做什么——不要只抄标题。'
     },
     {
+      lec_open_en: "Two restaurants: one hands you a menu; the other has a waiter who says \"we make lots of things!\" and you have to guess. Which one would you go back to?",
+      lec_open_zh: "两家餐厅：一家递给你菜单；另一家服务员只说“我们能做很多东西哦！”你得自己猜。你会再去哪一家？",
+      lec_why_en: "The paper's G1 example: an **activity tracker** that shows all the metrics it tracks and explains how. **Why does that apply the guideline?** Because the screen itself is the menu: before you ask anything, you know its scope (steps, heart rate, sleep) and roughly how it measures — so you trust what it can do and don't expect what it can't.\n\nA product that breaks it: many **smart speakers**. A cylinder with a light ring gives no menu at all. You discover its abilities by failing — \"Sorry, I can't help with that.\" **Why is that bad design?** Each failure teaches users to ask for less, so they never find the features that do exist.\n\nThe pattern to teach: pick the paper's example, name the guideline, explain **how the design makes the guideline visible**, then show a product where the same need is ignored.",
+      lec_why_zh: "论文里 G1 的例子：**活动追踪器**把它追踪的所有指标都显示出来，并说明是怎么测的。**为什么这体现了这条准则？**因为屏幕本身就是菜单：你还没开口，就知道它的范围（步数、心率、睡眠）和大概的测量方式——所以你相信它能做的事，也不会期待它做不到的事。\n\n违反这条准则的产品：很多**智能音箱**。一个带灯环的圆柱体，没有任何“菜单”。你只能靠失败来发现它会什么——“抱歉，我帮不了这个。”**为什么这是糟糕的设计？**每一次失败都在教用户少问一点，于是那些真正存在的功能，用户永远找不到。\n\n要教的答题套路：选论文里的例子，说出准则，解释**设计是怎样让这条准则“看得见”的**，再举一个忽视了同样需求的产品。",
+      lec_trap_en: "Picking a broken product without connecting it to the SAME guideline as the paper's example. The question asks for one guideline, applied and then broken.",
+      lec_trap_zh: "举了一个糟糕的产品，却没和论文例子对应到**同一条**准则。题目要的是同一条准则：先看它被做好，再看它被违反。",
+      lec_ask_en: "Ask: \"Describe one app on your phone that breaks G1.\" — Listen for: a concrete app + what it hides about its abilities.",
+      lec_ask_zh: "问：“说一个你手机上违反 G1 的 App。”——要听到：一个具体的 App，以及它把自己的哪些能力藏起来了。",
+      lec_bridge_en: "Now turn the same lens on the tools we used this term — Claude Code, Ollama, Variable Machine. 9.3.",
+      lec_bridge_zh: "现在把同样的眼光对准这学期我们用过的工具——Claude Code、Ollama、Variable Machine。9.3。",
       id: '9.2', t_en: 'An example application', t_zh: '一个应用实例',
       q_en: 'Each guideline comes with an example from a product category the participants tested (activity trackers, music recommenders, navigation, voice assistants, autocomplete, email and others). Pick one example and explain why it applies its guideline. Then describe a product you use that breaks the same guideline.',
       q_zh: '每条准则都配有一个来自参与者测试过的产品类别的例子（活动追踪器、音乐推荐、导航、语音助手、自动补全、电子邮件等）。选一个例子，解释它为什么体现了该准则；再描述一个你使用的、违反同一条准则的产品。',
@@ -407,6 +437,16 @@ What it should do: a short spoken or in-app list of what it can do, examples tie
       trap_zh: '反例必须违反你所选的“同一条”准则。要具体：说出产品名和它失败的那个时刻。'
     },
     {
+      lec_open_en: "Ask: \"You've used an AI agent all semester. If it were a student, what grade would you give it — and for what?\"",
+      lec_open_zh: "先问：“这学期你一直在用 AI 智能体。如果它是个学生，你会给它打几分？凭什么？”",
+      lec_why_en: "Take Claude Code (an agent harness). It applies **G17 global controls** well: permission modes let you decide once what it may do without asking — **why that matters**: you set the autonomy level instead of approving 40 pop-ups. It applies **G9 efficient correction**: every edit is a diff you can reject or undo.\n\nWhere it breaks: **G2 make clear how well it can do what it can do**. It can say \"Done!\" with the same confidence whether it ran the tests or not. **Why is that dangerous?** Because confident language makes people stop checking — exactly when they should check.\n\nWhat to change: report what was **verified** versus **assumed** (\"tests passed\" vs \"not run\"), with a confidence level. The structure of a great answer: tool → one guideline done well and why → one broken and why → a concrete fix.",
+      lec_why_zh: "拿 Claude Code（一个智能体 harness）来说。它把 **G17 全局控制**做得很好：权限模式让你一次决定它哪些事可以不问就做——**这为什么重要**：你设定的是自主程度，而不是点 40 次弹窗。它也做到了 **G9 高效纠正**：每一处修改都是一个 diff，你可以拒绝或撤销。\n\n它违反的地方：**G2 说清楚它做得有多好**。不管它有没有跑测试，它都能用同样自信的语气说“搞定了！”。**为什么这很危险？**因为自信的语言会让人停止检查——恰恰是在最该检查的时候。\n\n怎么改：报告里区分**验证过的**和**假设的**（“测试通过” vs “没跑测试”），再给一个把握程度。好答案的结构：工具 → 一条做得好的准则及原因 → 一条违反的及原因 → 一个具体的修改方案。",
+      lec_trap_en: "Giving opinions (\"it's annoying\") instead of naming a guideline number and its wording. The grader looks for Amershi's language.",
+      lec_trap_zh: "只给感受（“它挺烦的”），不说准则编号和原话。阅卷看的是 Amershi 的用语。",
+      lec_ask_en: "Ask: \"Which guideline does a confident 'Done!' break, and what would you add to the screen?\" — Listen for: G2; show what was checked and how sure it is.",
+      lec_ask_zh: "问：“一句自信的‘搞定了！’违反了哪条准则？你会在屏幕上加什么？”——要听到：G2；显示检查了什么、有多大把握。",
+      lec_bridge_en: "We've judged the tools. The last question turns to her: where do all of these tools meet her own practice? C5.",
+      lec_bridge_zh: "我们评价完了工具。最后一题转向她自己：这些工具和她自己的创作实践在哪里相遇？C5。",
       id: '9.3', t_en: 'The guidelines and our tools', t_zh: '准则与我们的工具',
       q_en: 'Pick one tool we used this term (a commercial assistant, an agent harness, a local model, Variable Machine). Which guideline does it apply well, which does it break, and what would you change?',
       q_zh: '选一个本学期用过的工具（商业 AI 助手、智能体框架、本地模型、Variable Machine）。它很好地体现了哪条准则？违反了哪条？你会怎么改？',

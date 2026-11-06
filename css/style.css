@@ -831,3 +831,119 @@ body.lang-both .qz-go .zh, body.lang-both .qz-retry .zh { display: none; }
 @media (max-width: 900px) { .qz-opts { grid-template-columns: 1fr; margin-left: 0; } .qz-why { margin-left: 0; } }
 @media print { .lock-panel, .quiz { display: none !important; } .cls.locked .cls-body { display: block !important; } }
 .zine-locknote { color: var(--mute); font-size: 14px; } body.lang-both .zine-locknote .zh { display: block; }
+
+/* ═══════════ teacher password ═══════════ */
+.brand { cursor: pointer; user-select: none; }
+.pw { position: fixed; inset: 0; z-index: 120; background: rgba(20,20,19,.5); backdrop-filter: blur(6px); display: grid; place-items: center; }
+.pw[hidden] { display: none; }
+.pw-box { width: min(340px, 90vw); background: var(--paper); border-radius: 14px; padding: 26px 26px 20px; display: grid; gap: 12px; box-shadow: 0 30px 70px -20px rgba(0,0,0,.5); }
+.pw-mark { color: var(--mag); font-size: 22px; }
+.pw-box label { font: 500 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); }
+body.lang-both .pw-box label .zh { margin-left: 8px; letter-spacing: .04em; }
+.pw-box input { font: 18px var(--mono); padding: 11px 14px; border: 1px solid var(--hair); border-radius: 8px; background: #fff; outline: none; letter-spacing: .2em; }
+.pw-box input:focus { border-color: var(--mag); box-shadow: 0 0 0 3px var(--magF); }
+.pw-err { margin: 0; color: var(--redT); font-size: 13px; }
+body.lang-both .pw-err .zh { margin-left: 8px; }
+.pw-btns { display: flex; justify-content: flex-end; gap: 8px; }
+.pw-btns button { font: 500 12.5px var(--mono); border: 1px solid var(--ink); background: #fff; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.pw-btns .pw-ok { background: var(--ink); color: var(--paper); }
+body.lang-both .pw-btns .zh { display: none; }
+.shake { animation: shake .35s; }
+@keyframes shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+
+/* ═══════════ teacher / lecture mode ═══════════ */
+body.teacher .hero, body.teacher #content, body.teacher #glossary, body.teacher #zine, body.teacher .tools, body.teacher .prog, body.teacher .side-foot { display: none !important; }
+body.teacher .brand::after { content: "LECTURE"; }
+body.teacher { background-color: #f5f1e8; background-image: none; }
+#lecture { --L: calc(21px + var(--lsz, 0) * 2px); max-width: 860px; margin: 0 auto; padding: 40px 0 120px; font-size: var(--L); line-height: 1.7; }
+#lecture .en { font-family: var(--serif); }
+#lecture .zh { font-family: var(--zh); }
+.lhead { padding: 30px 0 36px; border-bottom: 2px solid var(--ink); margin-bottom: 20px; }
+.lhead-tag { font: 700 12px var(--mono); letter-spacing: .2em; color: var(--mag); }
+.lhead h1 { font: 400 calc(var(--L) * 2.3)/1.05 var(--serif); letter-spacing: -.02em; margin: 14px 0 16px; }
+.lhead h1 .zh { display: block; font: 700 calc(var(--L) * 1.25)/1.4 var(--zh-serif) !important; color: var(--ink2); margin-top: 10px; }
+body.lang-zh .lhead h1 .zh { font-size: calc(var(--L) * 2) !important; color: var(--ink); }
+.lhead p { margin: 0; color: var(--ink2); }
+body.lang-both .lhead p .zh { display: block; margin-top: 8px; }
+.lsize { display: flex; align-items: center; gap: 8px; margin-top: 22px; font: 500 12px var(--mono) !important; color: var(--mute); }
+.lsize .en, .lsize .zh { font-family: var(--mono) !important; }
+body.lang-both .lsize .zh { display: none; }
+.lsize button { font: 600 13px var(--mono); border: 1px solid var(--ink); background: #fff; border-radius: 6px; padding: 5px 11px; cursor: pointer; }
+.lsize .lexit { margin-left: auto; border-radius: 999px; padding: 6px 14px; background: var(--ink); color: var(--paper); }
+body.lang-both .lsize .lexit .zh { display: none; }
+.lsec { padding-top: 70px; }
+.lsec-h { display: grid; grid-template-columns: 90px 1fr; gap: 16px; padding-bottom: 22px; border-bottom: 1px solid var(--hair); margin-bottom: 10px; }
+.lsec-n { font: 500 calc(var(--L) * 3.2)/0.9 var(--mono); color: var(--mag); }
+.lsec h2 { font: 400 calc(var(--L) * 1.7)/1.15 var(--serif); margin: 0 0 14px; }
+.lsec h2 .zh { display: block; font: 700 calc(var(--L) * 1.05)/1.4 var(--zh-serif) !important; color: var(--ink2); margin-top: 6px; }
+.lsec-why .bi { font-size: var(--L); }
+.lq { padding: 46px 0 40px; border-bottom: 1px solid var(--hair); }
+.lq-h { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.lq-id { font: 700 calc(var(--L) * .8) var(--mono); color: var(--mag); }
+.lq h3 { margin: 0; font: 400 calc(var(--L) * 1.35)/1.2 var(--serif); }
+.lq h3 .zh { font: 700 calc(var(--L) * .95) var(--zh-serif) !important; color: var(--ink2); margin-left: 10px; }
+.lq-jump { margin-left: auto; font: 500 12px var(--mono) !important; color: var(--blueT); text-decoration: none; letter-spacing: .06em; }
+.lq-jump .en, .lq-jump .zh { font-family: var(--mono) !important; }
+body.lang-both .lq-jump .zh { display: none; }
+.lq-q { margin: 10px 0 22px; color: #6d6a63; }
+.lq-q .en { font-family: var(--mono) !important; font-size: calc(var(--L) * .8); }
+body.lang-both .lq-q .zh { display: block; font-size: calc(var(--L) * .85); margin-top: 4px; color: var(--ink2); }
+/* lecture is one column, both languages stacked, large */
+#lecture .bi { display: block; max-width: none; font-size: var(--L); }
+#lecture .bi > div + div { margin-top: .8em; }
+body.lang-both #lecture .bi > .zh { border-left: 0; padding-left: 0; border-top: 1px dashed #d8d1c2; padding-top: .7em; }
+#lecture .bi p { margin: 0 0 .75em; }
+#lecture .bi .zh { font-size: calc(var(--L) * .95); line-height: 1.85; }
+#lecture strong { background: linear-gradient(transparent 60%, #f6d3e6 60%); font-weight: 600; }
+.lx { margin: 0 0 22px; padding: 18px 22px; border-radius: 6px; background: #fff; border: 1px solid #e5dfd2; }
+.lx-k { font: 600 11.5px var(--mono) !important; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 10px; color: var(--mute); }
+.lx-k .en, .lx-k .zh { font-family: var(--mono) !important; }
+body.lang-both .lx-k .zh { margin-left: 10px; letter-spacing: .06em; }
+.lx-open { background: #fff7e0; border-color: #f0dfa8; } .lx-open .lx-k { color: #8a5a00; }
+.lx-why { background: transparent; border: 0; border-left: 3px solid var(--mag); border-radius: 0; padding: 4px 0 4px 24px; } .lx-why .lx-k { color: var(--mag); }
+.lx-trap { background: #fdf3f2; border-color: #f0c9c5; } .lx-trap .lx-k { color: var(--redT); }
+.lx-ask { background: #eef2fc; border-color: #cfdaf5; } .lx-ask .lx-k { color: var(--blueT); }
+.lx-bridge { background: transparent; border: 1px dashed #cfc8b9; } .lx-bridge .lx-k { color: var(--green); }
+.lx-fig { margin: 0 0 22px; }
+.lx-fig summary { cursor: pointer; font: 500 12px var(--mono); letter-spacing: .1em; color: var(--mute); text-transform: uppercase; padding: 6px 0; }
+.lx-fig summary .en, .lx-fig summary .zh { font-family: var(--mono) !important; }
+body.lang-both .lx-fig summary .zh { margin-left: 8px; }
+.lx-figbox { background: #fff; border: 1px solid var(--hair); border-radius: 6px; padding: 14px; }
+.lx-figbox svg { width: 100%; height: auto; }
+.lx-figbox .ex { transform: none !important; } .lx-figbox .lbl { opacity: 1 !important; }
+@media (max-width: 900px) { #lecture { padding: 20px 4px 80px; --L: calc(19px + var(--lsz, 0) * 2px); } .lsec-h { grid-template-columns: 1fr; } .lsec-n { font-size: calc(var(--L) * 2.2); } }
+@media print { body.teacher #lecture { font-size: 14pt; } }
+.brand { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+body.teacher .nav-g { display: none; } body.teacher .nav-c.cur { background: transparent; color: inherit; }
+.lfaq { margin-top: 40px; padding: 26px 26px 14px; background: #fff; border: 1px solid #e5dfd2; border-radius: 8px; }
+.lfaq h3 { margin: 0 0 14px; font: 400 calc(var(--L) * 1.3)/1.2 var(--serif); }
+.lfaq h3 .zh { font: 700 calc(var(--L) * .9) var(--zh-serif) !important; color: var(--ink2); margin-left: 10px; }
+.lfaq-i { border-top: 1px solid #ece6d9; padding: 6px 0; }
+.lfaq-i summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 34px 1fr; gap: 6px; padding: 10px 0; }
+.lfaq-i summary::-webkit-details-marker { display: none; }
+.lfaq-q { font: 700 calc(var(--L) * .75) var(--mono); color: var(--amber); padding-top: .2em; }
+.lfaq-i summary .en { font-weight: 500; }
+body.lang-both .lfaq-i summary .zh { display: block; color: var(--ink2); font-size: calc(var(--L) * .92); }
+.lfaq-i[open] summary .lfaq-q { color: var(--mag); }
+.lfaq-i > .bi { padding: 0 0 12px 40px; }
+
+/* exam brief */
+.brief { margin: 46px 0 0; padding: 26px 28px 22px; background: #fff; border: 1px solid var(--hair); border-radius: 6px; }
+.brief-tag { font: 700 11px var(--mono); letter-spacing: .18em; color: var(--mag); }
+.brief h2 { margin: 6px 0 16px; font: 400 28px/1.15 var(--serif); }
+.brief h2 .zh { font: 700 18px var(--zh-serif); color: var(--ink2); margin-left: 10px; }
+body.lang-zh .brief h2 .zh { font-size: 26px; margin-left: 0; color: var(--ink); }
+.brief-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 30px; }
+.brief-list, .brief-map { list-style: none; margin: 0; padding: 0; }
+.brief-list li { padding: 9px 0; border-top: 1px solid #eee9df; font-size: 14.5px; line-height: 1.55; }
+.brief-list li:first-child { border-top: 0; padding-top: 0; }
+.brief-list b.en, .brief-list b.zh { margin-right: 6px; }
+body.lang-both .brief-list li > .zh { display: block; color: var(--ink2); margin-top: 2px; }
+body.lang-both .brief-list b.zh { display: none; }
+.brief-sub { margin: 0 0 10px; font-size: 14.5px; color: var(--ink2); }
+body.lang-both .brief-sub .zh { display: block; }
+.brief-map li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; padding: 7px 0; border-top: 1px dashed #e6e0d4; font-size: 14.5px; }
+.brief-map a { font: 600 11px var(--mono); color: var(--mag); background: var(--magF); padding: 2px 6px; border-radius: 3px; text-decoration: none; }
+body.lang-both .brief-map li .zh { flex-basis: 100%; padding-left: 0; color: var(--mute); font-size: 13.5px; }
+body.teacher .brief { display: none; }
+@media (max-width: 900px) { .brief-grid { grid-template-columns: 1fr; } .brief { padding: 20px 16px; } }

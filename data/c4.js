@@ -88,6 +88,9 @@ defTerms({
 
 defClass({
   order: 4, n: '4',
+  lec_en: "Class 4 asks one question in two costumes: **who actually controls what you make with AI?** First the plumbing — a repository, a commit, a deploy — because once a page is live on a URL, it's a real thing in the world with a history. Then the commercial chatbots: four products that look like 'the same AI' but each wraps the model in a hidden system prompt the company wrote. The two halves meet in one idea: **a prompt is writing, and good writing is a specification you can check**. For a designer this matters because the difference between a demo and a deliverable is exactly that: a history you can roll back, and a spec you can test against.",
+  lec_zh: "第 4 课其实问的是同一个问题的两个面：**你用 AI 做出来的东西，到底是谁在控制？**前半段讲“管道”——仓库、提交、部署——因为一个页面一旦挂到网址上，它就成了世界上真实存在、有历史记录的东西。后半段讲商业聊天产品：四个看起来是“同一个 AI”的产品，其实各自用公司写好的隐藏系统提示词把模型包了起来。两半在一个观点上汇合：**提示词是一种写作，好的写作就是一份可以检查的规格说明（spec）**。对设计师来说这很重要：作品和 demo 的区别正在于此——有能回退的历史，有能对照检查的规格。",
+  lec_faq: [{ q_en: "Is GitHub the same thing as Git?", q_zh: "GitHub 和 Git 是一回事吗？", a_en: "No. Git is the tool on your computer that keeps the history; GitHub is a website that hosts a copy of your repository online so others (and Vercel) can reach it. Git works fine without GitHub.", a_zh: "不是。Git 是你电脑上管理历史记录的工具；GitHub 是一个网站，把你仓库的一份副本放到网上，方便别人（以及 Vercel）访问。没有 GitHub，Git 照样能用。" }, { q_en: "If I commit, is my work online?", q_zh: "我提交（commit）了，作品就上网了吗？", a_en: "Not yet — a commit is saved only on your laptop. You need to push it to GitHub, and then Vercel deploys it. Commit = save a snapshot; push = send it up.", a_zh: "还没有——提交只存在你的电脑上。要 push 到 GitHub，再由 Vercel 部署才会上线。commit 是存快照，push 是传上去。" }, { q_en: "What should I write in a commit message?", q_zh: "提交信息应该写什么？", a_en: "Write why, in a short sentence: 'Add contact form to homepage' or 'Fix menu overlapping on phones'. Avoid 'update' or 'stuff' — future you won't know what happened.", a_zh: "用一句短话写清“为什么”：比如“首页加联系表单”“修复手机上菜单重叠”。别写“更新”“改了点东西”——以后的你会看不懂。" }, { q_en: "Can I see a chatbot's system prompt?", q_zh: "我能看到聊天机器人的系统提示词吗？", a_en: "Usually not — companies keep them private, though some publish parts, and people sometimes leak them. What you can control is your own custom instructions or project instructions, which work like your personal system prompt.", a_zh: "通常看不到——公司会保密，有些公司公布一部分，偶尔也有人泄露出来。你能控制的是自己的自定义指令或项目指令，它们就像你的个人系统提示词。" }, { q_en: "Is 'prompt engineering' a real skill or just hype?", q_zh: "“提示工程”是真本事还是炒作？", a_en: "The tricks part is mostly hype; the writing part is real. Being able to state a goal, audience, constraints and success criteria clearly is the same skill as writing a good design brief.", a_zh: "“技巧”那部分大多是炒作；“写作”那部分是真的。能把目标、受众、限制和成功标准说清楚，和写一份好的设计任务书是同一种能力。" }, { q_en: "Why did the same prompt give a different answer when I asked twice?", q_zh: "同一个提示问两次，为什么答案不一样？", a_en: "Models sample their words with some randomness (temperature), so answers vary. That's another reason to write success criteria: you judge each answer against the spec, not against the last answer.", a_zh: "模型挑词的时候带有一定随机性（temperature），所以每次回答会不同。这也是要写成功标准的另一个原因：用规格去评判每个答案，而不是拿上一个答案作比较。" }],
   t_en: 'Commercial LLMs and Prompting', t_zh: '商业大模型与提示词',
   intro_en: 'We put a website online through GitHub and Vercel — learning what a repository, a commit and a deployment are — then sent the same prompt to four commercial products to see that the product is not the model, and that a prompt is a piece of writing: a specification.',
   intro_zh: '我们通过 GitHub 和 Vercel 把网站上线——由此理解仓库、提交和部署；然后把同一个提示词发给四个商业产品，发现“产品不等于模型”，而提示词是一种写作：一份规格说明。',
@@ -166,6 +169,17 @@ defClass({
   qs: [
     {
       id: '4.1',
+      lec_open_en: "Ask: you've been working on a project for two weeks and you break it the night before it's due. What would you give to have yesterday's version back?",
+      lec_open_zh: "先问：一个项目你做了两周，交作业前一晚把它弄坏了。你愿意付出什么，换回昨天那个版本？",
+      lec_why_en: "Picture it: 2 a.m., the night before a studio review. You 'clean up' a file, save, and the whole site turns white. Without a repository, that's a horror movie. With one, it's a two-second rewind: `git checkout` and yesterday is back.\n\nA [[c4_repo]] exists because files alone forget. A folder only knows *now*; a repository is the folder **plus its whole history** — every saved snapshot, who made it, and why. That hidden `.git` folder is the memory.\n\nWhy does that matter more than 'save as v2_final_FINAL'? Because history you can **compare, branch and roll back** turns fear into experimentation. You can try a wild idea on a branch and throw it away.\n\nAnd why put it on GitHub? A local repo protects you from yourself; a remote copy protects you from your laptop dying, and lets other people — or an agent, or Vercel — read the same history. **The repo becomes the single place the truth lives**, and every tool downstream points at it.",
+      lec_why_zh: "想象一下：凌晨两点，评图前一晚。你“整理”了一下文件，保存，整个网站变成一片空白。没有仓库，这是恐怖片；有仓库，只是两秒钟的倒带——`git checkout`，昨天就回来了。\n\n[[c4_repo]]之所以存在，是因为光有文件会“失忆”。文件夹只知道**现在**；仓库是文件夹**加上它的全部历史**——每一次保存的快照、谁做的、为什么做。那个隐藏的 `.git` 文件夹就是它的记忆。\n\n为什么这比“另存为 v2_final_最终版”强？因为能**对比、分支、回退**的历史，会把“怕弄坏”变成“敢尝试”。疯狂的想法放在分支上试，不行就扔。\n\n那为什么还要放到 GitHub？本地仓库防的是你自己手滑；远程副本防的是电脑坏掉，还能让别人——或者智能体、或者 Vercel——读同一份历史。**仓库成了真相唯一存放的地方**，下游所有工具都指向它。",
+      lec_trap_en: "Students say 'a repository is a folder of code.' It's tempting because that's what you see — but the definition lives in the part you don't see: the history of commits.",
+      lec_trap_zh: "学生常说“仓库就是放代码的文件夹”。这很诱人，因为你看到的确实是文件夹——但定义的关键在看不见的部分：提交的历史。",
+      lec_ask_en: "Ask: 'If I copy my project folder to a USB stick, do I have a repository?' — Listen for: only if the hidden .git history comes with it; the files alone are just a snapshot.",
+      lec_ask_zh: "问：“把项目文件夹拷到 U 盘上，算不算拷走了一个仓库？”——好的回答：只有把隐藏的 .git 历史一起拷走才算；光有文件只是一张快照。",
+      lec_bridge_en: "If the repository is the memory, the next question is: what is one memory? That's a commit.",
+      lec_bridge_zh: "如果仓库是“记忆”，下一个问题就是：一条记忆是什么？那就是一次提交（commit）。",
+     
       kid_en: `Think of a video game with save points. The folder is the game you’re playing right now. Every time you hit “save,” Git keeps that save — all of them, forever, in a hidden folder called .git — so you can go back to any earlier save. GitHub is the cloud save, so your friends (and websites like Vercel) can load the same game. A **repository** = your game + every save you ever made.`,
       kid_zh: `想想有存档点的电子游戏。文件夹就是你正在玩的这一局。每次按“保存”，Git 都会把这个存档留下来——全部永久保存在一个叫 .git 的隐藏文件夹里——你随时可以回到任何一个旧存档。GitHub 是云存档，朋友们（还有 Vercel 这样的网站）可以读取同一个进度。**仓库**＝你的游戏 + 你存过的每一个档。`,
       steps: [
@@ -239,6 +253,17 @@ Because the whole history is kept, a repo lets you see what changed, go back to 
     },
     {
       id: '4.2',
+      lec_open_en: "Ask: if you could only keep one sentence about every change you ever made to a project, what would that sentence need to say?",
+      lec_open_zh: "先问：如果你对项目的每次改动只能留一句话，这句话必须说清什么？",
+      lec_why_en: "Fun fact: Git was written in about two weeks in 2005 by Linus Torvalds, because the Linux project lost access to its old tool. He needed thousands of strangers to change the same code without chaos — so every change had to carry its own fingerprint and its own story.\n\nA [[c4_commit]] is a **snapshot plus a note**: what the files looked like, who saved it, when, why (the message), and which commit came before (the parent). Each one gets a unique ID, a [[c4_hash]], computed from its contents.\n\nWhy a hash and not just a number? Because the ID is a fingerprint of the content — change one letter and the ID changes. That makes the history **tamper-evident**: you can trust that commit a1b2… is exactly what it was.\n\nWhy the parent link? Because it chains commits into a timeline, so Git can show the [[c4_diff]] between any two points. And why the message? Because code shows *what* changed; only a human can write *why*. That 'why' is what you'll need in three months.",
+      lec_why_zh: "冷知识：Git 是 Linus Torvalds 在 2005 年大约两周内写出来的，因为 Linux 项目突然用不了原来的工具。他需要成千上万个陌生人改同一份代码却不乱套——所以每次改动都得带着自己的“指纹”和自己的“故事”。\n\n一次[[c4_commit]]就是**一张快照加一张便条**：文件当时的样子、谁保存的、什么时候、为什么（提交信息），以及它的上一次提交是谁（父提交）。每次提交都有一个由内容算出来的唯一编号——[[c4_hash]]。\n\n为什么用哈希而不用 1、2、3？因为这个编号是内容的“指纹”——改一个字母，编号就变。所以历史是**防篡改的**：你可以确信 a1b2… 就是当初那个样子。\n\n为什么要有父提交？它把提交串成一条时间线，Git 才能显示任意两点之间的[[c4_diff]]。为什么要写提交信息？因为代码只能说明改了**什么**，**为什么**只有人能写。三个月后你最需要的，正是这个“为什么”。",
+      lec_trap_en: "Students describe a commit as 'saving' or 'uploading.' Saving overwrites; a commit adds a new, permanent, labelled snapshot — and it's local until you push.",
+      lec_trap_zh: "学生常把提交说成“保存”或“上传”。保存会覆盖旧的；提交是新增一张永久、带标签的快照——而且在 push 之前它只在你本地。",
+      lec_ask_en: "Ask: 'Why can't two different commits have the same ID?' — Listen for: the ID (hash) is computed from the content and its parent, so different content means a different ID.",
+      lec_ask_zh: "问：“为什么两个不同的提交不可能有相同的编号？”——好的回答：编号（哈希）是根据内容和父提交算出来的，内容不同，编号就不同。",
+      lec_bridge_en: "Commits live on your laptop. The next question is how one of them becomes a page anyone can open: deployment.",
+      lec_bridge_zh: "提交还在你电脑上。下一个问题是：其中一次提交怎么变成任何人都能打开的网页？这就是部署。",
+     
       kid_en: `A commit is like one page in a scrapbook. You glue in a photo of your project exactly as it is right now, and you write a sticky note: today’s date, your name, and *why* you changed it (“added the contact form”). Each page also says “the page before this one is #9c07,” so the pages stay in order. Later you can flip back to any page, or compare two pages to see what changed.`,
       kid_zh: `一个提交就像剪贴簿里的一页。你把项目此刻的样子拍张照贴进去，再贴一张便利贴：今天的日期、你的名字，还有*为什么*改（“加了联系表单”）。每一页还写着“上一页是 #9c07”，这样页面就不会乱。以后你可以翻回任意一页，或者比较两页，看看改了什么。`,
       steps: [
@@ -311,6 +336,17 @@ You choose what goes in (stage) and then commit; you can always return to or com
     },
     {
       id: '4.3',
+      lec_open_en: "Ask: you type one command, and thirty seconds later a stranger in Tokyo can open your page. How many machines do you think touched your code in between?",
+      lec_open_zh: "先问：你敲了一条命令，三十秒后东京的一个陌生人就能打开你的网页。你觉得中间有几台机器碰过你的代码？",
+      lec_why_en: "Think of it as mailing a cake recipe to a bakery that bakes it fresh, then ships slices to shops in every city — all within a minute. And if the oven catches fire, the shops keep selling yesterday's cake. That last part is the secret hero of deployment.\n\n[[c4_deploy]] is a **relay race of machines**, and each handoff exists for a reason. You [[c4_push]] the commit to GitHub — so there is one shared, trusted copy. GitHub fires a [[c4_webhook]] to Vercel — because Vercel shouldn't have to keep asking 'anything new?'; GitHub calls it.\n\nVercel then clones that exact commit and runs the [[c4_build]] on a clean machine. Why a clean machine and not your laptop? So the result doesn't depend on whatever happens to be installed on your computer — **if it builds there, it builds for everyone**.\n\nFinally the output is copied to a [[c4_cdn]] — servers around the world — and a URL is pointed at it. Why? Speed: the Tokyo visitor gets it from a nearby server. And the safety net: **if the build fails, nothing is replaced** — the old version stays live. That's why the whole chain is tied to a commit: every live page is a specific, recoverable moment in the history.",
+      lec_why_zh: "可以把它想成：你把蛋糕配方寄给一家面包店，店里现烤，再把切片送到每座城市的门店——一分钟内搞定。万一烤箱着火了，门店就继续卖昨天的蛋糕。最后这一点，才是部署里默默无闻的英雄。\n\n[[c4_deploy]]是一场**机器之间的接力赛**，每一棒的交接都有原因。你把提交[[c4_push]]到 GitHub——这样才有一份大家共享、可信的副本。GitHub 向 Vercel 发一个[[c4_webhook]]——因为不该让 Vercel 一直去问“有新的吗？”，而是 GitHub 主动通知它。\n\n接着 Vercel 把那个确切的提交拉下来，在一台干净的机器上做[[c4_build]]。为什么不在你电脑上构建？这样结果才不取决于你电脑里碰巧装了什么——**在那里能构建成功，对所有人就都能成功**。\n\n最后把产物复制到[[c4_cdn]]——遍布全球的服务器——再把网址指向它。为什么？快：东京的访客从附近的服务器拿到网页。还有安全网：**构建失败就什么都不替换**，旧版本继续在线。所以整条链都绑定在一次提交上：每一个线上页面，都是历史里一个具体的、可以找回的时刻。",
+      lec_trap_en: "Students say 'Vercel copies my files to the internet.' It's tempting because that's the effect — but they skip the trigger (webhook) and the build, which is exactly where deploys fail.",
+      lec_trap_zh: "学生常说“Vercel 把我的文件复制到网上”。效果上确实如此——但他们漏掉了触发（webhook）和构建，而部署出问题恰恰就在这两步。",
+      lec_ask_en: "Ask: 'Your build fails at 11pm. What do visitors see?' — Listen for: the last successful version; a failed build never replaces the live site.",
+      lec_ask_zh: "问：“晚上 11 点构建失败了，访客看到的是什么？”——好的回答：上一次成功的版本；失败的构建不会替换线上网站。",
+      lec_bridge_en: "Now your page is live and public. Next: the chatbots we used to help write it — and what each company hides from you.",
+      lec_bridge_zh: "现在页面已经公开上线了。接下来看帮我们写它的那些聊天产品——以及每家公司对你藏了什么。",
+     
       kid_en: `Imagine mailing your drawing to a magazine. You drop it in the mailbox (that’s **git push**). The post office (GitHub) rings the printing house (Vercel): “new drawing arrived!” The printer copies it, checks it prints right (the **build**), then sends copies to newsstands all over the world (the CDN) and gives you an address where anyone can see it (the URL). If the printer jams — the build fails — nothing new goes out, and the old issue stays on the shelves.`,
       kid_zh: `想象你把一幅画寄给杂志社。你把它投进邮筒（这就是 **git push**）。邮局（GitHub）给印刷厂（Vercel）打电话：“新画到了！”印刷厂复印它，检查印得对不对（这就是**构建**），再把印好的杂志送到世界各地的报刊亭（CDN），还给你一个任何人都能看到它的地址（网址）。如果印刷机卡纸——构建失败——新的就发不出去，书架上还是旧的那一期。`,
       steps: [
@@ -478,6 +514,17 @@ So between “push” and “page” there is: notification → fetch → build 
     },
     {
       id: '4.4',
+      lec_open_en: "Ask: if you send the exact same message to ChatGPT, Claude, Gemini and Copilot, why would you get four different answers?",
+      lec_open_zh: "先问：同一句话分别发给 ChatGPT、Claude、Gemini 和 Copilot，为什么会得到四个不同的回答？",
+      lec_why_en: "Here's the twist students love: the chatbot has been given a secret note before you ever said hello. It's like walking into a store where the staff were briefed this morning — 'be cheerful, never mention the competitor, suggest the premium plan' — and you only hear the smile.\n\nBecause **the product is not the model**. Before your message arrives, each company has already put text in front of it: a [[c4_sysprompt]] — instructions written by the company that set the role, tone, rules, safety limits and what tools to use. You never see it, but the model reads it first, every time.\n\nWhy do companies do this? Because a raw model is a generalist; the system prompt turns it into *their* product — the brand voice, the legal caution, the formatting habits. On top of that come [[c4_tools]] (search, code), [[c4_memory]] of past chats, and your own [[c4_custom]] instructions.\n\nSo the Four Prompts activity shows that **your message is only the top layer**. Different answers come from different hidden layers (and different models underneath). The design lesson: when you build with AI, you are also writing a system prompt — and you are responsible for it.",
+      lec_why_zh: "学生最爱听的反转：你还没说“你好”，聊天机器人就已经收到一张秘密纸条了。就像走进一家店，店员早上开会被交代过——“要热情、别提竞争对手、推荐高级套餐”——而你只听得到那张笑脸。\n\n因为**产品不等于模型**。你的消息到达之前，每家公司已经在前面放好了文字：[[c4_sysprompt]]——由公司写的指令，规定角色、语气、规则、安全限制和能用哪些工具。你永远看不到它，但模型每次都先读它。\n\n公司为什么这么做？因为原始模型是个“通才”，系统提示词把它变成**它们家的**产品——品牌语气、法律上的谨慎、排版习惯。再往上叠加[[c4_tools]]（搜索、写代码）、对过往对话的[[c4_memory]]，还有你自己写的[[c4_custom]]。\n\n所以 Four Prompts 活动说明：**你的消息只是最上面一层**。回答不同，来自不同的隐藏层（以及底下不同的模型）。设计上的启示：当你用 AI 做产品时，你也在写系统提示词——你要为它负责。",
+      lec_trap_en: "Students say 'the system prompt is what I type.' Tempting, because it's the only prompt they see — but the system prompt is written by the company, and it sits above yours.",
+      lec_trap_zh: "学生常说“系统提示词就是我输入的内容”。很容易这么想，因为那是他们唯一看得见的提示词——但系统提示词是公司写的，排在你的提示词之前。",
+      lec_ask_en: "Ask: 'Name two things that could make the four answers differ, besides the model itself.' — Listen for: the company's system prompt, tools/search, memory, custom instructions.",
+      lec_ask_zh: "问：“除了模型本身，再说两样会让四个回答不同的东西。”——好的回答：公司的系统提示词、工具/搜索、记忆、自定义指令。",
+      lec_bridge_en: "If companies write prompts to steer the model, so can you — and that's the last question: writing a prompt like a specification.",
+      lec_bridge_zh: "既然公司能写提示词来操控模型，你也能——这就是最后一题：把提示词写成一份规格说明。",
+     
       kid_en: `Imagine asking the same question to four teachers at four different schools. Each school gave its teacher a secret rulebook you’re not allowed to read: “keep it short,” “always ask a follow-up question,” “look things up first.” Your question is exactly the same, but the answers come out different — because of the rulebook. That secret rulebook is the **system prompt**, and the company that runs the AI writes it, not you.`,
       kid_zh: `想象你把同一个问题问四所不同学校的四位老师。每所学校都给老师发了一本你不能看的秘密规则手册：“回答要短”“一定要反问一句”“先查资料再回答”。你的问题一模一样，答案却各不相同——因为那本手册。那本秘密手册就是**系统提示词**，而且是运营这个 AI 的公司写的，不是你。`,
       steps: [
@@ -541,6 +588,17 @@ So between “push” and “page” there is: notification → fetch → build 
     },
     {
       id: '4.5',
+      lec_open_en: "Ask: how would you know if a cake you ordered is wrong — if all you told the baker was 'make me a nice cake'?",
+      lec_open_zh: "先问：如果你跟蛋糕店只说了“给我做个好看的蛋糕”，做出来以后你怎么判断它做错了？",
+      lec_why_en: "Everyone has met the genie problem: you wish for 'a lot of money' and get buried in coins. Genies, and models, give you exactly what you described — which is why the skill is not a magic word but a better description.\n\nWe treat a prompt as **writing, not a trick**, because the model can only aim at what you describe. There's no magic phrase; there's clarity: the goal, the audience, the constraints, the format — and above all [[c4_success]] written *before* you see any output.\n\nWhy before? Because once you see an answer, it quietly becomes your standard — you start judging by 'does this feel OK?' Writing the criteria first makes a wrong answer **recognizable**: you can point to the line it breaks ('600 words, I asked for 300', 'it invented a source').\n\nThat's what makes a prompt a [[c4_spec]]: it carries its own test. Anthropic's prompting guide starts exactly there — define success, then write and revise against it. And the fix for a bad answer is **better writing, not magic words**: change the spec, not the incantation.",
+      lec_why_zh: "大家都听过“许愿精灵”的坑：你许愿“很多钱”，结果被硬币埋了。精灵和模型一样，给你的正是你描述的东西——所以真正的本事不是咒语，而是描述得更好。\n\n我们把提示词当成**写作，而不是技巧**，因为模型只能瞄准你描述清楚的东西。没有咒语，只有清楚：目标、读者、限制、格式——最重要的是在看到任何输出**之前**写下[[c4_success]]。\n\n为什么要在之前？因为一旦看到答案，它会悄悄变成你的标准——你开始用“感觉还行吗？”去评判。先写标准，错的答案才**认得出来**：你能指出它违反了哪一条（“我要 300 字，它写了 600”“它编了一个出处”）。\n\n这就是提示词成为[[c4_spec]]的原因：它自带检验。Anthropic 的提示工程指南正是从这里开始的——先定义成功，再按标准写和改。坏答案的解法是**写得更好，而不是换咒语**：改规格，不是改咒语。",
+      lec_trap_en: "Students list 'tips and tricks' (say please, add 'you are an expert'). Tempting because those circulate online — but the course point is that clarity and checkable criteria do the work.",
+      lec_trap_zh: "学生会列出各种“技巧”（说请、加一句“你是专家”）。网上到处是这些，所以很诱人——但课程的重点是：起作用的是清楚的表达和可检查的标准。",
+      lec_ask_en: "Ask: 'Turn \"write a good poster blurb\" into a spec with two success criteria.' — Listen for: concrete, checkable conditions (length, audience, must mention the date, no invented facts).",
+      lec_ask_zh: "问：“把‘写一段好的海报文案’改成带两条成功标准的规格。”——好的回答：具体、可检查的条件（字数、受众、必须写明日期、不能编造事实）。",
+      lec_bridge_en: "A spec tells a model what 'done' means. Class 5 asks: how do people — and agents — keep track of a whole project of 'done'?",
+      lec_bridge_zh: "规格告诉模型什么叫“完成”。第 5 课接着问：人——以及智能体——怎么管理一整个项目的“完成”？",
+     
       kid_en: `Think of ordering a birthday cake. “Make me a cake” could come back as anything — and you can’t really say it’s wrong. But a clear order — chocolate, serves 8, says “Happy 12th Mia,” ready by 5 pm — lets you check: wrong flavor? You can point to the exact line it broke. A prompt is that order form. The **success criteria** are the checklist you write *before* the cake is made, so a wrong answer is easy to spot.`,
       kid_zh: `想想订生日蛋糕。只说“给我做个蛋糕”，做出来什么样都有可能——你也很难说它错了。但一张清楚的订单——巧克力味、够 8 个人吃、写着“Mia 12 岁生日快乐”、下午 5 点前做好——就能拿来检查：口味不对？你能指出它违反了哪一条。提示词就是这张订单。**成功标准**就是你在蛋糕做好*之前*写下的检查清单，所以错的答案一眼就能看出来。`,
       steps: [

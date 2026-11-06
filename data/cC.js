@@ -13,11 +13,31 @@ defTerms({
 
 defClass({
   order: 10, n: 'C',
+  lec_en: "The final question is the only one with no source to cite — and that's the point. After weeks of definitions, the instructor wants to see whether the student can **use the course as a lens on her own work**. Coach her to answer like a designer, not a fan or a critic: pick real moments from her practice, name the course concepts that explain them, and be honest about both sides. The best answers are specific, personal and balanced.",
+  lec_zh: "最后一题是唯一没有出处可引的题——这正是它的用意。经过几周的定义和概念，老师想看的是：学生能不能**把这门课当成一副眼镜，来看她自己的作品**。引导她像一个设计师那样回答，而不是像粉丝或批评者：挑出她创作中真实的时刻，用课程概念去解释它们，正反两面都诚实地写。最好的答案是具体的、个人的、平衡的。",
+  lec_faq: [
+    { q_en: "Is there a right answer to C5?", q_zh: "C5 有标准答案吗？", a_en: "No single right answer, but there is a strong structure: real moments from your practice, a course concept for each positive and each negative, and a rule you'd follow. Specific beats impressive.", a_zh: "没有唯一的正确答案，但有一个有力的结构：你实践里的真实时刻，每个好处和代价各配一个课程概念，最后一条你会遵守的规则。具体比“高大上”更重要。" },
+    { q_en: "What if I barely use AI in my work?", q_zh: "如果我的作品里几乎不用 AI 怎么办？", a_en: "That's a valid answer — explain why, using the course: maybe you value the skill you'd lose (de-skilling), or you don't want your drafts feeding a platform (surveillance capitalism). Then name one place you might try it.", a_zh: "这也是一个成立的答案——用课程概念解释为什么：也许你看重会被丢掉的技能（去技能化），或者不想让草稿喂给平台（监视资本主义）。再说一个你可能愿意尝试的地方。" },
+    { q_en: "How long should it be?", q_zh: "要写多长？", a_en: "Long enough to cover a positive and a negative with real examples — usually two solid paragraphs. Quality of examples matters more than length.", a_zh: "够写清一个好处和一个代价、并配上真实例子就行——通常是两段扎实的段落。例子的质量比长度重要。" },
+    { q_en: "Do I have to do the zine?", q_zh: "一定要做 zine 吗？", a_en: "No — you can submit through the web form. The zine is optional: printed pages with your answers pasted or handwritten, plus drawings or collage, clipped with the binder clips provided.", a_zh: "不一定——可以用网页表单提交。zine 是可选的：把答案贴上或手写在打印出来的页面上，加上手绘或拼贴，再用老师发的长尾夹夹好。" },
+    { q_en: "Can I use the drawings from this website in my zine?", q_zh: "我能把这个网站上的图放进 zine 吗？", a_en: "Use them as inspiration and redraw them in your own hand — that's the point of a zine, and redrawing is also the best way to remember the idea.", a_zh: "把它们当灵感，用自己的手重新画一遍——这才是 zine 的意义，而且亲手重画也是记住这个概念最好的办法。" },
+    { q_en: "When is it due?", q_zh: "什么时候交？", a_en: "Friday, November 20, 2026, at 5:00 pm. It's long — spread it over several days, a class or two at a time.", a_zh: "2026 年 11 月 20 日（周五）下午 5:00。题量很大——分几天做，每次做一两课。" }
+  ],
   t_en: 'Creativity', t_zh: '创造力',
   intro_en: 'The last question is yours. There is no single right answer — but there is a strong structure: connect concrete moments in your own practice to the concepts of the course, and weigh both sides.',
   intro_zh: '最后一题属于你自己。没有唯一正确的答案——但有一个有力的结构：把你自己创作实践中的具体时刻和课程概念联系起来，并权衡正反两面。',
   qs: [
     {
+      lec_open_en: "Ask her: \"Tell me about the last thing you made. Walk me through it — from the first idea to the moment you shared it.\" (Don't mention AI yet. Let her story come first.)",
+      lec_open_zh: "先问她：“讲讲你最近做的一件作品。从第一个想法，一直讲到你把它发出去的那一刻。”（先别提 AI，让她的故事先出来。）",
+      lec_why_en: "**Why does the instructor end here?** Because the course opened with ethics (surveillance capitalism, technofeudalism) and then taught tools. This question asks her to **hold both at once**: the power of the tools and their cost, in her own practice. It's also the question where her voice is graded, not her memory.\n\n**How to coach it (don't write it for her):**\n1. From her story, find 1–2 stages where these tools actually touch her work — research, ideation, making, sharing.\n2. For each, ask \"what got better?\" and push her to name the course concept: prompt as specification, agents, local models, file over app, rubric-first evaluation.\n3. Then ask \"what did it cost?\" and link to a concept: de-skilling, homogenization, surveillance capitalism, hidden labor (Crawford & Joler), authorship (8.5).\n4. End with a rule she'd actually follow.\n\n**Why both sides?** Because the grader is checking whether she can think critically — an answer that only praises or only complains misses half the question.",
+      lec_why_zh: "**老师为什么用这道题收尾？**因为这门课以伦理开场（监视资本主义、技术封建主义），然后才教工具。这道题要她**同时拿住两样东西**：工具的力量和代价，而且放在她自己的创作里。这也是唯一一道考她自己的声音、而不是记忆的题。\n\n**怎么引导（别替她写）：**\n1. 从她的故事里找出 1–2 个这些工具真正碰到她作品的阶段——调研、构思、制作、分享。\n2. 每个阶段问“哪里变好了？”，推她说出对应的课程概念：提示词即规格、智能体、本地模型、file over app、先写评分标准。\n3. 再问“代价是什么？”，接到一个概念上：去技能化、同质化、监视资本主义、隐藏的劳动（Crawford & Joler）、作者身份（8.5）。\n4. 最后落到一条她真的会遵守的规则。\n\n**为什么正反两面都要？**因为阅卷看的是她能不能批判性地思考——只夸或只骂，都只答了一半。",
+      lec_trap_en: "Writing a general essay about \"AI in society\". It's tempting because it feels safer — but the question says \"your practice\". Without concrete moments from her own work, it reads as generic.",
+      lec_trap_zh: "写成一篇泛泛的“AI 与社会”作文。很容易这样写，因为感觉比较安全——但题目说的是“你的实践”。没有她自己作品里的具体时刻，读起来就很空。",
+      lec_ask_en: "Ask: \"Give me one sentence that starts with 'In my ___ stage, ___ helps me ___, but it costs ___ because ___.'\" — Listen for: a real stage, a named concept on each side.",
+      lec_ask_zh: "问：“用一句话说：‘在我的___阶段，___帮我___，但代价是___，因为___。’”——要听到：一个真实的阶段，正反两边各有一个课程概念。",
+      lec_bridge_en: "That's the whole course. Close by showing her the zine sample — her answers, her drawings, clipped together.",
+      lec_bridge_zh: "整门课就讲完了。最后给她看看 zine 范例——她自己的答案、她自己的画，夹成一本。",
       id: 'C5', t_en: 'What would you do with it', t_zh: '你会用它做什么',
       q_en: 'Where in your practice do these technologies and concepts resonate the most? Describe this in both positive and negative aspects.',
       q_zh: '在你的创作实践中，这些技术和概念在哪里最能引起共鸣？请从积极和消极两方面描述。',
