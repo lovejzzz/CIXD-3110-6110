@@ -127,8 +127,27 @@
       ${two0(c.intro_en, c.intro_zh)}
     </div>
   </div>
+  <div class="lock-panel">
+    <div class="lock-ico" aria-hidden="true"></div>
+    <p class="en">Locked. Score <b>90%</b> or more on the <a href="#quiz-${CL[CL.indexOf(c) - 1] ? CL[CL.indexOf(c) - 1].n : ''}">Class ${CL[CL.indexOf(c) - 1] ? CL[CL.indexOf(c) - 1].n : ''} quiz</a> to open this chapter.</p>
+    <p class="zh">未解锁。在<a href="#quiz-${CL[CL.indexOf(c) - 1] ? CL[CL.indexOf(c) - 1].n : ''}">第 ${CL[CL.indexOf(c) - 1] ? CL[CL.indexOf(c) - 1].n : ''} 课测验</a>中拿到 <b>90 分</b>以上即可解锁本章。</p>
+  </div>
+  <div class="cls-body">
   ${c.qs.map(q => card(c, q)).join('')}
+  ${c.quiz && c.quiz.length ? quizHTML(c) : ''}
+  </div>
 </section>`;
+  }
+  function quizHTML(c) {
+    return `<section class="quiz" id="quiz-${c.n}" data-quiz="${c.n}">
+    <div class="qz-h">
+      <div class="qz-tag">QUIZ · ${c.n}</div>
+      <h3><span class="en">Check yourself: Class ${c.n}</span><span class="zh">第 ${c.n} 课小测验</span></h3>
+      <p class="qz-rule"><span class="en">${c.quiz.length} questions. Every answer comes with an explanation. Score 90% or more to unlock the next chapter.</span><span class="zh">共 ${c.quiz.length} 题，每题选完都有讲解。拿到 90 分以上，就能解锁下一章。</span></p>
+    </div>
+    <ol class="qz-list"></ol>
+    <div class="qz-result" hidden></div>
+  </section>`;
   }
   const two0 = (en, zh) => en ? `<div class="bi intro"><div class="en">${md(en, 'en')}</div><div class="zh">${md(zh, 'zh')}</div></div>` : '';
 
@@ -164,6 +183,72 @@
     });
     show(-1);
   });
+
+  /* ── chapter locks + quizzes ─────────────────── */
+  const TUTOR = /[?&]tutor=1/.test(location.search) || store.get('tutor', false);
+  if (/[?&]tutor=1/.test(location.search)) store.set('tutor', true);
+  if (/[?&]tutor=0/.test(location.search)) store.set('tutor', false);
+  const best = store.get('quizBest', {});
+  const passed = n => (best[n] || 0) >= 90;
+  function applyLocks() {
+    CL.forEach((c, i) => {
+      const prev = CL[i - 1];
+      const locked = !TUTOR && i > 0 && prev && prev.quiz && prev.quiz.length && !passed(prev.n) || (!TUTOR && i > 0 && CL.slice(0, i).some(p => p.quiz && p.quiz.length && !passed(p.n)));
+      const sec = $('#c' + c.n); if (sec) sec.classList.toggle('locked', !!locked);
+      const a = $(`.nav-c[data-c="${c.n}"]`); if (a) a.classList.toggle('locked', !!locked);
+      const np = $(`[data-np="${c.n}"]`);
+      if (np && c.quiz && c.quiz.length && passed(c.n)) np.dataset.quiz = best[c.n] + '%';
+    });
+    document.body.classList.toggle('tutor', TUTOR);
+    // the zine follows the same locks
+    const lockedNs = CL.filter(c => { const sec = $('#c' + c.n); return sec && sec.classList.contains('locked'); }).map(c => c.n);
+    let st = $('#zine-locks'); if (!st) { st = document.createElement('style'); st.id = 'zine-locks'; document.head.appendChild(st); }
+    st.textContent = lockedNs.map(n => `[data-cls="${n}"]{display:none!important}`).join('');
+    const zl = $('#zine-locknote'); if (zl) zl.hidden = !lockedNs.length;
+  }
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function buildQuiz(c) {
+    const box = $(`#quiz-${c.n}`); if (!box) return;
+    const list = box.querySelector('.qz-list'), res = box.querySelector('.qz-result');
+    const answers = new Array(c.quiz.length).fill(null);
+    res.hidden = true; res.innerHTML = '';
+    list.innerHTML = c.quiz.map((item, qi) => {
+      const order = shuffle(item.opts.map((o, k) => k));
+      return `<li class="qz-q" data-qi="${qi}">
+        <div class="qz-stem"><span class="qz-n">${qi + 1}</span><div><p class="en">${md(item.q_en, 'en').replace(/^<p>|<\/p>$/g, '')}</p><p class="zh">${md(item.q_zh, 'zh').replace(/^<p>|<\/p>$/g, '')}</p></div></div>
+        <div class="qz-opts">${order.map((k, j) => `<button class="qz-opt" data-k="${k}"><span class="qz-l">${'ABCD'[j]}</span><span class="qz-t"><span class="en">${esc(item.opts[k].en)}</span><span class="zh">${esc(item.opts[k].zh)}</span></span></button>`).join('')}</div>
+        <div class="qz-why" hidden></div>
+      </li>`;
+    }).join('');
+    list.onclick = e => {
+      const b = e.target.closest('.qz-opt'); if (!b) return;
+      const li = b.closest('.qz-q'), qi = +li.dataset.qi, item = c.quiz[qi];
+      if (answers[qi] !== null) return;
+      const k = +b.dataset.k, ok = k === item.a; answers[qi] = ok;
+      li.classList.add(ok ? 'right' : 'wrong');
+      li.querySelectorAll('.qz-opt').forEach(o => { o.disabled = true; const kk = +o.dataset.k; if (kk === item.a) o.classList.add('is-a'); if (o === b) o.classList.add('picked'); });
+      const why = li.querySelector('.qz-why'); why.hidden = false;
+      why.innerHTML = `<h5><span class="en">${ok ? 'Correct' : 'Not quite'}</span><span class="zh">${ok ? '答对了' : '再想想'}</span></h5>${two(item.why_en, item.why_zh)}`;
+      if (answers.every(x => x !== null)) finish();
+    };
+    function finish() {
+      const n = answers.filter(Boolean).length, score = Math.round(n / answers.length * 100);
+      best[c.n] = Math.max(best[c.n] || 0, score); store.set('quizBest', best);
+      const ok = score >= 90, next = CL[CL.indexOf(c) + 1];
+      res.hidden = false; res.className = 'qz-result ' + (ok ? 'pass' : 'fail');
+      res.innerHTML = `<div class="qz-score">${score}<small>/100</small></div>
+        <div class="qz-msg">${ok
+          ? `<p class="en"><b>Passed.</b> ${next ? `Chapter ${next.n} is unlocked.` : 'All chapters are open.'}</p><p class="zh"><b>通过！</b>${next ? `第 ${next.n} 章已解锁。` : '全部章节都已开放。'}</p>${next ? `<a class="qz-go" href="#c${next.n}"><span class="en">Go to Class ${next.n} →</span><span class="zh">进入第 ${next.n} 课 →</span></a>` : ''}`
+          : `<p class="en">${n} of ${answers.length} right. You need 90% to unlock the next chapter. Read the explanations above, then try again (options are reshuffled).</p><p class="zh">答对 ${n}/${answers.length} 题。需要 90 分才能解锁下一章。先看看上面的讲解，再重做一次（选项会重新打乱）。</p>`}
+          <button class="qz-retry"><span class="en">Retry quiz</span><span class="zh">重做测验</span></button></div>`;
+      res.querySelector('.qz-retry').onclick = () => { buildQuiz(c); box.scrollIntoView({ behavior: 'smooth' }); };
+      applyLocks();
+    }
+  }
+  CL.forEach(c => c.quiz && c.quiz.length && buildQuiz(c));
+  applyLocks();
+  // following a link into a locked chapter lands on its lock panel; flashcards skip locked chapters
+  window.__isLocked = id => { const q = qById[id]; const sec = q && $('#c' + q._c.n); return sec && sec.classList.contains('locked'); };
 
   /* zine sample */
   if (window.renderZine) { try { renderZine($('#zine-pages')); } catch (e) { console.error('zine', e); } }
@@ -316,7 +401,7 @@
   const deck = []; CL.forEach(c => c.qs.forEach(q => deck.push(q)));
   let fi = 0, flipped = false, onlyTodo = false;
   const fc = $('#flash');
-  const cards = () => onlyTodo ? deck.filter(q => !done.has(q.id)) : deck;
+  const cards = () => deck.filter(q => !(window.__isLocked && window.__isLocked(q.id))).filter(q => !onlyTodo || !done.has(q.id));
   function drawCard() {
     const list = cards(); if (!list.length) { fi = 0; $('#fc-card').innerHTML = `<div class="fc-empty"><span class="en">Everything is marked “Got it”.</span><span class="zh">全部标记为“懂了”。</span></div>`; $('#fc-pos').textContent = '0/0'; return; }
     fi = (fi + list.length) % list.length; const q = list[fi];

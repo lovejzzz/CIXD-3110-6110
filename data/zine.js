@@ -233,7 +233,7 @@
       const a = art[q.id];
       const sep = c !== lastC ? `<h3 class="zclass"><span>${c.n === 'C' ? 'C' : c.n}</span> <span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></h3>` : '';
       lastC = c;
-      html += sep + `<figure class="zpage-wrap"><div class="zpage zpage-q">${qPage(q, i + 1)}</div>` +
+      html += (sep ? sep.replace('<h3 class="zclass">', `<h3 class="zclass" data-cls="${c.n}">`) : '') + `<figure class="zpage-wrap" data-cls="${c.n}"><div class="zpage zpage-q">${qPage(q, i + 1)}</div>` +
         (a ? `<figcaption class="ztip"><span class="en">${a.tip_en}</span><span class="zh">${a.tip_zh}</span></figcaption>` : '') + `</figure>`;
     });
     html += `<figure class="zpage-wrap"><div class="zpage">${svgPage(back)}</div><figcaption class="ztip"><span class="en">${back.tip_en}</span><span class="zh">${back.tip_zh}</span></figcaption></figure>`;
