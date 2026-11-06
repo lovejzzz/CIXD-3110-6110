@@ -76,15 +76,23 @@ defTerms({
 
 defClass({
   order: 3, n: '3',
-  lec_en: `Here we open the machine. A neural network is just layers of numbers; a language model sees tokens, not words; meaning becomes distance in an embedding space. But the class insists on a second zoom: Crawford & Joler show that one voice request rests on mines, low-paid labor and data centers. The **why** of this class is that both zooms are needed — if you only know the math you miss who pays for it, and if you only know the politics you can't design with the tool. Karpathy's autonomy slider ties it to practice: how much should you let the machine do?`,
-  lec_zh: `这一课我们把机器打开。神经网络只是一层层数字；语言模型看到的是 token，不是单词；“意思”变成了嵌入空间里的距离。但这一课坚持要再拉远一次镜头：Crawford 和 Joler 告诉我们，一次语音请求背后是矿山、低薪劳动和数据中心。这一课的**为什么**在于：两种视角缺一不可——只懂数学，你看不到是谁在付代价；只懂政治，你又没法真正用这个工具做设计。卡帕西的自主度滑杆把它落回实践：你到底该让机器做多少？`,
+  lec_en: `Okay, so today we open up the machine. A neural network? It's just layers of numbers. A language model doesn't see words, it sees tokens. And meaning turns into distance in an embedding space.
+
+But then the class pulls the camera way back. Crawford & Joler show that one voice request sits on top of mines, low-paid labor and data centers. And that's the **why** of this class: you need both zooms. Know only the math, and you miss who pays for it. Know only the politics, and you can't actually design with the tool.
+
+Karpathy's autonomy slider brings it back down to practice: how much should you let the machine do?`,
+  lec_zh: `今天我们把机器拆开看看。神经网络说白了就是一层一层的数字。语言模型看到的不是单词，是 token。而“意思”呢，变成了嵌入空间里的距离。
+
+但这一课还要把镜头再拉远一次。Crawford 和 Joler 告诉我们，你对音箱说一句话，背后是矿山、低薪劳动，还有数据中心。这一课的**为什么**就在这儿：两个视角缺一不可。只懂数学，你看不到是谁在买单；只懂政治，你又没法真拿这个工具做设计。
+
+最后，卡帕西的自主度滑杆把话题拉回实际：你到底该让机器替你做多少？`,
   lec_faq: [
-    { q_en: `Do I need to know the math of neural networks?`, q_zh: `需要懂神经网络的数学吗？`, a_en: `No formulas needed. You need to say in your own words what a layer does: it takes the previous layer's numbers, weighs them, adds a bias, squashes the result, and passes on a new description.`, a_zh: `不用写公式。你要能用自己的话说出一层在做什么：拿上一层的数字、加权、加偏置、压扁，再传出一个新的描述。` },
-    { q_en: `Is a token the same as a word?`, q_zh: `token 就是单词吗？`, a_en: `Sometimes, often not. Short common words are one token; long or rare words are split into pieces. The reason is the fixed vocabulary — pieces can spell any word.`, a_zh: `有时候是，很多时候不是。常见短词是一个 token；长词或生僻词会被切成几块。原因是词表固定——用小块可以拼出任何词。` },
-    { q_en: `Why do Chinese sentences use more tokens?`, q_zh: `为什么中文句子会用掉更多 token？`, a_en: `Tokenizers were mostly trained on English-heavy text, so common English chunks got their own tokens while many Chinese characters get split or counted separately. That makes Chinese a bit more expensive to process.`, a_zh: `分词器主要是在以英文为主的文本上训练的，常见的英文片段都有自己的 token，而很多汉字会被拆开或单独计算。所以处理中文会贵一点。` },
-    { q_en: `Do embeddings understand meaning like we do?`, q_zh: `嵌入真的像人一样理解意思吗？`, a_en: `Not really — they capture how words are used, from patterns in text. That's why they're powerful for search and also why they absorb bias from the text they learned from.`, a_zh: `不算——它们捕捉的是词的用法，来自文本里的规律。所以它们在搜索上很强，也正因为如此，会吸收学习材料里的偏见。` },
-    { q_en: `For the autonomy slider, is there a right answer for my own setting?`, q_zh: `自主度滑杆那题，我自己的位置有标准答案吗？`, a_en: `No — it's your judgment. Name a real task, where you'd set it, and why: how bad a mistake would be and how easy it is to check. A reason beats a position.`, a_zh: `没有——这是你自己的判断。说出一个真实的任务、你会放在哪，以及为什么：犯错的后果有多严重、检查起来有多容易。有理由比选哪个位置更重要。` },
-    { q_en: `What's Crawford & Joler's main point in one line?`, q_zh: `Crawford 和 Joler 的核心观点一句话怎么说？`, a_en: `One AI request is a material system, a labor system and a computing system at the same time — and the convenience on top hides the cost underneath.`, a_zh: `一次 AI 请求同时是一个物质系统、一个劳动系统和一个计算系统——上面的便利，藏住了下面的代价。` }
+    { q_en: `Do I actually need the math behind neural networks?`, q_zh: `神经网络的数学，我得会吗？`, a_en: `Nope, no formulas. What you do need is to say, in your own words, what a layer does: it takes the previous layer's numbers, weighs them, adds a bias, squashes the result, and passes on a new description.`, a_zh: `不用，公式一个都不用写。但你得能用自己的话说出一层在干什么：把上一层的数字拿过来，加权，加个偏置，压扁一下，再把一个新的描述传下去。` },
+    { q_en: `Is a token just a word?`, q_zh: `token 是不是就等于单词？`, a_en: `Sometimes. Often not. Short common words get one token each; long or rare words get chopped into pieces. Why? Because the vocabulary is fixed, and with pieces you can spell any word.`, a_zh: `有时候是，但很多时候不是。常见的短词是一个 token，长词、生僻词就会被切成几块。为什么？因为词表是固定的，用小块就能拼出任何词。` },
+    { q_en: `How come Chinese sentences use up more tokens?`, q_zh: `为什么中文句子更费 token？`, a_en: `Tokenizers were trained mostly on English-heavy text. So common English chunks got their own tokens, while a lot of Chinese characters get split up or counted one by one. Which makes Chinese a bit more expensive to process.`, a_zh: `分词器主要是拿英文为主的文本训练出来的。所以常见的英文片段都有自己专属的 token，很多汉字却会被拆开，或者一个一个单独算。结果就是，处理中文要稍微贵一点。` },
+    { q_en: `Do embeddings understand meaning the way we do?`, q_zh: `嵌入真的像我们一样懂意思吗？`, a_en: `Not really. What they capture is how words get used, from patterns in text. That's exactly why they're so good for search, and also why they soak up bias from whatever text they learned from.`, a_zh: `其实不算。它们抓到的是词怎么被使用，是从文本的规律里来的。所以它们做搜索特别好用，但也正因为这样，学习材料里的偏见它们也一起学进去了。` },
+    { q_en: `On the autonomy slider question, is there a right answer for where I set it?`, q_zh: `自主度滑杆那题，我自己放在哪儿，有标准答案吗？`, a_en: `No, that's your call. Name a real task, say where you'd set it, and say why: how bad a mistake would be, and how easy it is to check. A good reason beats any particular position.`, a_zh: `没有，这是你自己的判断。你就说一个真实的任务，你会放在哪儿，然后说为什么：出错了后果有多严重，检查起来容不容易。理由比你选哪个位置重要得多。` },
+    { q_en: `What's Crawford & Joler's main point, in one line?`, q_zh: `Crawford 和 Joler 的核心观点，一句话怎么说？`, a_en: `One AI request is a material system, a labor system and a computing system, all at the same time. And the convenience on top hides the cost underneath.`, a_zh: `一次 AI 请求，同时是一个物质系统、一个劳动系统、一个计算系统。上面的方便，把下面的代价给藏起来了。` }
   ],
   t_en: 'Labor, LLMs and Neural Networks', t_zh: '劳动、大语言模型与神经网络',
   intro_en: 'How does a machine “read”? This class opens the model — layers of numbers, tokens, embeddings — and then zooms all the way out to the mines, factories and workers that every AI request quietly depends on.',
@@ -134,32 +142,32 @@ defClass({
   qs: [
     {
       id: '3.1',
-      lec_open_en: `Show a messy handwritten 7 and ask: "You read this instantly. How would you explain to a machine what a 7 *is*?"`,
-      lec_open_zh: `拿一个潦草的手写“7”问：“你一眼就认出来了。你要怎么跟机器解释‘7’是什么？”`,
-      lec_why_en: `You can't write rules for every possible 7 — so neural networks **learn the rules from examples** instead. The structure that makes that possible is the [[c3_layer]].
+      lec_open_en: `Hold up a messy handwritten 7 and ask: "You read that instantly, right? So how would you explain to a machine what a 7 *is*?"`,
+      lec_open_zh: `拿出一个写得很潦草的“7”，问她：“你一眼就认出来了，对吧？那你要怎么跟机器解释，‘7’到底是什么？”`,
+      lec_why_en: `Here's the thing: you can't write rules for every possible 7. So neural networks flip it around. They **learn the rules from examples**. And the structure that makes that possible is the [[c3_layer]].
 
-Each layer takes the numbers coming from the layer before — its [[c3_activation]]s — multiplies them by [[c3_weight]]s, adds a [[c3_bias]], and squashes the result (sigmoid or [[c3_relu]]). Why that recipe? Weights let the layer decide **which earlier signals matter and how much**; the squash lets the network bend lines into curves, so it can learn shapes, not just straight-line rules.
+Each layer takes the numbers coming in from the layer before, its [[c3_activation]]s. It multiplies them by [[c3_weight]]s, adds a [[c3_bias]], and squashes the result (sigmoid or [[c3_relu]]). Why that recipe? The weights let the layer decide **which earlier signals matter and how much**. The squash lets the network bend lines into curves, so it can learn shapes, not just straight-line rules.
 
-So in plain words: **each layer turns the layer before it into a new, more useful description.** Pixels become edges, edges become strokes, strokes become "7." 3Blue1Brown shows exactly this for digits.
+So in plain words: **each layer turns the layer before it into a new, more useful description.** Pixels become edges, edges become strokes, strokes become "7." That's exactly what 3Blue1Brown shows with digits.
 
-Why does learning work at all? Training nudges all the weights a little after each wrong guess. TensorFlow Playground lets you watch it: the boundary bends as weights change. Nobody writes the knowledge; it's stored in the weights.
+Okay, but why does learning work at all? Every time the network guesses wrong, training nudges all the weights a little. You can watch it happen in TensorFlow Playground: the weights change, and the boundary bends. Nobody types the knowledge in. It lives in the weights.
 
-**A little drama:** in the 1960s people thought neural networks were a dead end — one famous book "proved" a single layer couldn't even learn XOR. Adding more layers (and better training) is the plot twist that made today's AI.`,
-      lec_why_zh: `你不可能给每一种“7”都写规则——所以神经网络换了个办法：**从例子里学出规则**。让这件事成为可能的结构，就是[[c3_layer]]。
+**A little drama:** back in the 1960s, people thought neural networks were a dead end. One famous book "proved" a single layer couldn't even learn XOR. The plot twist? More layers, plus better training. That's what got us to today's AI.`,
+      lec_why_zh: `你想想，“7”有无数种写法，你不可能每一种都写一条规则。所以神经网络换了个思路：**从例子里自己学出规则**。让这件事成为可能的结构，就是[[c3_layer]]。
 
-每一层接收上一层送来的数字——它们的[[c3_activation]]——乘上[[c3_weight]]，加上[[c3_bias]]，再“压扁”一下（sigmoid 或[[c3_relu]]）。为什么是这个配方？权重让这一层决定**前面哪些信号重要、有多重要**；“压扁”让网络能把直线弯成曲线，于是它能学会形状，而不只是直线式的规则。
+每一层都从上一层接过一串数字，也就是它们的[[c3_activation]]。然后乘上[[c3_weight]]，加上[[c3_bias]]，再“压扁”一下（用 sigmoid 或者[[c3_relu]]）。为什么是这个配方？权重让这一层自己决定，**前面哪些信号重要，重要到什么程度**。“压扁”这一步呢，让网络能把直线掰成曲线，这样它学到的就是形状，不只是直来直去的规则。
 
-用大白话说：**每一层都把上一层变成一种新的、更有用的描述。**像素变成边缘，边缘变成笔画，笔画变成“7”。3Blue1Brown 的视频用数字识别正好演示了这一点。
+说白了：**每一层都把上一层变成一个新的、更有用的描述。**像素变成边缘，边缘变成笔画，笔画变成“7”。3Blue1Brown 拿数字识别演示的，就是这个过程。
 
-为什么“学习”行得通？训练时，每猜错一次，所有权重都被轻轻推一下。在 TensorFlow Playground 里你能亲眼看到：权重一变，分界线就跟着弯。知识不是谁写进去的，它就存在权重里。
+那“学习”为什么行得通？每猜错一次，训练就把所有权重都轻轻推一下。你在 TensorFlow Playground 里能亲眼看到：权重一动，分界线就跟着弯。知识不是谁写进去的，它就存在权重里。
 
-**一点小戏剧：**1960 年代，人们一度认为神经网络是条死路——一本有名的书“证明”单层网络连异或（XOR）都学不会。后来加了更多层、训练方法也变好了，剧情反转，才有了今天的 AI。`,
-      lec_trap_en: `Students list the vocabulary (layers, weights, activations) without saying what one layer *does* to the previous one. Tempting because naming the parts feels technical — the exam wants the transformation in your own words.`,
-      lec_trap_zh: `学生常把词汇（层、权重、激活）列出来，却不说一层对上一层“做了什么”。说出零件名称显得很专业，所以容易这样写——考试要的是用自己的话讲出这个转换。`,
-      lec_ask_en: `Ask: "What does a big positive weight mean?" — Listen for: that earlier neuron's signal strongly pushes this neuron to light up; the weight says how much it matters.`,
-      lec_ask_zh: `问：“一个很大的正权重代表什么？”——听他说出：前面那个神经元的信号会强烈地让这个神经元亮起来；权重表示它有多重要。`,
-      lec_bridge_en: `Digits arrive as pixels. Sentences have to be turned into numbers too — that's what a tokenizer does.`,
-      lec_bridge_zh: `数字是以像素的形式进来的。句子也得先变成数字——这就是分词器要做的事。`,
+**插一段小戏剧：**1960 年代，大家一度觉得神经网络是条死路。有一本很有名的书“证明”了，单层网络连异或（XOR）都学不会。结果剧情反转：多加几层，训练方法再改进，才有了今天的 AI。`,
+      lec_trap_en: `Watch out for this one. A lot of students just list the vocabulary (layers, weights, activations) and never say what one layer *does* to the previous one. I get it, naming the parts feels technical. But the exam wants the transformation, in your own words.`,
+      lec_trap_zh: `这里有个常见的坑。很多同学会把词一个个列出来（层、权重、激活），可就是不说一层对上一层“做了什么”。为什么容易这么写？因为报零件名字听起来很专业。但考试要的是这个转换过程，用你自己的话讲出来。`,
+      lec_ask_en: `"Okay, quick one. What does a big positive weight mean?" Listen for: that earlier neuron's signal strongly pushes this neuron to light up; the weight says how much it matters.`,
+      lec_ask_zh: `“考你一下：一个很大的正权重，代表什么？”听她说出：前面那个神经元的信号会强烈地推这个神经元亮起来；权重说的就是它有多重要。`,
+      lec_bridge_en: `Digits come in as pixels. But sentences have to become numbers too, and that's the tokenizer's job. Let's look at that next.`,
+      lec_bridge_zh: `数字是以像素的形式进来的。那句子呢？句子也得先变成数字，这活儿就是分词器干的。我们接着看。`,
       kid_en: `Imagine a row of classmates trying to guess a hidden drawing. The first row each sees a few squares and calls out how dark they are. The second row listens — but each kid trusts some voices more than others — and adds it up: “that sounds like a line across the top!” The last row votes on which number it is. How much each kid trusts each voice is a **weight**; how loudly they shout is the **activation**. Learning just means changing who trusts whom until the right answer wins.`,
       kid_zh: `想象一排排同学在猜一幅被遮住的画。第一排每人只看到几个小格子，大声报出它有多黑。第二排的同学听着——但每个人更相信某些人的声音——把听到的加起来：“上面好像有一条横线！”最后一排投票：这是几？每个同学有多相信某个声音，就是**权重**；喊得有多大声，就是**激活值**。“学习”就是不断调整谁信谁，直到正确答案赢。`,
       steps: [
@@ -255,32 +263,32 @@ In my own words: each layer **re-describes** the layer before it. Weights decide
     },
     {
       id: '3.2',
-      lec_open_en: `Ask: "Why does ChatGPT sometimes miscount the r's in 'strawberry' — when a 7-year-old can do it?"`,
-      lec_open_zh: `先问：“为什么 ChatGPT 有时数不对 strawberry 里有几个 r——一个 7 岁小孩都能数对？”`,
-      lec_why_en: `Because the model never sees letters. It sees [[c3_token]]s — chunks of text that the [[c3_tokenizer]] swaps for ID numbers before anything reaches the network.
+      lec_open_en: `Ask: "Here's a weird one. Why does ChatGPT sometimes miscount the r's in 'strawberry', when a 7-year-old gets it right?"`,
+      lec_open_zh: `先问她：“有个怪事。ChatGPT 有时候数不对 strawberry 里有几个 r，可一个 7 岁小孩都能数对。为什么？”`,
+      lec_why_en: `Because the model never sees letters. Ever. It sees [[c3_token]]s: chunks of text that the [[c3_tokenizer]] swaps for ID numbers before anything reaches the network.
 
-Why not just use whole words? Because a neural network does **arithmetic on numbers**, so text must become numbers — and the list of possible numbers (the [[c3_vocab]]) must be fixed and finite. There are endless words: names, typos, new slang, other languages. Whole-word vocabularies would always be missing something.
+So why not just use whole words? Well, a neural network does **arithmetic on numbers**. Text has to become numbers. And the list of possible numbers, the [[c3_vocab]], has to be fixed and finite. But words never run out: names, typos, new slang, other languages. A whole-word vocabulary would always be missing something.
 
-Sub-word tokens solve this: common words are one token ("the"), rare words are built from pieces ("un" + "believ" + "ably"). With a fixed list of ~100k pieces you can spell **any** text.
+Sub-word tokens fix that. Common words are one token ("the"). Rare words get built from pieces ("un" + "believ" + "ably"). With a fixed list of about 100k pieces, you can spell **any** text.
 
-The side effects are the interesting part for designers: "strawberry" may be one or two tokens, so the letters are hidden — hence the miscount. Chinese often costs more tokens per idea. And because the [[c3_context]] limit and the price are counted in tokens, tokens decide how much a model can read and what it costs.
+Now here's the fun part for designers: the side effects. "strawberry" might be just one or two tokens, so the letters are hidden. That's the miscount. Chinese often costs more tokens per idea. And since the [[c3_context]] limit and the price are both counted in tokens, tokens decide how much a model can read and what it costs.
 
-**Try it:** type her name into the tokenizer on the site. Names often split into odd pieces — the model is literally spelling her with Lego bricks it already owns.`,
-      lec_why_zh: `因为模型根本看不到字母。它看到的是[[c3_token]]——文本在进入网络之前，就被[[c3_tokenizer]]切成小块并换成了编号。
+**Try it:** type your name into the tokenizer on the site. Names often split into odd pieces. The model is literally spelling you with Lego bricks it already owns.`,
+      lec_why_zh: `因为模型根本看不到字母。它看到的是[[c3_token]]：文本还没进网络，就已经被[[c3_tokenizer]]切成一小块一小块，再换成编号了。
 
-为什么不直接用整个单词？因为神经网络做的是**数字运算**，文本必须先变成数字——而所有可能的编号（也就是[[c3_vocab]]）必须是固定、有限的。可单词是无穷无尽的：人名、错别字、新的网络用语、其他语言。只按整词建词表，永远会漏东西。
+那为什么不干脆用整个单词？你想想，神经网络做的是**数字运算**，文本必须先变成数字。而所有可能的编号，也就是[[c3_vocab]]，得是固定的、有限的。可单词是没有尽头的：人名、错别字、新冒出来的网络用语、别的语言。只按整词建词表，永远会漏掉东西。
 
-子词 token 解决了这个问题：常用词是一个 token（“the”），生僻词用几块拼起来（“un” + “believ” + “ably”）。有了一张大约十万个小块的固定清单，你就能拼出**任何**文本。
+子词 token 就解决了这个问题。常用词就是一个 token，比如“the”；生僻词用几块拼起来，比如“un” + “believ” + “ably”。手里有一张大约十万块的固定清单，**任何**文本你都拼得出来。
 
-对设计师来说，有意思的是它的副作用：“strawberry”可能只是一两个 token，字母被藏起来了——所以会数错。中文表达同样的意思往往要更多 token。而且[[c3_context]]的上限和价格都按 token 算，所以 token 决定了模型能读多少、要花多少钱。
+对设计师来说，好玩的是它的副作用。“strawberry”可能就一两个 token，字母全被藏起来了，所以才会数错。中文表达同样的意思，往往要用更多 token。还有，[[c3_context]]的上限和价格都是按 token 算的。所以说白了，token 决定了模型能读多少、要花多少钱。
 
-**试一下：**在网站的分词器里输入她的名字。名字常常被切成奇怪的小块——模型真的是在用它手里现成的“乐高积木”拼出她的名字。`,
-      lec_trap_en: `Students say "a token is a word." Tempting because short common words *are* single tokens — but tokens are often word pieces, and the 'why' is the fixed vocabulary, not convenience.`,
-      lec_trap_zh: `学生常写“token 就是一个单词”。这很诱人，因为常见短词确实是一个 token——但 token 经常是词的一部分，而“为什么”在于词表是固定的，不是为了方便。`,
-      lec_ask_en: `Ask: "How can a model with a fixed vocabulary read a word it has never seen?" — Listen for: it builds the word out of smaller sub-word tokens it does know.`,
-      lec_ask_zh: `问：“一个词表固定的模型，怎么读懂它从没见过的词？”——听他说出：用它认识的更小的子词 token 拼出来。`,
-      lec_bridge_en: `Each token is now an ID number. But an ID says nothing about meaning — embeddings give tokens a place in a space of meaning.`,
-      lec_bridge_zh: `现在每个 token 都是一个编号。但编号本身不带任何意思——嵌入会给 token 在“意义空间”里安排一个位置。`,
+**试一下：**在网站的分词器里输入你的名字。名字经常被切成很奇怪的几块。模型真的就是拿它手里现成的“乐高积木”，把你拼出来。`,
+      lec_trap_en: `Watch out for "a token is a word." It's tempting, because short common words *are* single tokens. But tokens are often word pieces. And the 'why' is the fixed vocabulary, not convenience.`,
+      lec_trap_zh: `小心别写“token 就是一个单词”。这个说法很诱人，因为常见的短词确实就是一个 token。但 token 很多时候只是词的一部分。而且“为什么”的答案是词表固定，不是图方便。`,
+      lec_ask_en: `"So how can a model with a fixed vocabulary read a word it's never seen?" Listen for: it builds the word out of smaller sub-word tokens it does know.`,
+      lec_ask_zh: `“那一个词表固定的模型，碰到从来没见过的词，怎么读？”听她说出：用它认识的、更小的子词 token 拼出来。`,
+      lec_bridge_en: `So now every token is an ID number. But an ID tells you nothing about meaning. That's where embeddings come in: they give each token a place in a space of meaning.`,
+      lec_bridge_zh: `好，现在每个 token 都是一个编号了。可编号本身不带任何意思。这时候就轮到嵌入出场了：它给每个 token 在“意义空间”里安排一个位置。`,
       kid_en: `Think of a secret club with a codebook. The codebook doesn’t list every word in the world — it lists common chunks like “un”, “believ”, “ably”, and gives each chunk a number. Any word, even a brand-new name, can be built from chunks. The computer only ever sees the numbers, never the letters. That’s a **tokenizer**: chunks → numbers. It’s also why AI is bad at counting the r’s in “strawberry” — it never saw the letters!`,
       kid_zh: `想象一个秘密社团有本密码本。密码本不会收录世界上每一个词，而是收录常见的“小块”，比如“un”“believ”“ably”，每块配一个编号。任何词，哪怕是新造的名字，都能用这些小块拼出来。电脑只看得到编号，看不到字母。这就是**分词器**：小块 → 数字。这也是为什么 AI 数不清“strawberry”里有几个 r——它根本没看到字母！`,
       steps: [
@@ -415,32 +423,32 @@ What you notice in the tokenizer playground: one word ≠ one token (roughly ¾ 
     },
     {
       id: '3.3',
-      lec_open_en: `Ask: "If you had to place 'cat', 'kitten', 'piano' and 'jazz' on a big map, which ones would sit close together — and why?"`,
-      lec_open_zh: `先问：“如果要把‘猫’‘小猫’‘钢琴’‘爵士’放在一张大地图上，哪些会挨在一起？为什么？”`,
-      lec_why_en: `An [[c3_embedding]] gives every token a list of numbers — a point in a space with hundreds of dimensions ([[c3_vector_space]]). Why do that? Because ID numbers are arbitrary: token 4,213 and 4,214 have nothing in common. The model needs numbers where **similar meaning means nearby position**.
+      lec_open_en: `Ask: "Say you had to put 'cat', 'kitten', 'piano' and 'jazz' on a big map. Which ones end up close together? And why?"`,
+      lec_open_zh: `先问她：“假如要把‘猫’‘小猫’‘钢琴’‘爵士’放到一张大地图上，哪几个会挨在一起？为什么？”`,
+      lec_why_en: `An [[c3_embedding]] gives every token a list of numbers, which is really a point in a space with hundreds of dimensions ([[c3_vector_space]]). Why bother? Because ID numbers are arbitrary. Token 4,213 and token 4,214 have nothing in common. The model needs numbers where **similar meaning means nearby position**.
 
-Where does the position come from? From use. The [[c3_distributional]] idea: words that appear in similar contexts get similar vectors. "Cat" and "kitten" show up around the same words (purr, feed, cute), so training pulls them together.
+So where does the position come from? From use. That's the [[c3_distributional]] idea: words that show up in similar contexts get similar vectors. "Cat" and "kitten" hang around the same words (purr, feed, cute), so training pulls them together.
 
-So "close in that space" means **used alike** — they can often replace each other in a sentence. Directions can carry relationships too: man → woman points roughly the same way as king → queen. The [[c3_projector]] lets you see these neighborhoods.
+Which means "close in that space" really means **used alike**. They can often swap in for each other in a sentence. And directions can carry relationships too: man → woman points roughly the same way as king → queen. The [[c3_projector]] lets you actually see these neighborhoods.
 
-The why for designers: embeddings power search-by-meaning, recommendations and "similar items." And because they're learned from human text, they also absorb human bias — close in the space can mean stereotyped.
+Why should a designer care? Embeddings power search-by-meaning, recommendations, "similar items." And because they're learned from human text, they absorb human bias too. Close in the space can mean stereotyped.
 
-**The famous trick:** take the vector for king, subtract man, add woman — you land very close to queen. Meaning turned into geometry is the most surprising idea in this class.`,
-      lec_why_zh: `[[c3_embedding]]给每个 token 一串数字——也就是一个几百维空间里的一个点（[[c3_vector_space]]）。为什么要这样？因为编号是随便定的：4213 号和 4214 号 token 毫无关系。模型需要一种数字，让**意思相近的东西位置也相近**。
+**The famous trick:** take the vector for king, subtract man, add woman, and you land really close to queen. Meaning turned into geometry. Honestly, that's the most surprising idea in this class.`,
+      lec_why_zh: `[[c3_embedding]]就是给每个 token 一串数字。这串数字其实就是一个点，在一个几百维的空间里（[[c3_vector_space]]）。为什么要费这个劲？因为编号是随便定的：4213 号 token 和 4214 号 token 半点关系都没有。模型需要的是另一种数字：**意思越接近，位置就越接近**。
 
-位置从哪来？从“用法”来。这就是[[c3_distributional]]的想法：出现在相似上下文里的词，会得到相似的向量。“猫”和“小猫”周围常出现同样的词（呼噜、喂食、可爱），训练就把它们拉到了一起。
+那位置从哪儿来？从用法来。这就是[[c3_distributional]]的想法：经常出现在相似上下文里的词，会得到相似的向量。“猫”和“小猫”身边老是出现同一批词，呼噜、喂食、可爱，训练就把它俩拉到一块儿了。
 
-所以“在空间里靠得近”的意思是**用法相似**——它们在句子里常常可以互换。方向也能带着关系：男人 → 女人的方向，大致和国王 → 女王的方向一样。[[c3_projector]]能让你亲眼看到这些“邻居”。
+所以“在空间里靠得近”，意思是**用法相似**，在句子里经常能互相替换。方向也能带着关系：从“男人”到“女人”的方向，跟从“国王”到“女王”的方向大致一样。用[[c3_projector]]，你能亲眼看到这些“邻居”。
 
-对设计师来说的“为什么”：按意思搜索、推荐、“相似商品”背后都是嵌入。而因为它们是从人类的文字里学来的，也会吸收人类的偏见——空间里靠得近，也可能意味着刻板印象。
+设计师为什么要在乎？按意思搜索、推荐、“相似商品”，背后都是嵌入。而且它们是从人写的文字里学来的，所以人的偏见它们也一起吸收了。空间里靠得近，有时候意味着刻板印象。
 
-**那个有名的戏法：**拿“国王”的向量，减去“男人”，加上“女人”——结果离“女王”非常近。意思变成了几何，这是这一课最惊人的想法。`,
-      lec_trap_en: `Students say close words "have the same definition." Tempting, but embeddings come from usage, not dictionaries — 'hot' and 'cold' can be close because they appear in the same contexts.`,
-      lec_trap_zh: `学生常写靠得近的词“定义相同”。这很诱人，但嵌入来自用法，不是来自词典——“热”和“冷”也可能靠得很近，因为它们出现在同样的上下文里。`,
-      lec_ask_en: `Ask: "Why might 'nurse' sit closer to 'she' than to 'he'?" — Listen for: the training text used it that way more often; embeddings learn usage, including bias.`,
-      lec_ask_zh: `问：“为什么‘护士’可能离‘她’比离‘他’更近？”——听他说出：训练文本里更常这样用；嵌入学到的是用法，包括偏见。`,
-      lec_bridge_en: `We've seen how a model represents language. Now the practical question: how much should we let it *do* for us? Karpathy's autonomy slider.`,
-      lec_bridge_zh: `我们看到了模型怎么表示语言。现在是个实际问题：我们该让它替我们*做*多少事？这就是卡帕西的自主度滑杆。`,
+**那个有名的戏法：**拿“国王”的向量，减去“男人”，再加上“女人”，结果落在离“女王”非常近的地方。意思变成了几何，这是这一课最让人惊讶的想法。`,
+      lec_trap_en: `Careful with "close words have the same definition." Sounds right, but embeddings come from usage, not dictionaries. 'Hot' and 'cold' can sit close together just because they show up in the same contexts.`,
+      lec_trap_zh: `注意别写靠得近的词“定义相同”。听着挺对，但嵌入来自用法，不是来自词典。“热”和“冷”也可能靠得很近，就因为它们常出现在同样的上下文里。`,
+      lec_ask_en: `"Why might 'nurse' end up closer to 'she' than to 'he'?" Listen for: the training text used it that way more often; embeddings learn usage, including bias.`,
+      lec_ask_zh: `“为什么‘护士’可能离‘她’比离‘他’更近？”听她说出：训练文本里更常这么用；嵌入学到的是用法，偏见也包括在内。`,
+      lec_bridge_en: `Okay, so we've seen how a model represents language. Now the practical question: how much should we let it *do* for us? That's Karpathy's autonomy slider.`,
+      lec_bridge_zh: `好，模型怎么表示语言，我们看完了。接下来是个很实际的问题：我们该让它替我们*做*多少事？这就是卡帕西的自主度滑杆。`,
       kid_en: `Picture a giant lunchroom where every word has a seat. Words that show up in the same conversations end up at the same table: “dog”, “puppy”, “cat” sit together; “jazz” and “piano” sit across the room. A word’s seat is written as numbers — like map coordinates, but with hundreds of directions instead of two. That list of numbers is an **embedding**, and “close” means “used in similar sentences.”`,
       kid_zh: `想象一个超大的食堂，每个词都有一个座位。经常出现在同一类对话里的词，会坐到同一张桌子：“狗”“小狗”“猫”坐在一起；“爵士”“钢琴”坐在食堂另一头。一个词的座位用一串数字表示——像地图坐标，只不过不是两个方向，而是几百个方向。这串数字就是**嵌入**，“离得近”就是“在相似的句子里出现”。`,
       steps: [
@@ -508,32 +516,32 @@ Directions also matter: the step from *man* to *woman* roughly equals the step f
     },
     {
       id: '3.4',
-      lec_open_en: `Ask: "Would you let an AI finish a sentence for you? Edit one file? Rewrite your whole project while you sleep? Where's your line?"`,
-      lec_open_zh: `先问：“你会让 AI 帮你补完一句话吗？改一个文件呢？趁你睡觉重写整个项目呢？你的底线在哪？”`,
-      lec_why_en: `Karpathy's [[c3_slider]] answers "how much should the AI do?" with **a dial, not a switch**. What moves along it is the **size of the chunk of work you hand over** — and therefore how much the human verifies. Cursor goes from tab-completion to editing a selection, to a whole file, to agent mode across the repo; Perplexity from search to deep research; Tesla from driver-assist to self-driving.
+      lec_open_en: `Ask: "Would you let an AI finish a sentence for you? What about editing one file? Rewriting your whole project while you sleep? Where's your line?"`,
+      lec_open_zh: `先问她：“你会让 AI 帮你把一句话写完吗？改一个文件呢？趁你睡觉把整个项目重写一遍呢？你的底线在哪儿？”`,
+      lec_why_en: `Karpathy's [[c3_slider]] answers "how much should the AI do?" with **a dial, not a switch**. What moves along it is the **size of the chunk of work you hand over**, and so how much the human has to verify. Cursor goes from tab-completion, to editing a selection, to a whole file, to agent mode across the repo. Perplexity goes from search to deep research. Tesla goes from driver-assist to self-driving.
 
-Why a slider instead of full automation? Because LLMs are powerful but **fallible** — they hallucinate, misread intent, sound confident when wrong. Karpathy's argument is that useful products today are **partial autonomy**: fast [[c3_gen_verify]] loops where the AI generates and the human checks, with the leash kept short enough that checking stays easy.
+Why a slider and not full automation? Because LLMs are powerful but **fallible**. They hallucinate, they misread what you meant, they sound confident when they're wrong. So Karpathy's argument is that the useful products today are **partial autonomy**: fast [[c3_gen_verify]] loops where the AI generates and the human checks. Keep the leash short enough that checking stays easy.
 
-His Iron Man suit image says the same thing: augmentation (the suit extends you) vs. autonomy (it flies alone). Good design lets the user move the slider as trust grows.
+His Iron Man suit image says the same thing. Augmentation: the suit extends you. Autonomy: the suit flies off on its own. Good design lets the user push the slider further as trust grows.
 
-The second half of the exam question is personal — so coach the student to name a real task, a position, and the *reason*: how costly a mistake is, and how easy it is to check.
+Now, the second half of the exam question is about you. So name a real task, a position, and the *reason*: how costly a mistake is, and how easy it is to check.
 
-**Real-world drama:** cars are the scariest slider. "Autopilot" sounds like the far right end, but the driver is still supposed to watch the road — a naming choice that put the slider in the wrong place in people's heads.`,
-      lec_why_zh: `卡帕西用[[c3_slider]]回答“AI 应该做多少”，而且答案是**一个旋钮，不是一个开关**。滑杆上移动的，是**你交出去的那块工作有多大**——也就决定了人要核查多少。Cursor 从 Tab 补全，到改一段选中的代码，到改整个文件，再到在整个仓库里跑的智能体模式；Perplexity 从搜索到深度研究；特斯拉从辅助驾驶到自动驾驶。
+**Real-world drama:** cars are the scariest slider. "Autopilot" sounds like the far right end, but the driver is still supposed to watch the road. One naming choice, and the slider ended up in the wrong place in people's heads.`,
+      lec_why_zh: `卡帕西用[[c3_slider]]来回答“AI 该做多少”。他的答案是：**这是个旋钮，不是开关**。滑杆上动的是**你交出去的那块活儿有多大**，也就决定了人要核查多少。Cursor 从 Tab 补全，到改一段选中的代码，到改整个文件，再到在整个仓库里跑的智能体模式。Perplexity 从搜索到深度研究。特斯拉从辅助驾驶到自动驾驶。
 
-为什么是滑杆，而不是全自动？因为大语言模型很强，但**会出错**——会幻觉、会误解意图、错了还说得很笃定。卡帕西的观点是：今天有用的产品是**部分自主**的：AI 生成、人来核查，形成快速的[[c3_gen_verify]]循环，绳子要拴得够短，核查才容易。
+为什么是滑杆，不直接全自动？因为大语言模型很强，但**会出错**。它会幻觉，会理解错你的意思，错了还说得特别笃定。所以卡帕西认为，今天真正有用的产品是**部分自主**的：AI 负责生成，人负责核查，形成很快的[[c3_gen_verify]]循环。绳子要拴得够短，核查才轻松。
 
-他的钢铁侠战衣比喻说的是同一件事：增强（战衣延伸你）vs 自主（战衣自己飞）。好的设计让用户随着信任增加，自己把滑杆往前推。
+他那个钢铁侠战衣的比喻，说的也是这个。增强，是战衣延伸了你；自主，是战衣自己飞走了。好的设计会让用户随着信任慢慢增加，自己把滑杆往前推。
 
-考题后半部分是个人问题——要引导学生说出一个真实的任务、他的位置，以及*理由*：犯错的代价有多大、检查起来有多容易。
+好，考题的后半部分问的是你自己。所以你要说出一个真实的任务、你放在哪个位置，还有*理由*：出错的代价有多大，检查起来有多容易。
 
-**现实中的戏剧：**汽车是最吓人的滑杆。“Autopilot（自动驾驶）”听起来像是推到了最右边，可司机其实还得盯着路——一个命名决定，把滑杆放错了人们心里的位置。`,
-      lec_trap_en: `Students describe the slider but give a vague personal setting ("in the middle"). Tempting because it feels safe — the exam wants a concrete task, a position, and why (cost of error, ease of checking).`,
-      lec_trap_zh: `学生常把滑杆讲清楚了，自己的位置却写得很含糊（“放在中间”）。这样写感觉很安全——但考试要的是一个具体任务、一个位置，以及原因（出错的代价、核查的难易）。`,
-      lec_ask_en: `Ask: "Why would you let AI write code comments but not send emails to your professor?" — Listen for: mistakes in comments are cheap and easy to check; a wrong email is costly and can't be undone.`,
-      lec_ask_zh: `问：“为什么你可以让 AI 写代码注释，却不让它替你给教授发邮件？”——听他说出：注释错了代价小、容易检查；邮件发错了代价大，还撤不回来。`,
-      lec_bridge_en: `Last question of Class 3 zooms all the way out: what does it actually take — in rocks, people and power — to answer one voice request?`,
-      lec_bridge_zh: `第 3 课最后一题把镜头拉到最远：回答一次语音请求，到底需要多少石头、多少人、多少电？`,
+**现实里的戏剧：**汽车是最吓人的滑杆。“Autopilot（自动驾驶）”听起来像是推到了最右边，可司机其实还得盯着路。就一个名字，把滑杆放错了人们心里的位置。`,
+      lec_trap_en: `Here's where people lose points: they explain the slider fine, then give a vague setting for themselves ("in the middle"). Feels safe, right? But the exam wants a concrete task, a position, and why (cost of error, ease of checking).`,
+      lec_trap_zh: `这里很容易丢分：滑杆讲得挺清楚，一到自己的位置就含糊了，写个“放在中间”。感觉挺安全的，对吧？但考试要的是一个具体任务、一个位置，再加上原因（出错的代价、核查的难易）。`,
+      lec_ask_en: `"So why would you let AI write your code comments, but not send emails to your professor?" Listen for: mistakes in comments are cheap and easy to check; a wrong email is costly and can't be undone.`,
+      lec_ask_zh: `“那为什么你可以让 AI 写代码注释，却不让它替你给教授发邮件？”听她说出：注释错了代价小、好检查；邮件发错了代价大，而且撤不回来。`,
+      lec_bridge_en: `Last question of Class 3 zooms all the way out. What does it actually take, in rocks, people and power, to answer one voice request?`,
+      lec_bridge_zh: `第 3 课最后一题，镜头拉到最远：回答一次语音请求，到底要用掉多少石头、多少人、多少电？`,
       kid_en: `Think of learning to ride a bike. At first a parent holds the seat the whole time; later they let go for a few meters; one day you ride alone. An AI helper is the same, but backwards: it can give a hint, write one sentence, write the whole essay, or even hand it in for you. The further it goes alone, the more you have to check afterward. Karpathy’s **autonomy slider** is that dial — and you choose where to set it.`,
       kid_zh: `想想学骑自行车。一开始大人一直扶着后座；后来松手几米；终于有一天你自己骑。AI 助手也一样，只是方向反过来：它可以给你一点提示、帮你写一句、写完整篇作文，甚至直接帮你交上去。它自己走得越远，你事后要检查的就越多。卡帕西说的**自主性滑块**就是这个旋钮——由你决定拨到哪一档。`,
       steps: [
@@ -662,36 +670,36 @@ His advice: it’s an [[c3_ironman]] — for now build more **augmentation** tha
     },
     {
       id: '3.5',
-      lec_open_en: `Ask: "When you say 'Alexa, what time is it?', where does the answer come from? Follow it as far back as you can."`,
-      lec_open_zh: `先问：“你说‘Alexa，现在几点？’，答案是从哪来的？尽量往回追。”`,
-      lec_why_en: `Crawford & Joler's *Anatomy of an AI System* exists to break the illusion that AI is weightless "cloud magic." They follow one [[c3_request]] to an Amazon Echo through three systems at once.
+      lec_open_en: `Ask: "When you say 'Alexa, what time is it?', where does the answer actually come from? Follow it back as far as you can."`,
+      lec_open_zh: `先问她：“你说一句‘Alexa，现在几点？’，这个答案到底是从哪儿来的？你尽量往回追。”`,
+      lec_why_en: `Crawford & Joler's *Anatomy of an AI System* is there to break one illusion: that AI is weightless "cloud magic." They follow one [[c3_request]] to an Amazon Echo through three systems at once.
 
-**Material**: the device and the data centers are made of mined minerals — lithium, cobalt, rare-earth magnets — powered by energy and ending as e-waste. That's [[c3_extractivism]].
+**Material**: the device and the data centers are made of mined minerals (lithium, cobalt, rare-earth magnets). They run on energy, and they end up as e-waste. That's [[c3_extractivism]].
 
-**Labor**: miners, factory workers, warehouse staff, and the hidden [[c3_digital_labor]] of data labelers and of users themselves, whose voice recordings train the system. Crawford & Joler draw it as a [[c3_pyramid]] with Amazon's CEO on top.
+**Labor**: miners, factory workers, warehouse staff. Plus the hidden [[c3_digital_labor]] of data labelers, and of users themselves, whose voice recordings train the system. Crawford & Joler draw it as a [[c3_pyramid]], with Amazon's CEO on top.
 
-**Computing**: the request becomes data, is sent to the cloud, processed by models, answered — and stored to train the next model.
+**Computing**: the request becomes data, goes to the cloud, gets processed by models, gets answered, and then gets stored to train the next model.
 
-Why say all three *at once*? Because each one alone hides the others. A computing-only story makes AI look clean; a labor-only story misses the planet. Their point for designers: the convenience at the top depends on everything underneath — so a "simple" voice feature has a very long supply chain.
+So why insist on all three *at once*? Because any one alone hides the other two. Tell only the computing story, and AI looks clean. Tell only the labor story, and you miss the planet. Their point for designers: the convenience at the top depends on everything underneath. A "simple" voice feature has a very long supply chain.
 
-**Scale it up:** Crawford & Joler point out that the lifetime of one smart speaker passes through more hands and more countries than most people visit in a lifetime. "What time is it?" is a very long sentence.`,
-      lec_why_zh: `Crawford 和 Joler 的《Anatomy of an AI System》就是要打破“AI 是没有重量的云端魔法”这个幻觉。他们跟着向亚马逊 Echo 发出的一次[[c3_request]]，同时穿过三个系统。
+**Scale it up:** Crawford & Joler point out that the lifetime of one smart speaker passes through more hands and more countries than most people visit in their whole lives. "What time is it?" is a very long sentence.`,
+      lec_why_zh: `Crawford 和 Joler 写《Anatomy of an AI System》，就是要戳破一个幻觉：AI 是没有重量的“云端魔法”。他们盯着对亚马逊 Echo 说的一次[[c3_request]]，一路追下去，同时穿过三个系统。
 
-**物质**：设备和数据中心由开采出来的矿物做成——锂、钴、稀土磁铁——靠能源运转，最后变成电子垃圾。这就是[[c3_extractivism]]。
+**物质**：设备也好，数据中心也好，都是用挖出来的矿物做的，锂、钴、稀土磁铁。它们靠能源运转，最后变成电子垃圾。这就是[[c3_extractivism]]。
 
-**劳动**：矿工、工厂工人、仓库员工，还有隐形的[[c3_digital_labor]]——数据标注员，以及用户自己：我们的语音录音在训练这个系统。Crawford 和 Joler 把它画成一座[[c3_pyramid]]，顶端是亚马逊的 CEO。
+**劳动**：矿工、工厂工人、仓库员工。还有看不见的[[c3_digital_labor]]：数据标注员，以及我们这些用户自己，我们的语音录音就在训练这个系统。Crawford 和 Joler 把它画成一座[[c3_pyramid]]，最顶上是亚马逊的 CEO。
 
-**计算**：请求变成数据，发到云端，经过模型处理、给出回答——再被存起来，训练下一个模型。
+**计算**：请求变成数据，传到云端，模型处理完给出回答，然后再存起来，拿去训练下一个模型。
 
-为什么要*同时*说三个？因为单独讲任何一个都会遮住另外两个。只讲计算，AI 看起来很干净；只讲劳动，又看不到地球的代价。他们想告诉设计师：最上面的便利，依赖下面的一切——一个“简单”的语音功能，背后是一条非常长的供应链。
+那为什么非要*同时*讲三个？因为单讲哪一个，都会把另外两个遮住。只讲计算，AI 看起来干干净净；只讲劳动，又看不到地球付出的代价。他们想跟设计师说的是：最上面的方便，靠的是下面的一切。一个“简单”的语音功能，背后是一条特别长的供应链。
 
-**放大来看：**Crawford 和 Joler 指出，一台智能音箱从生到死经过的人手和国家，比大多数人一辈子去过的都多。“现在几点？”其实是一句非常长的话。`,
-      lec_trap_en: `Students explain each layer separately but not what "at once" means. Tempting because three paragraphs feel complete — say that one request is all three simultaneously and that seeing only one hides the others.`,
-      lec_trap_zh: `学生常把三层分别讲清楚了，却没解释“同时”是什么意思。写满三段感觉就完整了，所以容易这样——要说出一次请求同时就是这三样，只看一样就会遮住其他两样。`,
-      lec_ask_en: `Ask: "Where is *your* labor in that diagram?" — Listen for: as a user, your voice, clicks and corrections are unpaid data that trains the system.`,
-      lec_ask_zh: `问：“这张图里，*你*的劳动在哪？”——听他说出：作为用户，你的声音、点击和纠正都是无偿的数据，在训练这个系统。`,
-      lec_bridge_en: `That's the anatomy of one request. Next class we use these systems ourselves — repos, deploys, and commercial chatbots — and ask why the same prompt gets different answers.`,
-      lec_bridge_zh: `这就是一次请求的解剖。下一课我们亲手用这些系统——代码仓库、部署、商业聊天机器人——并追问：为什么同一个提示词会得到不同的回答？`,
+**放大来看：**Crawford 和 Joler 指出，一台智能音箱从生到死，经过的人手和国家，比大多数人一辈子去过的都多。“现在几点？”其实是一句非常长的话。`,
+      lec_trap_en: `Common miss: explaining each layer separately and never saying what "at once" means. Three paragraphs feel complete, so it's tempting. But you have to say it: one request is all three simultaneously, and seeing only one hides the others.`,
+      lec_trap_zh: `常见的漏洞：三层分开讲得很清楚，却没解释“同时”是什么意思。写满三段感觉挺完整，所以很容易就这么交卷了。但你一定要点明：一次请求同时就是这三样，只看一样，就会把其他两样遮住。`,
+      lec_ask_en: `"So where's *your* labor in that diagram?" Listen for: as a user, your voice, clicks and corrections are unpaid data that trains the system.`,
+      lec_ask_zh: `“那这张图里，*你*的劳动在哪儿？”听她说出：作为用户，你的声音、点击和纠正都是无偿的数据，在训练这个系统。`,
+      lec_bridge_en: `That's the anatomy of one request. Next class, we use these systems ourselves (repos, deploys, commercial chatbots) and ask why the same prompt gets different answers.`,
+      lec_bridge_zh: `一次请求的解剖，就到这儿。下一课我们自己上手用这些系统，代码仓库、部署、商业聊天机器人，然后追问：为什么同一个提示词会得到不同的回答？`,
       embeds: [{ src: 'cf/smart-speaker.html', h: 680,
         name_en: 'One smart speaker, taken apart', name_zh: '把一台智能音箱拆开看',
         hint_en: 'Drag to turn · See-through shows ~50 real parts · Wake → Ask sends your voice to a datacenter · Materials lights the magnet, copper, gold, plastic',

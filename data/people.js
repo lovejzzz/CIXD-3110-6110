@@ -59,11 +59,11 @@ window.PEOPLE = [
     m_en: ['Eleanor Rosch', 'Rosch'], m_zh: ['埃莉诺·罗施', '罗施']
   },
   {
-    id: 'berlin', en: 'Brent Berlin', zh: '布伦特·柏林', yrs: 'b. 1936',
+    id: 'berlin', en: 'Brent Berlin', zh: '布伦特·伯林', yrs: 'b. 1936',
     role_en: 'Anthropologist', role_zh: '人类学家',
     bio_en: 'Studied how cultures around the world name plants, animals and colors. He found striking agreement: people everywhere sort living things around the same middle, “generic” level.',
     bio_zh: '研究世界各地的文化怎样给植物、动物和颜色命名，发现惊人的一致：各地的人都围绕同一个中间的“属”级来给生物分类。',
-    m_en: ['Brent Berlin'], m_zh: ['布伦特·柏林']
+    m_en: ['Brent Berlin'], m_zh: ['布伦特·伯林', '伯林']
   },
   {
     id: 'grasse', en: 'Pierre-Paul Grassé', zh: '皮埃尔-保罗·格拉塞', yrs: '1895–1985',

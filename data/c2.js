@@ -43,16 +43,24 @@ defTerms({
 
 defClass({
   order: 2, n: '2',
-  lec_en: `Before computers, people already built information systems — family trees, library shelves, card catalogs. Alex Wright's *Informatica* argues our software still runs on two very old shapes: the **hierarchy** and the **network**, and that they keep turning into each other. This class asks **why** we organize knowledge the way we do: why some categories feel natural (the basic level), why termites can build without a plan (stigmergy), and why composing a classification beats descending one. Every folder, tag, menu and search box a designer makes is a choice between these shapes.`,
-  lec_zh: `在电脑出现之前，人类早就在搭信息系统了——族谱、图书馆书架、卡片目录。亚历克斯·赖特在《Informatica》里说，今天的软件仍然跑在两个很古老的形状上：**层级**和**网络**，而且两者不断互相转化。这一课问的是**为什么**我们这样组织知识：为什么有些类别感觉“天然”（基本层级），为什么白蚁不需要蓝图也能盖房（痕迹协作），为什么“组合式”分类比“往下一层层找”更好用。设计师做的每个文件夹、标签、菜单和搜索框，都是在这几种形状之间做选择。`,
+  lec_en: `Here's the thing: people were building information systems long before computers. Family trees, library shelves, card catalogs. Alex Wright's *Informatica* argues that our software still runs on two very old shapes, the **hierarchy** and the **network**, and that they keep turning into each other.
+
+So this class asks **why** we organize knowledge the way we do. Why do some categories feel natural (the basic level)? Why can termites build without a plan (stigmergy)? And why does composing a classification beat descending one?
+
+Every folder, tag, menu and search box a designer makes is a choice between these shapes.`,
+  lec_zh: `你想想，电脑出现以前，人类早就在搭信息系统了。族谱、图书馆的书架、卡片目录，都是。亚历克斯·赖特在《Informatica》里说，今天的软件还跑在两个特别古老的形状上：**层级**和**网络**。而且这两个一直在互相转化。
+
+所以这一课问的是：我们**为什么**这样组织知识？为什么有些类别感觉很“天然”（基本层级）？为什么白蚁没有图纸也能盖房子（痕迹协作）？为什么“组合式”分类，比一层层往下找更好用？
+
+说白了，设计师做的每个文件夹、标签、菜单、搜索框，都是在这几种形状里做选择。`,
   lec_faq: [
-    { q_en: `What does the Herzog film have to do with the exam?`, q_zh: `赫尔佐格那部纪录片和考试有什么关系？`, a_en: `It's the story version of question 2.2. The internet's first message (UCLA, 1969, "LO" before the crash) came out of universities and a defense agency — hierarchies that gave rise to a network. You can use it as your example of the two shapes producing each other.`, a_zh: `它就是 2.2 题的“故事版”。互联网的第一条消息（1969 年，UCLA，发出“LO”后系统崩溃）来自大学和国防机构——是层级催生了网络。你可以拿它当“两种形状互相催生”的例子。` },
-    { q_en: `Who is Alex Wright and why does the exam keep quoting him?`, q_zh: `亚历克斯·赖特是谁？为什么考试一直引用他？`, a_en: `He's a writer and information architect; *Informatica* is the class reading. Many questions ask for "Wright's definition," so use his words: hierarchy = ordering by inclusiveness; network = bottom-up, peer-to-peer, no single top.`, a_zh: `他是作家和信息架构师，《Informatica》是这门课的读物。很多题都要“赖特的定义”，所以要用他的说法：层级 = 按包含范围排序；网络 = 自下而上、点对点、没有唯一的顶端。` },
-    { q_en: `Is the internet a hierarchy or a network?`, q_zh: `互联网是层级还是网络？`, a_en: `Both — that's Wright's point. Links make it a network; domain names and search rankings build hierarchies on top. Saying "both, and here's how each grows out of the other" is the strong answer.`, a_zh: `两者都是——这正是赖特的观点。链接让它成为网络；域名和搜索排名又在上面搭出层级。回答“两者都是，而且各自如何从对方长出来”是最强的答法。` },
-    { q_en: `Does the basic level depend on who you are?`, q_zh: `基本层级会因人而异吗？`, a_en: `A little. Experts shift down: to a dog breeder, 'retriever' may feel basic. But for most people the middle level stays the default, which is why Rosch called it psychologically primary.`, a_zh: `会有一点。专家会往下移：对养狗的人来说，“寻回犬”可能就是基本层级。但对大多数人，中间那层仍是默认选择，所以罗施称它为“心理上最基本的”。` },
-    { q_en: `Is a group chat stigmergy?`, q_zh: `群聊算痕迹协作吗？`, a_en: `Mostly no — people talk to each other directly. Stigmergy is coordination through traces left in a shared environment: a Wikipedia page, a shared to-do board, a worn path. The trace, not the conversation, tells the next person what to do.`, a_zh: `大多不算——群聊里人们是直接对话的。痕迹协作是通过共享环境里留下的痕迹来协调：维基页面、共享待办看板、被踩出来的小路。告诉下一个人做什么的是痕迹，而不是对话。` },
-    { q_en: `Do I have to remember what P, M, E, S, T stand for?`, q_zh: `P、M、E、S、T 各代表什么，需要背吗？`, a_en: `It helps: Personality, Matter, Energy, Space, Time. But the exam point is the change — descended (one place) vs. composed (many access points) — and why that makes tagging and filtering work.`, a_zh: `背下来有帮助：本体、物质、动力、空间、时间。但考试的重点是那个变化——往下走（一个位置）vs 组合（很多入口）——以及为什么这让标签和筛选好用。` },
-    { q_en: `Why learn about old library systems in a tech class?`, q_zh: `科技课为什么要学古老的图书馆分类？`, a_en: `Because every app still makes the same choices. Folders are hierarchies, links are networks, filters are facets. Knowing the old shapes helps you see what a new interface is really doing.`, a_zh: `因为每个 App 仍在做同样的选择。文件夹是层级，链接是网络，筛选是分面。认识这些老形状，才能看清一个新界面到底在做什么。` }
+    { q_en: `What does the Herzog film have to do with the exam?`, q_zh: `赫尔佐格那部纪录片，跟考试有啥关系？`, a_en: `It's basically the story version of question 2.2. The internet's first message (UCLA, 1969, "LO" before the crash) came out of universities and a defense agency. Those are hierarchies, and they gave rise to a network. So you can use it as your example of the two shapes producing each other.`, a_zh: `它其实就是 2.2 题的“故事版”。互联网的第一条消息（1969 年，UCLA，发出“LO”系统就崩了），是从大学和国防机构里出来的。这些都是层级，结果催生了一张网络。所以“两种形状互相催生”，你就可以拿它当例子。` },
+    { q_en: `Who's Alex Wright, and why does the exam keep quoting him?`, q_zh: `亚历克斯·赖特是谁？考试怎么老引用他？`, a_en: `He's a writer and information architect, and *Informatica* is the class reading. Lots of questions ask for "Wright's definition," so use his words. Hierarchy = ordering by inclusiveness. Network = bottom-up, peer-to-peer, no single top.`, a_zh: `他是作家，也是信息架构师。《Informatica》就是这门课的读物。很多题都要“赖特的定义”，所以你得用他的原话。层级 = 按包含范围排序；网络 = 自下而上、点对点、没有唯一的顶端。` },
+    { q_en: `So is the internet a hierarchy or a network?`, q_zh: `那互联网到底是层级，还是网络？`, a_en: `Both. That's exactly Wright's point. Links make it a network, and then domain names and search rankings build hierarchies on top. The strong answer is "both, and here's how each one grows out of the other."`, a_zh: `都是。这恰恰就是赖特的观点。链接让它成了一张网，域名和搜索排名又在上面搭出了层级。最强的答法是：“两个都是，而且我能说出它们各自怎么从对方长出来。”` },
+    { q_en: `Does the basic level change depending on who you are?`, q_zh: `基本层级会不会因人而异？`, a_en: `A little. Experts shift down. To a dog breeder, 'retriever' might feel basic. But for most people the middle level stays the default, and that's why Rosch called it psychologically primary.`, a_zh: `会有一点。专家会往下移。对养狗的人来说，“寻回犬”可能就是基本层级了。但对大多数人，默认的还是中间那层，所以罗施说它是“心理上最基本的”。` },
+    { q_en: `Is a group chat stigmergy?`, q_zh: `群聊算不算痕迹协作？`, a_en: `Mostly no, because people are talking to each other directly. Stigmergy is coordination through traces left in a shared environment: a Wikipedia page, a shared to-do board, a worn path. It's the trace, not the conversation, that tells the next person what to do.`, a_zh: `基本不算，因为群聊里大家是直接对话的。痕迹协作是靠共享环境里留下的痕迹来协调，比如维基页面、共享的待办看板、被踩出来的小路。告诉下一个人该干什么的，是痕迹，不是对话。` },
+    { q_en: `Do I have to remember what P, M, E, S, T stand for?`, q_zh: `P、M、E、S、T 分别代表什么，要背吗？`, a_en: `It helps: Personality, Matter, Energy, Space, Time. But the exam point is the change, descended (one place) vs. composed (many access points), and why that makes tagging and filtering work.`, a_zh: `背下来有好处：本体、物质、动力、空间、时间。不过考试真正考的是那个变化：往下走（一个位置）vs 组合（很多入口），还有为什么这样一来，标签和筛选就好用了。` },
+    { q_en: `Why are we learning about old library systems in a tech class?`, q_zh: `一门科技课，干嘛学老掉牙的图书馆分类？`, a_en: `Because every app is still making the same choices. Folders are hierarchies, links are networks, filters are facets. Once you know the old shapes, you can see what a new interface is really doing.`, a_zh: `因为每个 App 还在做一模一样的选择。文件夹是层级，链接是网络，筛选是分面。这些老形状你认识了，才看得清一个新界面到底在干什么。` }
   ],
   t_en: 'Futures Past', t_zh: '过去的未来',
   intro_en: 'Before computers, people already built information systems: trees of names, library shelves, card catalogs. Alex Wright’s *Informatica* shows that today’s software still runs on two old shapes — the hierarchy and the network — and on ways of classifying that are older than writing.',
@@ -102,32 +110,32 @@ defClass({
   qs: [
     {
       id: '2.1',
-      lec_open_en: `Ask: "Where is the file you worked on yesterday? Say its full address out loud."`,
-      lec_open_zh: `先问：“你昨天做的那个文件在哪？把它的完整地址说出来。”`,
-      lec_why_en: `Wright defines a [[c2_hierarchy]] as an ordering of concepts **by inclusiveness**: broad categories contain narrower ones, which contain narrower ones still. It's a tree: one top, branches, and every item in exactly one place.
+      lec_open_en: `Ask: "That file you worked on yesterday, where is it? Say its full address out loud."`,
+      lec_open_zh: `先问她：“你昨天弄的那个文件在哪儿？把它的完整地址念出来。”`,
+      lec_why_en: `Wright defines a [[c2_hierarchy]] as an ordering of concepts **by inclusiveness**. Broad categories contain narrower ones, which contain even narrower ones. It's a tree: one top, branches, and every item in exactly one place.
 
-Why have humans built hierarchies for thousands of years — from Aristotle to Linnaeus to the Dewey Decimal System? Because they make a huge collection **navigable and controllable**. If everything has one place, you can find it by descending, and someone at the top can decide what goes where. Hierarchies are about order *and* authority.
+So why have humans been building hierarchies for thousands of years, from Aristotle to Linnaeus to the Dewey Decimal System? Because they make a huge collection **navigable and controllable**. If everything has one place, you can find it by going down, level by level. And whoever sits at the top gets to decide what goes where. Hierarchies are about order *and* authority.
 
-That's why the everyday example is so revealing: your file system. Drive → Users → you → Documents → Midterm → answers.pdf. One path, one parent per folder. It's convenient — but it also forces you to choose: is the photo of your sketch under "School" or under "Photos"? A hierarchy can't say both.
+That's why the everyday example is so revealing: your file system. Drive → Users → you → Documents → Midterm → answers.pdf. One path, one parent per folder. Super convenient. But it also forces a choice. That photo of your sketch, does it go under "School" or "Photos"? A hierarchy can't say both.
 
-That limitation is the hinge to the next question: networks are what happens when things need more than one place.
+And that limitation is the hinge to the next question. Networks are what happens when things need more than one place.
 
-**Fun fact:** Linnaeus sorted all of nature into one giant hierarchy in the 1700s — and we still use his two-word names today. You are *Homo sapiens* because of a hierarchy.`,
-      lec_why_zh: `赖特把[[c2_hierarchy]]定义为**按“包含范围”大小来排列概念**：宽的类别包含窄的，窄的再包含更窄的。它是一棵树：一个顶点、层层分支，每样东西只在一个位置。
+**Fun fact:** in the 1700s Linnaeus sorted all of nature into one giant hierarchy, and we still use his two-word names today. You're *Homo sapiens* because of a hierarchy.`,
+      lec_why_zh: `赖特给[[c2_hierarchy]]下的定义，是**按“包含范围”来排列概念**。大的类别包含小的，小的再包含更小的。它就是一棵树：一个顶，往下分叉，每样东西只待在一个地方。
 
-为什么人类几千年来一直在建层级——从亚里士多德到林奈，再到杜威十进制分类法？因为层级能让庞大的收藏**可以查找、可以掌控**。每样东西只有一个位置，你就能一层层往下找到它；站在顶端的人也能决定什么放哪里。层级既关乎秩序，*也关乎权力*。
+那人类为什么几千年来一直在搭层级？从亚里士多德到林奈，再到杜威十进制分类法。因为层级能让一大堆东西**找得到、管得住**。每样东西只有一个位置，你一层层往下走就能找到它。而且站在顶上的人，可以决定什么放哪儿。所以层级讲的是秩序，*也是权力*。
 
-所以日常的例子特别能说明问题：你的文件系统。磁盘 → 用户 → 你 → 文稿 → 期中 → answers.pdf。一条路径，每个文件夹只有一个上级。很方便——但它也逼你做选择：你那张草图的照片该放“学校”还是“照片”？层级没办法同时放两边。
+你看日常的例子就特别明显：你电脑里的文件系统。磁盘 → 用户 → 你 → 文稿 → 期中 → answers.pdf。一条路径，每个文件夹只有一个上级。很方便对吧？可它也逼你做选择。你那张草图的照片，放“学校”还是放“照片”？层级没法两边都放。
 
-这个局限正是通往下一题的关键：当一样东西需要不止一个位置时，就出现了网络。
+这个局限，就是通往下一题的那扇门。一样东西需要不止一个位置的时候，网络就出来了。
 
-**冷知识：**林奈在 18 世纪把整个自然界排进了一个巨大的层级——我们今天还在用他的“两个词”命名法。你之所以叫 *Homo sapiens*（智人），就是拜层级所赐。`,
-      lec_trap_en: `Students give an example but not Wright's definition (ordering by inclusiveness). Tempting because "a tree structure" feels like enough — say what makes it a hierarchy.`,
-      lec_trap_zh: `学生常只举例子，不写赖特的定义（按包含范围排序）。“树状结构”听起来就够了，所以容易漏——要说清楚是什么让它成为层级。`,
-      lec_ask_en: `Ask: "Why can't a photo be in two folders at once in a strict hierarchy?" — Listen for: every item has exactly one parent / one path.`,
-      lec_ask_zh: `问：“在严格的层级里，为什么一张照片不能同时在两个文件夹？”——听他说出：每样东西只有一个上级、一条路径。`,
-      lec_bridge_en: `So what happens when things need many connections instead of one parent? That's the network.`,
-      lec_bridge_zh: `那当一样东西需要很多联系、而不是一个上级时会怎样？那就是网络。`, t_en: 'Hierarchy', t_zh: '层级',
+**冷知识：**18 世纪，林奈把整个自然界排进了一个巨大的层级。他那套“两个词”的命名法，我们今天还在用。你叫 *Homo sapiens*（智人），就是拜层级所赐。`,
+      lec_trap_en: `Students give an example but skip Wright's definition: ordering by inclusiveness. It's tempting, because "a tree structure" feels like enough. Say what actually makes it a hierarchy.`,
+      lec_trap_zh: `学生常常只举个例子，不写赖特的定义：按包含范围排序。为什么会漏？因为说一句“树状结构”好像就够了。其实要讲清楚，是什么让它成为层级。`,
+      lec_ask_en: `Ask: "In a strict hierarchy, why can't one photo sit in two folders at once?" Listen for: every item has exactly one parent / one path.`,
+      lec_ask_zh: `问她：“在严格的层级里，一张照片为什么不能同时待在两个文件夹里？”听她说出：每样东西只有一个上级、一条路径。`,
+      lec_bridge_en: `So what happens when something needs lots of connections instead of one parent? That's the network.`,
+      lec_bridge_zh: `那如果一样东西需要的是很多联系，不是一个上级呢？这就是网络了。`, t_en: 'Hierarchy', t_zh: '层级',
       q_en: 'Wright\'s definition of a hierarchy, and one example from software you use every day.',
       q_zh: '赖特对“层级”的定义，并举一个你每天使用的软件中的例子。',
       src: 'Wright, Informatica, ch. 1',
@@ -192,36 +200,40 @@ That limitation is the hinge to the next question: networks are what happens whe
     },
     {
       id: '2.2',
-      lec_open_en: `Ask: "In your class group chat, who's in charge? … And is there still someone everyone listens to?"`,
-      lec_open_zh: `先问：“你们班的群聊里谁说了算？……那有没有一个大家都会听的人？”`,
-      lec_why_en: `Wright's [[c2_network]] is the opposite shape: a **bottom-up web of peer-to-peer links with no single top**. Anyone can connect to anyone; meaning comes from the links, not from a place in a tree.
+      lec_open_en: `Ask: "In your class group chat, who's in charge?" Let her answer. Then: "Okay, but is there still somebody everyone listens to?"`,
+      lec_open_zh: `先问她：“你们班群里，谁说了算？”等她答完，再问：“那有没有一个人，大家都会听他的？”`,
+      lec_why_en: `Wright's [[c2_network]] is the opposite shape: a **bottom-up web of peer-to-peer links with no single top**. Anyone can connect to anyone. Meaning comes from the links, not from your place in a tree.
 
-Why are networks powerful? They grow without permission. The Web, social media, citations — nobody had to approve each link. That's why they scale and adapt faster than hierarchies.
+Why are networks so powerful? They grow without permission. The Web, social media, citations: nobody had to approve each link. That's why they scale and adapt faster than hierarchies.
 
-But Wright's real insight is that the two shapes **give rise to each other**. Networks grow hubs: some nodes collect far more links, and once you rank by links (Google's PageRank, follower counts) a hierarchy appears inside the network. And hierarchies sprout networks: every org chart has informal friendships; every catalog has "see also" cross-references.
+But here's Wright's real insight: the two shapes **give rise to each other**. Networks grow hubs. Some nodes pull in way more links than others, and once you rank by links (Google's PageRank, follower counts), a hierarchy shows up inside the network. And it goes the other way too. Every org chart has informal friendships underneath, and every catalog has "see also" cross-references.
 
-Why does this matter for design? Because you are never choosing *just* one. A social app is a network that quietly builds a ranking; a company wiki is a hierarchy people route around. Seeing both lets you design for how people will actually use it.
+Why should a designer care? Because you're never choosing *just* one. A social app is a network that quietly builds a ranking. A company wiki is a hierarchy people route around. When you can see both, you can design for how people will actually use the thing.
 
-**Watch it happen:** a brand-new app has no stars. A few months later, ten accounts have most of the followers. Nobody voted for that hierarchy — the network grew it.
+**Watch it happen:** a brand-new app has no stars. A few months later, ten accounts have most of the followers. Nobody voted for that hierarchy. The network grew it.
 
-**From the prep film:** Werner Herzog's *Lo and Behold, Reveries of the Connected World* (2016) opens where the internet began — UCLA, 1969. The first ARPANET message was supposed to be "LOGIN," but the system crashed after **"LO."** Notice who built it: universities and a defense research agency — **hierarchies**. Out of those institutions grew the most famous **network** of all, which today has grown its own new hierarchies (a handful of platforms at the top). Wright's two-way street, in one story.`,
-      lec_why_zh: `赖特所说的[[c2_network]]是相反的形状：**一张自下而上、点对点相连、没有唯一顶端的网**。任何人都可以和任何人相连；意义来自连接，而不是来自树上的位置。
+**From the prep film:** Werner Herzog's *Lo and Behold, Reveries of the Connected World* (2016) opens where the internet began: UCLA, 1969. The first ARPANET message was supposed to be "LOGIN," but the system crashed after **"LO."**
 
-网络为什么强大？因为它不需要批准就能生长。网页、社交媒体、论文引用——每条链接都不用谁点头。所以网络比层级扩张得更快、适应得更快。
+Now notice who built it: universities and a defense research agency. **Hierarchies.** Out of those institutions grew the most famous **network** of all, and today it has grown its own new hierarchies, a handful of platforms at the top. That's Wright's two-way street, in one story.`,
+      lec_why_zh: `赖特说的[[c2_network]]，形状正好反过来：**一张自下而上、点对点相连、没有唯一顶端的网**。谁都能跟谁连上。意义来自连接，不来自你在树上的哪个位置。
 
-但赖特真正的洞见是：这两种形状**会互相催生**。网络会长出枢纽：有些节点拉到的链接远远多于别人，一旦按链接数排名（谷歌的 PageRank、粉丝数），网络里就出现了层级。层级也会长出网络：每张组织架构图下面都有私下的交情；每份目录里都有“参见”这样的交叉引用。
+网络为什么这么厉害？因为它长起来不用谁批准。网页、社交媒体、论文引用，每一条链接都不用谁点头。所以网络比层级扩得快，变得也快。
 
-这对设计为什么重要？因为你从来不是只选其中一个。社交 App 是一张网，却悄悄排出了名次；公司内部的维基是层级，大家却总绕着它走。两种形状都看得见，你才能按人们实际的用法去设计。
+但赖特真正厉害的地方，是看到这两种形状**会互相催生**。网络会长出枢纽。有些节点拉到的链接比别人多得多，你一按链接数排名，比如谷歌的 PageRank、粉丝数，网络里面就冒出了层级。反过来也一样。每张组织架构图底下都有私交；每份目录里都有“参见”这种交叉引用。
 
-**看着它发生：**一个全新的 App 一开始谁也不是大 V。几个月后，十个账号拿走了大部分粉丝。没有人投票选出这个层级——是网络自己长出来的。
+那设计师为什么要在乎？因为你从来不是只选一个。社交 App 是一张网，却悄悄排出了名次。公司内部维基是个层级，可大家都绕着它走。两种形状你都看得见，才能照着人们实际怎么用来设计。
 
-**课前看过的纪录片：**沃纳·赫尔佐格的《Lo and Behold, Reveries of the Connected World》（2016，中文常译《网络迷城》/《Lo and Behold》）从互联网诞生的地方讲起——1969 年的加州大学洛杉矶分校。第一条 ARPANET 消息本来要发“LOGIN”，结果系统在发出 **“LO”** 之后就崩溃了。注意是谁造了它：大学和国防研究机构——都是**层级**。从这些机构里长出了最有名的那张**网络**，而它今天又长出了自己的新层级（少数几个平台站在顶端）。赖特说的“双向互相催生”，一个故事全讲完。`,
-      lec_trap_en: `Students define a network but skip "give rise to each other," or just say "they're connected." Tempting because the second half sounds abstract — give one example in each direction.`,
-      lec_trap_zh: `学生常只定义网络，跳过“互相催生”，或者只写“它们有联系”。后半句听起来很抽象，所以容易略过——要各举一个方向的例子。`,
-      lec_ask_en: `Ask: "Give me one way a network turns into a hierarchy." — Listen for: ranking by links / followers creates hubs and a top (PageRank, influencers).`,
-      lec_ask_zh: `问：“举一个网络变成层级的例子。”——听他说出：按链接数/粉丝数排名产生枢纽和“顶端”（PageRank、网红）。`,
-      lec_bridge_en: `Hierarchies feel artificial — but some categories feel natural. Why? That's folk taxonomy.`,
-      lec_bridge_zh: `层级感觉是人为的——可有些类别却感觉很“天然”。为什么？这就是民间分类学。`, t_en: 'Network', t_zh: '网络',
+**你看它怎么发生的：**一个新 App 刚上线，谁也不是大 V。几个月以后，十个账号拿走了大部分粉丝。没人投票选出这个层级，是网络自己长出来的。
+
+**课前那部纪录片：**沃纳·赫尔佐格的《Lo and Behold, Reveries of the Connected World》（2016，中文常译《网络迷城》/《Lo and Behold》），从互联网出生的地方讲起：1969 年，加州大学洛杉矶分校。第一条 ARPANET 消息本来要发“LOGIN”，结果发到 **“LO”**，系统就崩了。
+
+你注意是谁造的它：大学，还有国防研究机构。都是**层级**。从这些机构里长出了最有名的那张**网络**。而今天，这张网又长出了自己的新层级，就是站在顶上的那几个平台。赖特说的“双向互相催生”，一个故事就讲完了。`,
+      lec_trap_en: `Students define a network but skip "give rise to each other," or they just say "they're connected." It's tempting, because that second half sounds abstract. Give one example in each direction.`,
+      lec_trap_zh: `学生常常只定义网络，把“互相催生”跳过去，要么就写一句“它们有联系”。后半句听着太抽象，所以容易略过。记住，两个方向各举一个例子。`,
+      lec_ask_en: `Ask: "Give me one way a network turns into a hierarchy." Listen for: ranking by links / followers creates hubs and a top (PageRank, influencers).`,
+      lec_ask_zh: `问她：“说一个网络变成层级的例子。”听她说出：按链接数或粉丝数排名，就会产生枢纽和“顶端”（PageRank、网红）。`,
+      lec_bridge_en: `Hierarchies feel kind of artificial. But some categories feel totally natural. Why? That's folk taxonomy.`,
+      lec_bridge_zh: `层级感觉是人造的。可有些类别，你会觉得特别“天然”。为什么？这就是民间分类学。`, t_en: 'Network', t_zh: '网络',
       q_en: 'Wright\'s definition of a network, and what he means when he says networks and hierarchies give rise to each other.',
       q_zh: '赖特对“网络”的定义，以及他说“网络与层级相互催生”是什么意思。',
       src: 'Wright, Informatica, ch. 1',
@@ -286,32 +298,32 @@ So the history of information is a back-and-forth between the two, and neither e
     },
     {
       id: '2.3',
-      lec_open_en: `Point at a dog in a picture and ask: "What is this?" Then ask: "Why didn't you say 'a mammal' or 'a golden retriever'?"`,
-      lec_open_zh: `指着一张图里的狗问：“这是什么？”再问：“你为什么没说‘哺乳动物’，也没说‘金毛寻回犬’？”`,
-      lec_why_en: `A [[c2_folk_tax]] is how ordinary people, in everyday life, name and group living things — not scientists. The anthropologist Brent Berlin found something surprising: cultures all over the world use **the same few ranks** (unique beginner, life-form, generic, specific, varietal).
+      lec_open_en: `Point at a dog in a picture and ask: "What's this?" Then: "Why didn't you say 'a mammal'? Or 'a golden retriever'?"`,
+      lec_open_zh: `指着图里的狗问她：“这是什么？”然后再问：“你怎么不说‘哺乳动物’？也不说‘金毛寻回犬’？”`,
+      lec_why_en: `A [[c2_folk_tax]] is how ordinary people, in everyday life, name and group living things. Not scientists, just people. And the anthropologist Brent Berlin found something surprising: cultures all over the world use **the same few ranks** (unique beginner, life-form, generic, specific, varietal).
 
-Why does the "psychologically primary" category sit in the middle? Eleanor Rosch's answer: the [[c2_basic_level]] is the level where **perception and use** meet. You can picture "a dog" — a shape, how it moves, what you do with it. You can't picture "an animal" (too abstract), and "a golden retriever" needs expertise.
+So why does the "psychologically primary" category sit in the middle? Eleanor Rosch's answer: the [[c2_basic_level]] is where **perception and use** meet. You can picture "a dog": its shape, how it moves, what you do with it. You can't really picture "an animal," it's too abstract. And "a golden retriever" takes expertise.
 
-That's why the basic level is learned first by children, named fastest, and has the shortest words: dog, oak, chair. The levels above are abstractions we build later; the levels below are specialist detail.
+That's why the basic level is what kids learn first, what we name fastest, and it has the shortest words: dog, oak, chair. The levels above are abstractions we build later. The levels below are specialist detail.
 
-For design this is gold: menu labels, icons and categories work best at the basic level. "Shoes" beats "Footwear" and beats "Oxford brogues" as a first click — because that's how minds actually start.
+For design, this is gold. Menu labels, icons and categories work best at the basic level. "Shoes" beats "Footwear," and it beats "Oxford brogues," as a first click. Because that's where minds actually start.
 
-**Try it on her:** ask "What's that?" about an apple, a chair, a dog. She'll always answer at the basic level. Then ask why she didn't say "fruit" — watch her realize her brain picked the middle without asking.`,
-      lec_why_zh: `[[c2_folk_tax]]是普通人在日常生活中给生物起名和分组的方式——不是科学家的那套。人类学家布伦特·伯林发现了一件惊人的事：世界各地的文化都用**同样几个等级**（起始类、生活型、属级、种级、变种）。
+**Try it on her:** ask "What's that?" about an apple, a chair, a dog. She'll answer at the basic level every time. Then ask why she didn't say "fruit," and watch her realize her brain picked the middle without asking her.`,
+      lec_why_zh: `[[c2_folk_tax]]，就是普通人在日常生活里怎么给生物起名、怎么分组。不是科学家那一套，就是老百姓的叫法。人类学家布伦特·伯林发现了一件挺惊人的事：全世界各地的文化，用的都是**同样那几个等级**（起始类、生活型、属级、种级、变种）。
 
-为什么“心理上最基本”的类别在中间？埃莉诺·罗施的回答是：[[c2_basic_level]]是**感知和使用**交汇的那一层。“狗”你能想象出来——它的样子、怎么动、你会拿它做什么。“动物”你想象不出来（太抽象），“金毛寻回犬”则需要专业知识。
+那“心理上最基本”的类别，为什么偏偏在中间？埃莉诺·罗施是这么回答的：[[c2_basic_level]]是**感知和使用**碰头的那一层。“狗”你能想象出来，它长什么样、怎么跑、你拿它干什么。“动物”你就想象不出来，太抽象了。“金毛寻回犬”呢，又得懂行才行。
 
-所以基本层级是孩子最先学会的、说得最快的、词也最短：狗、橡树、椅子。上面的层级是我们后来才搭出来的抽象；下面的层级是专家才用的细节。
+所以基本层级是小孩最先学会的，说得最快的，词也最短：狗、橡树、椅子。往上那几层，是我们后来才搭出来的抽象；往下那几层，是专家才用的细节。
 
-这对设计很有用：菜单名称、图标和分类在基本层级最好用。第一次点击时，“鞋子”胜过“鞋类用品”，也胜过“牛津布洛克鞋”——因为人的思考本来就从这里开始。
+这对设计特别有用。菜单名、图标、分类，放在基本层级最好使。第一下点进去，“鞋子”就是比“鞋类用品”好，也比“牛津布洛克鞋”好。因为人脑本来就是从这儿开始想的。
 
-**拿她现场试：**指着苹果、椅子、狗问“这是什么？”，她每次都会用基本层级来回答。再问她为什么不说“水果”——看着她意识到，大脑没跟她商量就选了中间那层。`,
-      lec_trap_en: `Students say the middle is basic "because it's common." Tempting but circular — the reason is perception and use (what you can picture and interact with), named by Rosch.`,
-      lec_trap_zh: `学生常写中间层级最基本“因为它最常用”。这很诱人，但等于循环论证——真正的原因是感知和使用（你能想象、能互动），这是罗施提出的。`,
-      lec_ask_en: `Ask: "Why is 'chair' easier than 'furniture'?" — Listen for: you can picture and sit on a chair; furniture has no single shape or action.`,
-      lec_ask_zh: `问：“为什么‘椅子’比‘家具’更好懂？”——听他说出：椅子能想象出样子、能坐；家具没有统一的形状或动作。`,
-      lec_bridge_en: `Folk taxonomies grow without a designer. Termites go further: they build cathedrals with no plan at all.`,
-      lec_bridge_zh: `民间分类没有设计者也能长出来。白蚁更厉害：它们没有任何蓝图，却能盖出“大教堂”。`, t_en: 'Folk taxonomy', t_zh: '民间分类学',
+**拿她现场试一下：**指着苹果、椅子、狗，问“这是什么？”她每次都会用基本层级回答。然后问她怎么不说“水果”，你就看着她反应过来：大脑根本没跟她商量，自己就挑了中间那层。`,
+      lec_trap_en: `Students say the middle level is basic "because it's common." Tempting, but it's circular. The real reason is perception and use, what you can picture and interact with, and that's Rosch's point.`,
+      lec_trap_zh: `学生常写：中间那层最基本，“因为最常用”。听着挺对，其实是在绕圈子。真正的原因是感知和使用，就是你能想象出来、能跟它互动。这是罗施提出的。`,
+      lec_ask_en: `Ask: "Why is 'chair' easier than 'furniture'?" Listen for: you can picture a chair and sit on it; furniture has no single shape or action.`,
+      lec_ask_zh: `问她：“为什么‘椅子’比‘家具’好懂？”听她说出：椅子你想象得出样子，还能坐；家具没有一个统一的形状，也没有一个统一的动作。`,
+      lec_bridge_en: `Folk taxonomies grow without any designer. Termites go even further: they build cathedrals with no plan at all.`,
+      lec_bridge_zh: `民间分类没人设计，自己就长出来了。白蚁更绝：一张图纸都没有，照样盖出“大教堂”。`, t_en: 'Folk taxonomy', t_zh: '民间分类学',
       q_en: 'What is a folk taxonomy, and why does the psychologically primary category (oak, dog) sit in the middle of it rather than at the top?',
       q_zh: '什么是民间分类学？为什么心理上最基本的类别（橡树、狗）位于这个分类的中间，而不是顶端？',
       src: 'Wright, ch. 2; Berlin; Rosch',
@@ -382,32 +394,36 @@ So the most “real” category for the mind is the middle one; the top of the t
     },
     {
       id: '2.4',
-      lec_open_en: `Ask: "Termites build towers taller than a person with arches and air vents. Who's the architect?"`,
-      lec_open_zh: `先问：“白蚁能盖出比人还高、带拱门和通风道的塔。谁是建筑师？”`,
-      lec_why_en: `Nobody — and that's the point. Pierre-Paul Grassé coined [[c2_stigmergy]] in 1959 to explain it: termites don't communicate a plan; they **communicate through the environment**. A termite drops a mud pellet laced with [[c2_pheromone]]; the scent attracts the next termite to drop there; small piles become pillars; pillars that lean together become arches.
+      lec_open_en: `Ask: "Termites build towers taller than a person, with arches and air vents. So who's the architect?"`,
+      lec_open_zh: `先问她：“白蚁能盖出比人还高的塔，有拱门，还有通风道。那建筑师是谁？”`,
+      lec_why_en: `Nobody. And that's the whole point. Pierre-Paul Grassé coined [[c2_stigmergy]] in 1959 to explain it. Termites don't communicate a plan; they **communicate through the environment**.
 
-Why does this work? Because the **trace is the message**. Each action changes the shared world, and the changed world tells the next worker what to do. No boss, no meeting, no blueprint — the structure emerges from the loop act → trace → stimulus → act.
+Here's how it goes. A termite drops a mud pellet laced with [[c2_pheromone]]. The scent attracts the next termite to drop one in the same spot. Small piles become pillars, and pillars that lean together become arches.
 
-Human and digital examples follow the same logic: Wikipedia (an article's current state tells the next editor what's missing), desire paths across a lawn, GitHub issues and TODO lists, a shared kanban board.
+Why does that work? Because the **trace is the message**. Every action changes the shared world, and the changed world tells the next worker what to do. No boss, no meeting, no blueprint. The structure just emerges from the loop: act → trace → stimulus → act.
 
-Why is it in this course? Because it's how agents coordinate too. Later we'll see agents keep a plan file or a board that the next step reads — that's stigmergy with a computer.
+Human and digital examples run on the same logic. Wikipedia: an article's current state tells the next editor what's missing. Desire paths across a lawn. GitHub issues and TODO lists. A shared kanban board.
 
-**Fun fact:** the paths worn across a college lawn are called *desire paths* — some architects now wait a year, see where students walk, and only then pave those lines. Stigmergy as a design method.`,
-      lec_why_zh: `没有建筑师——这正是重点。皮埃尔-保罗·格拉塞在 1959 年提出[[c2_stigmergy]]来解释它：白蚁不交流计划，而是**通过环境来交流**。一只白蚁放下一颗带[[c2_pheromone]]的泥球；气味吸引下一只白蚁也放在这里；小堆变成柱子；互相倾斜的柱子变成拱门。
+So why is this in our course? Because it's how agents coordinate too. Later we'll see agents keep a plan file or a board that the next step reads. That's stigmergy with a computer.
 
-为什么行得通？因为**痕迹本身就是信息**。每个动作都改变了共享的世界，被改变的世界再告诉下一个工人该做什么。没有老板、没有会议、没有图纸——结构从“行动 → 痕迹 → 刺激 → 行动”的循环里自己长出来。
+**Fun fact:** those paths worn across a college lawn are called *desire paths*. Some architects now wait a year, see where students actually walk, and only then pave those lines. Stigmergy as a design method.`,
+      lec_why_zh: `没有建筑师。重点就在这儿。皮埃尔-保罗·格拉塞在 1959 年提出了[[c2_stigmergy]]这个词，就是为了解释这件事。白蚁之间不交流计划，它们是**通过环境来交流**的。
 
-人类和数字世界的例子遵循同样的逻辑：维基百科（一篇条目现在的样子告诉下一个编辑还缺什么）、草坪上被踩出来的小路、GitHub 的 issue 和待办清单、共享的看板。
+过程是这样的。一只白蚁放下一颗泥球，上面带着[[c2_pheromone]]。气味把下一只白蚁吸引过来，也放在这儿。小堆慢慢变成柱子，两根柱子互相往里斜，就成了拱门。
 
-为什么它出现在这门课里？因为智能体也是这样协作的。后面我们会看到，智能体靠一个计划文件或看板，让下一步去读——这就是用电脑实现的痕迹协作。
+这为什么行得通？因为**痕迹本身就是信息**。每个动作都改变了大家共享的这个世界，改变后的世界再告诉下一个工人该干什么。没有老板，没有开会，没有图纸。结构就从这个循环里自己长出来了：行动 → 痕迹 → 刺激 → 行动。
 
-**冷知识：**大学草坪上被踩出来的小路叫“欲望之路”（desire paths）——现在有些建筑师会先等一年，看学生们怎么走，再把那些路线铺成正式的路。这就是把痕迹协作当成设计方法。`,
-      lec_trap_en: `Students describe termites well but give a vague human example ("teamwork"). Tempting because teamwork *is* coordination — but stigmergy needs coordination **through traces left in a shared environment**, not direct talk.`,
-      lec_trap_zh: `学生常把白蚁讲得很好，人类例子却写得很空（“团队合作”）。这很诱人，因为团队合作也是协调——但痕迹协作要求的是**通过共享环境里留下的痕迹**来协调，而不是直接沟通。`,
-      lec_ask_en: `Ask: "Why is Wikipedia stigmergic but a group call isn't?" — Listen for: Wikipedia editors respond to the page's current state (the trace), not to each other directly.`,
-      lec_ask_zh: `问：“为什么维基百科算痕迹协作，开小组电话会议就不算？”——听他说出：维基编辑回应的是页面当前的状态（痕迹），而不是直接回应彼此。`,
-      lec_bridge_en: `Last question of Class 2: if one place per item is the hierarchy's weakness, how do librarians give items many places at once? Facets.`,
-      lec_bridge_zh: `第 2 课最后一题：如果“每样东西只有一个位置”是层级的弱点，那图书馆员怎么让一样东西同时有很多位置？答案是分面。`, t_en: 'Stigmergy', t_zh: '痕迹协作（Stigmergy）',
+人类和数字世界里的例子，也是同一个逻辑。维基百科：一篇条目现在的样子，告诉下一个编辑还缺什么。草坪上被踩出来的小路。GitHub 的 issue、待办清单。还有共享的看板。
+
+那它为什么会出现在这门课里？因为智能体也是这么协作的。后面我们会看到，智能体会留一个计划文件或者一块看板，让下一步去读。这就是用电脑做的痕迹协作。
+
+**冷知识：**大学草坪上被踩出来的那种小路，叫“欲望之路”（desire paths）。现在有些建筑师会先等一年，看学生们到底怎么走，然后再把那几条线铺成正式的路。这就是把痕迹协作当成了设计方法。`,
+      lec_trap_en: `Students explain the termites really well, then give a vague human example like "teamwork." Tempting, because teamwork *is* coordination. But stigmergy needs coordination **through traces left in a shared environment**, not direct talk.`,
+      lec_trap_zh: `学生常常白蚁讲得特别好，一到人类的例子就空了，写个“团队合作”。也难怪，团队合作确实也是协调。可痕迹协作要的是**通过共享环境里留下的痕迹**来协调，不是直接沟通。`,
+      lec_ask_en: `Ask: "Why does Wikipedia count as stigmergy, but a group call doesn't?" Listen for: Wikipedia editors respond to the page's current state (the trace), not to each other directly.`,
+      lec_ask_zh: `问她：“为什么维基百科算痕迹协作，开个小组电话会就不算？”听她说出：维基编辑回应的是页面现在的状态（痕迹），不是直接回应彼此。`,
+      lec_bridge_en: `Last question of Class 2. If "one place per item" is the hierarchy's weakness, how do librarians give an item many places at once? Facets.`,
+      lec_bridge_zh: `第 2 课最后一题。既然“每样东西只有一个位置”是层级的弱点，那图书馆员怎么让一样东西同时有好多个位置？答案是分面。`, t_en: 'Stigmergy', t_zh: '痕迹协作（Stigmergy）',
       q_en: 'Define stigmergy from the termites, then give a human or digital example.',
       q_zh: '从白蚁的例子出发定义“stigmergy”，再举一个人类或数字世界的例子。',
       src: '',
@@ -568,32 +584,32 @@ Why is it in this course? Because it's how agents coordinate too. Later we'll se
     },
     {
       id: '2.5',
-      lec_open_en: `Ask: "On a shopping site you filter by size, color, price and brand at the same time. Why can't a library shelf do that?"`,
-      lec_open_zh: `先问：“在购物网站上，你可以同时按尺码、颜色、价格、品牌筛选。为什么图书馆书架做不到？”`,
-      lec_why_en: `Dewey's system is **descended**: start at a top class (700 Arts), go down (780 Music), and the book ends up in one spot (781.65 Jazz). Every subject must be decided in advance, and an item lives in exactly one branch.
+      lec_open_en: `Ask: "On a shopping site you can filter by size, color, price and brand, all at once. So why can't a library shelf do that?"`,
+      lec_open_zh: `先问她：“购物网站上，你可以同时按尺码、颜色、价格、品牌来筛。那图书馆的书架为什么做不到？”`,
+      lec_why_en: `Dewey's system is **descended**. You start at a top class (700 Arts), go down (780 Music), and the book ends up in one spot (781.65 Jazz). Every subject has to be decided in advance, and an item lives in exactly one branch.
 
-Ranganathan's [[c2_pmest]] (and the [[c2_udc]]) is **composed**: you describe a work along independent [[c2_facet]]s — Personality, Matter, Energy, Space, Time — and combine the values with signs into a class number: jazz, piano, improvisation, New York, 1950s. Nothing has to be pre-listed; new combinations are built on the spot.
+Ranganathan's [[c2_pmest]] (and the [[c2_udc]]) is **composed**. You describe a work along independent [[c2_facet]]s: Personality, Matter, Energy, Space, Time. Then you combine the values with signs into a class number: jazz, piano, improvisation, New York, 1950s. Nothing has to be listed ahead of time. New combinations get built on the spot.
 
-Why does this matter for tagging and search? Because a composed system gives each item **many access points**. You can find the same record by any facet, in any order, and narrow step by step — exactly what [[c2_faceted_search]] does on every shopping and library website.
+Why does that matter for tagging and search? Because a composed system gives each item **many access points**. You can find the same record by any facet, in any order, and narrow it down step by step. That's exactly what [[c2_faceted_search]] does on every shopping and library website.
 
-The deeper why: composition matches how the world really is — things are many-sided. A descended tree forces one side to win.
+And the deeper why: composition matches how the world really is. Things are many-sided. A descended tree forces one side to win.
 
-**Everyday proof:** every time she filters shoes by size 7 + black + under $80, she's doing Ranganathan's work from the 1930s — composing a class on the fly.`,
-      lec_why_zh: `杜威的体系是**往下走的**：从顶层大类开始（700 艺术），往下（780 音乐），书最后落在一个位置（781.65 爵士）。所有主题都得预先定好，一件东西只能待在一个分支里。
+**Everyday proof:** every time she filters shoes by size 7 + black + under $80, she's doing Ranganathan's work from the 1930s, composing a class on the fly.`,
+      lec_why_zh: `杜威的体系是**往下走的**。从最上面的大类开始（700 艺术），往下走（780 音乐），书最后落在一个位置上（781.65 爵士）。所有主题都得事先定好，一件东西只能待在一个分支里。
 
-阮冈纳赞的[[c2_pmest]]（以及[[c2_udc]]）是**组合出来的**：你沿着几个彼此独立的[[c2_facet]]——本体、物质、动力、空间、时间——来描述一部作品，再用符号把各个值拼成一个分类号：爵士、钢琴、即兴、纽约、1950 年代。什么都不用提前列好，新组合当场就能拼出来。
+阮冈纳赞的[[c2_pmest]]（还有[[c2_udc]]）是**组合出来的**。你沿着几个互相独立的[[c2_facet]]来描述一部作品：本体、物质、动力、空间、时间。然后用符号把这些值拼成一个分类号，比如：爵士、钢琴、即兴、纽约、1950 年代。什么都不用提前列好，新的组合当场就能拼出来。
 
-这对标签和搜索为什么重要？因为组合式体系给每件东西**很多个入口**。你可以从任何一个分面、按任何顺序找到同一条记录，再一步步缩小范围——这正是每个购物网站和图书馆网站上的[[c2_faceted_search]]在做的事。
+这对标签和搜索有什么意义？组合式的体系，给每件东西开了**很多个入口**。同一条记录，你从哪个分面进去都行，什么顺序都行，再一步步缩小范围。每个购物网站、图书馆网站上的[[c2_faceted_search]]，干的就是这个。
 
-更深一层的“为什么”：组合式体系更贴近世界真实的样子——事物本来就是多面的。往下走的树，会逼着其中一面胜出。
+再往深一层说：组合式更贴近世界本来的样子。东西本来就是多面的。往下走的那棵树，非得逼其中一面赢。
 
-**生活里的证据：**每次她筛选“7 码 + 黑色 + 80 美元以下”的鞋子时，她都在做阮冈纳赞 1930 年代就提出的事——当场“拼”出一个分类。`,
-      lec_trap_en: `Students describe PMEST letters but don't say what *changes* or why it matters for search. Tempting because memorizing the acronym feels like the answer — the answer is "many access points vs. one location."`,
-      lec_trap_zh: `学生常只解释 PMEST 五个字母，却不说“改变了什么”、对搜索为什么重要。背出缩写感觉就是答案了，所以容易掉进去——真正的答案是“很多入口 vs 一个位置”。`,
-      lec_ask_en: `Ask: "Why is a shopping-site filter faceted, not Dewey?" — Listen for: you combine independent attributes in any order; the item isn't stuck in one branch.`,
-      lec_ask_zh: `问：“为什么购物网站的筛选是分面式的，不是杜威式的？”——听他说出：可以按任意顺序组合彼此独立的属性；商品不会被卡在一个分支里。`,
-      lec_bridge_en: `That's how humans organize knowledge. Next class: how a machine organizes it — in layers of numbers.`,
-      lec_bridge_zh: `这是人类组织知识的方式。下一课：机器怎么组织知识——用一层层的数字。`, t_en: 'Faceted classification', t_zh: '分面分类',
+**生活里就有证据：**她每次筛“7 码 + 黑色 + 80 美元以下”的鞋，其实就是在做阮冈纳赞 1930 年代提出的事，当场“拼”出一个分类。`,
+      lec_trap_en: `Students explain the PMEST letters but never say what *changes*, or why it matters for search. It's tempting, because memorizing the acronym feels like the answer. The actual answer is "many access points vs. one location."`,
+      lec_trap_zh: `学生常常把 PMEST 五个字母解释一遍就完了，不说“变了什么”，也不说对搜索为什么重要。因为背出缩写，感觉就像答完了。其实真正的答案是：“很多入口 vs 一个位置”。`,
+      lec_ask_en: `Ask: "Why is a shopping-site filter faceted, and not Dewey?" Listen for: you combine independent attributes in any order; the item isn't stuck in one branch.`,
+      lec_ask_zh: `问她：“购物网站的筛选，为什么是分面式的，不是杜威式的？”听她说出：可以按任意顺序组合互相独立的属性；商品不会卡死在一个分支里。`,
+      lec_bridge_en: `So that's how humans organize knowledge. Next class: how a machine does it, in layers of numbers.`,
+      lec_bridge_zh: `这就是人类组织知识的办法。下一课，我们看机器怎么做：用一层又一层的数字。`, t_en: 'Faceted classification', t_zh: '分面分类',
       q_en: 'What changes when a classification is composed (UDC, Ranganathan\'s PMEST) rather than descended (Dewey)? Why does this matter for tagging and search?',
       q_zh: '当分类是“组合出来的”（UDC、阮冈纳赞的 PMEST）而不是“沿树往下找的”（杜威）时，有什么改变？这对标签和搜索为什么重要？',
       src: 'Wright, appendixes A–E',
