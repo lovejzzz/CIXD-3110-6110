@@ -1174,3 +1174,7 @@ body.lang-both .vm-sec .vt-k .en { display: none; }
 body.lang-both .vm-sec .vr-head .en { font: 400 14px/1.4 var(--serif) !important; color: var(--mute); margin-top: 4px; }
 #vm-intro.bi { display: block; }
 .vw { max-width: var(--vw); margin-left: auto; margin-right: auto; }
+.vm-shot { margin: 18px 0 20px; }
+.vm-shot img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid #2a2a26; }
+.vm-shot figcaption { margin-top: 12px; }
+.vm-shot figcaption .tx p { font-size: 14px; line-height: 1.75; color: var(--ink2); }
