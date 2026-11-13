@@ -1,140 +1,137 @@
-/* Renders the Variable Machine appendix from data/vm.js into #vm. */
+/* Renders the Variable Machine appendix from data/vm.js into #vm.
+   Layout: short intro → the four ways → four worked examples, each as numbered steps
+   ending in a clear "Result" panel and a one-line takeaway → a recap table → install. */
 (function () {
   const V = window.VM, host = document.getElementById('vm-body');
   if (!V || !host) return;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
-  const bi = (en, zh, tag = 'p') => `<${tag} class="en">${md(en)}</${tag}><${tag} class="zh">${md(zh)}</${tag}>`;
-  const biBlock = (en, zh) => `<div class="bi"><div class="en">${[].concat(en).map(x => `<p>${md(x)}</p>`).join('')}</div><div class="zh">${[].concat(zh).map(x => `<p>${md(x)}</p>`).join('')}</div></div>`;
+  const T = (en, zh) => `<span class="en">${md(en)}</span><span class="zh">${md(zh)}</span>`;           // short label, both shown
+  const P = (en, zh) => `<div class="tx"><p class="en">${md(en)}</p><p class="zh">${md(zh)}</p></div>`;  // prose, one language shown
+  const isHex = v => /^#[0-9a-f]{6}$/i.test(v);
   const qa = ids => ids.map(i => `<a class="vm-q" href="#q${i.replace('.', '-')}">${i}</a>`).join('');
-  const pre = s => `<pre class="vm-out">${esc(s)}</pre>`;
-  const sw = hex => /^#[0-9a-f]{6}$/i.test(hex) ? `<span class="vm-sw" style="background:${hex}"></span><code>${hex}</code>` : '';
-  const head = (n, en, zh, way, q) => `<header class="vm-h"><span class="vm-num">${n}</span><div><div class="vm-way">${esc(way)} · ${qa(q)}</div><h3><span class="en">${esc(en)}</span><span class="zh">${esc(zh)}</span></h3></div></header>`;
-  const lesson = (en, zh) => `<div class="vm-lesson"><div class="vm-lk"><span class="en">What this shows</span><span class="zh">这说明了什么</span></div>${biBlock(en, zh)}</div>`;
+  const out = s => `<pre class="vm-out">${esc(s)}</pre>`;
+  const cmd = s => `<pre class="vm-cmd">${esc(s).split('\n').map(l => '<span class="pr">$</span> ' + l).join('\n')}</pre>`;
+  const hexOut = v => isHex(v) ? `<div class="vm-hexout"><span class="vm-chip" style="background:${v}"></span><code>${v}</code></div>` : out(v);
 
-  /* small line chart */
-  function chart(series, { w = 520, h = 170, ymax, label }) {
-    const xs = series.flatMap(s => s.pts.map(p => p[0])), xmax = Math.max(...xs);
-    ymax = ymax || Math.max(...series.flatMap(s => s.pts.map(p => p[1])));
-    const L = 34, B = 24, X = x => L + (x / xmax) * (w - L - 10), Y = y => 8 + (1 - y / ymax) * (h - B - 8);
-    const grid = [0, ymax / 2, ymax].map(y => `<line x1="${L}" x2="${w - 10}" y1="${Y(y)}" y2="${Y(y)}" class="g"/><text x="${L - 6}" y="${Y(y) + 4}" text-anchor="end">${+y.toFixed(2)}</text>`).join('');
-    const lines = series.map(s => `<polyline points="${s.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" style="stroke:${s.c}"/>` +
-      s.pts.filter((p, i) => i === 0 || i === s.pts.length - 1).map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.5" style="fill:${s.c}"/><text x="${X(p[0]) + (p[0] === 1 ? 7 : -7)}" y="${Y(p[1]) - 8}" text-anchor="${p[0] === 1 ? 'start' : 'end'}" class="v">${p[1]}</text>`).join('')).join('');
-    return `<svg class="vm-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">${grid}<text x="${w - 10}" y="${h - 4}" text-anchor="end">step →</text>${lines}</svg>`;
+  const step = (k, en, zh, body) => `<li class="vs"><div class="vs-n">${k}</div><div class="vs-b"><h4>${T(en, zh)}</h4>${body}</div></li>`;
+  const result = (body) => `<div class="vr"><div class="vr-k">${T('Result', '结果')}</div>${body}</div>`;
+  const take = (en, zh) => `<div class="vt"><span class="vt-k">${T('In one sentence', '一句话')}</span>${P(en, zh)}</div>`;
+  const ex = (n, en, zh, way, q, steps, res, tk) => `<article class="vx" id="vx-${n}">
+    <header class="vx-h"><span class="vx-n">${n}</span><div><div class="vx-meta">${esc(way)} ${qa(q)}</div><h3><span class="zh">${esc(zh)}</span><span class="en">${esc(en)}</span></h3></div></header>
+    <ol class="vs-list">${steps.join('')}</ol>${result(res)}${tk}</article>`;
+
+  function chart(pts, color, ymax, label) {
+    const w = 460, h = 150, L = 30, B = 20, xmax = pts[pts.length - 1][0];
+    const X = x => L + (x / xmax) * (w - L - 12), Y = y => 10 + (1 - y / ymax) * (h - B - 10);
+    const first = pts[0], last = pts[pts.length - 1];
+    return `<svg class="vm-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">
+      ${[0, ymax].map(y => `<line x1="${L}" x2="${w - 12}" y1="${Y(y)}" y2="${Y(y)}" class="g"/><text x="${L - 6}" y="${Y(y) + 4}" text-anchor="end">${y}</text>`).join('')}
+      <polyline points="${pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" style="stroke:${color}"/>
+      <circle cx="${X(first[0])}" cy="${Y(first[1])}" r="4" style="fill:${color}"/><text class="v" x="${X(first[0]) + 9}" y="${Y(first[1]) + 4}">${first[1]}</text>
+      <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="4" style="fill:${color}"/><text class="v" x="${X(last[0])}" y="${Y(last[1]) - 10}" text-anchor="end">${last[1]}</text>
+      <text x="${w - 12}" y="${h - 3}" text-anchor="end">${xmax} steps</text></svg>`;
   }
 
-  /* 0 · intro + map */
-  const map = `<div class="vm-ways">${V.ways.map(w => `<div class="vm-w"><div class="vm-w-k"><span class="en">${w.en}</span><span class="zh">${w.zh}</span><small>${esc(w.tab)}</small></div>${bi(w.d_en, w.d_zh)}<div class="vm-w-q">${qa(w.q)}</div></div>`).join('')}</div>`;
+  /* ── intro: the four ways ── */
+  const ways = `<div class="vw">${V.ways.map((w, i) => `<a class="vw-i" href="#vx-${i + 1}"><span class="vw-n">${i + 1}</span><span class="vw-t">${T(w.en, w.zh)}</span><small>${esc(w.tab)}</small><span class="vw-d">${P(w.d_en, w.d_zh)}</span><span class="vw-q">${w.q.join(' · ')}</span></a>`).join('')}</div>`;
 
-  /* 1 · words */
+  /* ── 1 · words ── */
   const C = V.crit;
-  const mf = `<div class="vm-mf">${C.modelfile.map(([l, k]) => `<div class="mf-l mf-${k}"><code>${esc(l)}</code><span class="mf-tag">${{ w: '<span class="en">names the weights</span><span class="zh">唯一指定权重的一行</span>', s: '<span class="en">instructions in front</span><span class="zh">放在前面的说明</span>', p: '<span class="en">sampling setting</span><span class="zh">生成参数</span>', m: '<span class="en">one example exchange</span><span class="zh">一组示范对话</span>' }[k]}</span></div>`).join('')}</div>`;
-  const ex1 = `<article class="vm-ex">${head(1, 'Studio crit: change it with words', '评图老师：只用“话”改变它', 'Modelfile', ['8.1'])}
-    ${biBlock(['A Modelfile turns `smollm2:1.7b` into a design critic who always answers in exactly three lines: *What works / What doesn’t / Try next*.'.replace(/\*/g, ''), 'Read the file line by line:'],
-      ['用一个 Modelfile，把 `smollm2:1.7b` 变成一位“评图老师”：不管你描述什么作品，它都只回三行：做得好的、不够好的、下一步试试。', '一行一行看这个文件：'])}
-    ${mf}
-    <div class="vm-prompt"><span class="en">Same question to both:</span><span class="zh">问两个模型同一句话：</span> <q>${esc(C.prompt)}</q></div>
-    <div class="vm-ba">
-      <div class="vm-col"><div class="vm-col-h"><code>${C.base}</code><span class="en">original</span><span class="zh">原模型</span></div>${pre(C.before.text)}<div class="vm-tok"><i style="width:100%"></i><b>${C.before.tokens} tokens</b></div></div>
-      <div class="vm-col good"><div class="vm-col-h"><code>${C.name}</code><span class="en">with the Modelfile</span><span class="zh">套上 Modelfile 后</span></div>${pre(C.after.text)}<div class="vm-tok"><i style="width:${C.after.tokens / C.before.tokens * 100}%"></i><b>${C.after.tokens} tokens</b></div></div>
-    </div>
-    ${lesson(['Only `FROM` names weights. `SYSTEM`, `PARAMETER` and `MESSAGE` are text placed in front of the *same* model. The behaviour changed completely, from a 318-token how-to list to a 61-token, three-line crit, and not one weight moved. That is exactly the 8.1 answer.'.replace(/\*/g, '')],
-      ['整份文件里只有 `FROM` 这一行指定了权重。`SYSTEM`、`PARAMETER`、`MESSAGE` 都只是放在**同一个**模型前面的文字。行为彻底变了：从 318 个 token 的“五步教程”变成 61 个 token 的三行点评，可权重一个数都没动。这正是 8.1 的答案。'])}
-  </article>`;
+  const mfTag = { w: T('the only line that names weights', '唯一指定权重的一行'), s: T('instructions in front', '放在前面的说明'), p: T('setting', '生成参数'), m: T('an example', '示范对话') };
+  const mf = `<div class="vm-mf">${C.modelfile.map(([l, k]) => `<div class="mf-l mf-${k}"><code>${esc(l)}</code><span class="mf-tag">${mfTag[k]}</span></div>`).join('')}</div>`;
+  const ex1 = ex(1, 'Studio crit: change it with words', '评图老师：只改“话”', 'Modelfile', ['8.1'], [
+    step(1, 'Start: ask the original model', '起点：先问原模型', P(`Ask \`${C.base}\` about a cardboard chair. It answers with a 318-token, five-step how-to (glue, sandpaper, paint). It isn’t a critique at all.`, `问原模型 \`${C.base}\`：“我用纸筒做了把椅子，能坐但会晃，棕色看着有点廉价。”它回了一份 318 个 token 的五步教程：涂胶、打磨、刷漆。根本不是点评。`)),
+    step(2, 'Change: write a Modelfile', '改法：写一个 Modelfile', P('Four kinds of line. Only the first one touches weights; the rest is text placed in front of the same model.', '一共四种行。只有第一行跟权重有关，其余都是放在同一个模型前面的文字。') + mf),
+    step(3, 'Run: one command', '运行：一条命令', cmd(C.cmd))
+  ], `<div class="vr-head">${T('318 → 61 tokens. A three-line crit. Weights changed: 0.', '318 → 61 个 token，变成三行点评。权重改动：0。')}</div>
+    <div class="vm-ba"><div class="vm-col"><div class="vm-col-h">${T('before', '之前')} · <code>${C.base}</code></div>${out(C.before.text)}<div class="vm-tok"><i style="width:100%"></i>${C.before.tokens}</div></div>
+    <div class="vm-col good"><div class="vm-col-h">${T('after', '之后')} · <code>${C.name}</code></div>${out(C.after.text)}<div class="vm-tok"><i style="width:${C.after.tokens / C.before.tokens * 100}%"></i>${C.after.tokens}</div></div></div>`,
+    take('Only FROM names the weights; everything else in a Modelfile only changes how the same weights are used.', 'Modelfile 里只有 FROM 指定权重，其余各行只改变同一套权重怎么用。行为可以大变，权重一个数都不动。'));
 
-  /* 2 · examples */
+  /* ── 2 · examples ── */
   const H = V.hex;
-  const dist = `<div class="vm-dist">${H.dist.map(d => `<div class="vm-d"><span class="vm-d-l"><span class="en">${esc(d.en)}</span><span class="zh">${esc(d.zh)}</span></span><span class="vm-d-bar"><i style="width:${d.v / 441 * 100}%"></i></span><b>${d.v}</b></div>`).join('')}<div class="vm-d-scale"><span class="en">0 = exact colour · 441 = as far as black is from white</span><span class="zh">0 = 颜色完全对 · 441 = 黑和白之间的距离</span></div></div>`;
-  const hexChat = `<div class="vm-hexes">${H.chat.map(c => `<div class="vm-hx${c.miss ? ' miss' : ''}"><span class="vm-big" style="background:${c.a}"></span><div><q>${esc(c.p)}</q><div>${sw(c.a)}${c.miss ? '<span class="vm-flag"><span class="en">plum came back beige</span><span class="zh">要紫红，给了米色</span></span>' : ''}</div></div></div>`).join('')}</div>`;
-  const ex2 = `<article class="vm-ex">${head(2, 'Colour → hex: change it with examples', '颜色 → 色号：用“例子”训练它', 'Train · LoRA', ['8.2', '8.3'])}
-    ${biBlock([`Data: ${H.rows.toLocaleString()} colours, each a description and its hex code. For example “${H.sample.q}” → \`${H.sample.a}\`. They trained a LoRA adapter on the 360M model: rank ${H.rank}, ${H.layers} layers, ${H.iters} steps.`],
-      [`数据是 3,000 条颜色，每条一句描述配一个色号，比如 “${H.sample.q}” → \`${H.sample.a}\`。在 360M 的小模型上训练一个 LoRA 适配器：rank ${H.rank}，${H.layers} 层，${H.iters} 步。`])}
-    <pre class="vm-cmd">$ ${esc(H.cmd)}</pre>
-    <div class="vm-two">
-      <figure><figcaption><span class="en">Validation loss (questions it never trained on)</span><span class="zh">验证集 loss（它没练过的题）</span></figcaption>${chart([{ pts: H.val, c: '#3e9c52' }], { ymax: 6, label: 'validation loss 5.67 to about 1.0' })}</figure>
-      <figure><figcaption><span class="en">How far off are its colours? (60 held-out descriptions)</span><span class="zh">它给的颜色差多远？（60 条没见过的描述）</span></figcaption>${dist}</figure>
-    </div>
-    <div class="vm-prompt"><span class="en">Before training, the base model just writes a paragraph:</span><span class="zh">训练前，原模型只会写一段话：</span> <q>${esc(H.chat[0].before)}</q></div>
-    <div class="vm-prompt"><span class="en">After training, only a hex code:</span><span class="zh">训练后，只回一个色号：</span></div>
-    ${hexChat}
-    ${lesson(['The adapter taught a new **habit**: every answer is now a hex code and nothing else. Loss fell fast: from 5.67 to 1.3 in the first 50 steps, then it crept down to about 1.0 and flattened. But look at the facts: on average it is 44.6 away from the true colour, far better than guessing (167.8) but not exact, and “dusty plum” came back beige. That is 8.2 in one picture: adapters are great at changing **form and style**, weaker at getting **facts** right. And it is 8.3: a falling loss means it is learning to imitate the answers; you still have to look at the outputs.', 'One more lesson from the records: the first run silently used the bigger 1.7B base even though it was named “360M”, so it could not be blended later. An adapter only works with the exact base it was trained on.'],
-      ['适配器教会了它一个新**习惯**：不管问什么，只回一个色号。loss 降得很快：前 50 步就从 5.67 掉到 1.3，之后慢慢挪到 1 左右，就平了。可是看“事实”：平均离正确颜色差 44.6，比瞎猜（167.8）好得多，但并不准，“灰紫红”还给成了米色。这就是 8.2：适配器很会改**形式和风格**，不太会教准**事实**。这也是 8.3：loss 下降只说明它在学着模仿，输出好不好还得你亲眼看。', '记录里还有个小插曲：第一次训练时，名字写着 360M，实际却默认用了更大的 1.7B 底模，结果后来没法和 360M 的俳句适配器混合。适配器只能配它当初训练用的那个底模。'])}
-  </article>`;
+  const ex2 = ex(2, 'Colour → hex: change it with examples', '颜色 → 色号：用“例子”训练', 'Train · LoRA', ['8.2', '8.3'], [
+    step(1, 'Start: the small model can’t do it', '起点：小模型做不到', P(`Ask the 360M model “The green of a tennis ball at dusk.” It writes a paragraph about the scene, not a colour code.`, '问 360M 的小模型：“黄昏时网球的那种绿。”它写了一段风景描写，没有给色号。') + out(H.chat[0].before)),
+    step(2, 'Data: 3,000 examples', '准备数据：3,000 个例子', P(`Each row is a description and the hex code we want. 5% is kept aside as questions it never trains on.`, '每一行是“一句颜色描述 → 想要的色号”。留出 5% 不给它练，专门用来检验。') +
+      `<div class="vm-row"><span class="vm-row-q">“${esc(H.sample.q)}”</span><span class="vm-arrow">→</span>${hexOut(H.sample.a)}</div>` + cmd(H.dataCmd)),
+    step(3, 'Train: an adapter, 1,500 steps', '训练：学一个适配器，1,500 步', cmd(H.cmd) + P('Loss is “how wrong its guesses are” on the questions it didn’t train on. It drops fast, then flattens:', 'loss 就是它在没练过的题上“猜错的程度”。一开始掉得很快，后来就平了：') + `<figure class="vm-fig">${chart(H.val, '#3e9c52', 6, 'validation loss 5.67 to 1.0')}</figure>`)
+  ], `<div class="vr-head">${T('Every answer is now a hex code. Close, but not exact.', '现在它只回色号。颜色大致对，但不精确。')}</div>
+    <div class="vm-hexes">${H.chat.map(c => `<div class="vm-hx${c.miss ? ' miss' : ''}"><span class="vm-chip lg" style="background:${c.a}"></span><div><div class="vm-hx-q">“${esc(c.p)}”</div><code>${c.a}</code>${c.miss ? `<span class="vm-flag">${T('asked for plum, got beige', '要紫红，给了米色')}</span>` : ''}</div></div>`).join('')}</div>
+    <div class="vm-meter"><div class="vm-meter-h">${T('How far off, on 60 descriptions it never saw (0 = exact, 441 = black vs white)', '在 60 条没见过的描述上差多远（0 = 完全对，441 = 黑和白的距离）')}</div>
+      ${[H.dist[0], H.dist[2]].map((d, i) => `<div class="vm-d"><span>${T(d.en, d.zh)}</span><span class="vm-d-bar"><i class="${i ? 'gray' : ''}" style="width:${d.v / 441 * 100}%"></i></span><b>${d.v}</b></div>`).join('')}</div>`,
+    take('An adapter is great at teaching a habit or format; it is weak at getting facts exactly right, and a falling loss only means it is learning to imitate.', '适配器很会教“习惯和格式”，不太会教准“事实”；loss 下降只说明它在学着模仿，好不好还得看输出。') +
+    `<p class="vm-note">${T('Side note from the records: the first run was named “360M” but silently trained on the larger 1.7B base, so it couldn’t be blended later. An adapter only fits the exact base it was trained on.', '记录里的小插曲：第一次训练名字写着 360M，实际却用了更大的 1.7B 底模，后来就没法混合。适配器只认它训练时用的那个底模。')}</p>`);
 
-  /* 3 · taste */
+  /* ── 3 · taste ── */
   const K = V.haiku;
-  const evalT = `<table class="vm-tbl"><thead><tr><th></th><th><span class="en">three lines</span><span class="zh">是三行</span></th><th><span class="en">exact 5-7-5</span><span class="zh">严格 5-7-5</span></th><th><span class="en">mean score / 4</span><span class="zh">平均分 / 4</span></th></tr></thead><tbody>${K.eval.map(r => `<tr><td><span class="en">${esc(r.en)}</span><span class="zh">${esc(r.zh)}</span></td><td>${r.three}</td><td>${r.exact}</td><td><span class="vm-mbar"><i style="width:${r.mean / 4 * 100}%"></i></span>${r.mean2 ? r.mean2 + '–' : ''}${r.mean}</td></tr>`).join('')}</tbody></table>`;
-  const ex3 = `<article class="vm-ex">${head(3, 'Haiku that keep 5-7-5: change it with taste', '守住 5-7-5 的俳句：用“品味”调它', 'Prefer · DPO', ['8.4'])}
-    ${biBlock([`They made the preference pairs themselves. For ${K.topics} topics, the small model wrote a haiku and a bigger model (qwen3:4b) wrote one asked for 5-7-5. A simple rule counted lines and syllables. When the big model’s haiku scored 4/4 and the small one’s didn’t, that became a pair: **chosen** = the 5-7-5 one, **rejected** = the small model’s. ${K.pairs} pairs passed (${K.train} to train, ${K.held} held out).`],
-      [`偏好数据是他们自己做的：选了 ${K.topics} 个题目，小模型写一首俳句，大模型（qwen3:4b）按 5-7-5 要求也写一首。再用一条简单规则数行数和音节。大模型那首拿满 4 分、小模型那首没拿满，就组成一对：**选中** = 守格律的那首，**拒绝** = 小模型的那首。最后合格 ${K.pairs} 对（${K.train} 对训练，${K.held} 对留着检验）。`])}
-    <div class="vm-pair"><div class="vm-prompt"><q>${esc(K.pair.p)}</q></div><div class="vm-ba"><div class="vm-col good"><div class="vm-col-h"><span class="en">chosen</span><span class="zh">选中</span> · 5-7-5</div>${pre(K.pair.chosen)}</div><div class="vm-col bad"><div class="vm-col-h"><span class="en">rejected</span><span class="zh">拒绝</span></div>${pre(K.pair.rejected)}</div></div></div>
-    <div class="vm-two">
-      <figure><figcaption><span class="en">Plain DPO: validation loss heads to zero…</span><span class="zh">普通 DPO：验证 loss 一路掉到接近 0……</span></figcaption>${chart([{ pts: K.collapsedLoss, c: '#d9474f' }], { ymax: 0.8, label: 'collapsed DPO validation loss 0.693 to 0.027' })}</figure>
-      <figure><figcaption><span class="en">…and this is what it writes</span><span class="zh">……可它写出来的是这个</span></figcaption>${pre(K.collapsedSample)}<p class="vm-small"><span class="en">Chosen haiku averaged ${K.chosenChars} characters, rejected ones ${K.rejectedChars}. The easiest difference to learn was “write less”.</span><span class="zh">选中的俳句平均 ${K.chosenChars} 个字符，被拒的平均 ${K.rejectedChars} 个。最容易学到的区别就是“写短一点”。</span></p></figure>
-    </div>
-    <pre class="vm-cmd">$ ${esc(K.cmd)}</pre>
-    ${evalT}
-    <div class="vm-prompt"><span class="en">A 4/4 answer from the fixed model:</span><span class="zh">修好之后的模型拿满分的一首：</span></div>${pre(K.best)}
-    ${lesson(['DPO doesn’t show the model the right answer; it shows **which of two it should prefer**, so the data is a record of someone’s taste (here, a rule for 5-7-5). The failure is the best part: plain DPO drove its loss toward zero and still fell apart into “keyboards keyboard keys…”, because it learned the cheapest difference between the pairs (shorter) instead of the one they meant (form). A perfect loss, a broken model. The fix, `--sft 1`, also pulls the model toward actually writing the chosen haiku while the preference moves. After that every answer was three lines (12/12) and the mean score rose from 1.33 to 1.83–2.42.'],
-      ['DPO 不是告诉模型“正确答案是什么”，而是告诉它“**两个里面更喜欢哪个**”，所以这种数据记录的是某个人的品味，这里就是“守 5-7-5”这条规矩。最精彩的是失败的那次：普通 DPO 把 loss 压到接近 0，写出来却是“keyboards keyboard keys……”这种碎片。因为它学到的是两组数据之间最省事的区别（短），而不是我们真正想要的区别（格律）。loss 完美，模型却坏了。修法是加上 `--sft 1`，在调偏好的同时，也拉着模型真的去写那首被选中的俳句。修好后每一首都是三行（12/12），平均分从 1.33 升到 1.83–2.42。'])}
-  </article>`;
+  const bars = rows => `<div class="vm-bars">${rows.map(r => `<div class="vm-br${r.cls ? ' ' + r.cls : ''}"><span class="vm-br-l">${T(r.en, r.zh)}</span><span class="vm-br-bar"><i style="width:${r.v / 4 * 100}%"></i></span><b>${r.lbl}</b><span class="vm-br-s">${r.sub}</span></div>`).join('')}</div>`;
+  const ex3 = ex(3, 'Haiku that keep 5-7-5: change it with taste', '守 5-7-5 的俳句：用“品味”调', 'Prefer · DPO', ['8.4'], [
+    step(1, 'Start: the small model ignores the form', '起点：小模型不管格律', P('Asked for 12 haiku, the base model wrote 3 lines in 10 of them but got exactly 5-7-5 only once. Mean score 1.33 out of 4.', '让原模型写 12 首俳句：10 首是三行，可严格 5-7-5 的只有 1 首。平均分 1.33 / 4。')),
+    step(2, 'Data: pairs, “this one, not that one”', '准备数据：一对一对，“要这个，不要那个”', P(`For ${K.topics} topics, a bigger model wrote a 5-7-5 haiku and the small model wrote its own. A simple rule counted syllables. ${K.pairs} pairs passed.`, `选 ${K.topics} 个题目，大模型写一首守格律的，小模型写一首自己的，再用一条简单规则数音节。合格的有 ${K.pairs} 对。`) +
+      `<div class="vm-ba"><div class="vm-col good"><div class="vm-col-h">${T('chosen', '选中')} · 5-7-5</div>${out(K.pair.chosen)}</div><div class="vm-col bad"><div class="vm-col-h">${T('rejected', '拒绝')}</div>${out(K.pair.rejected)}</div></div>`),
+    step(3, 'First try: it broke', '第一次训练：坏了', P('Plain DPO pushed its loss almost to zero. It looked perfect. Then it wrote this:', '普通 DPO 把 loss 压到几乎为 0，看起来完美。然后它写出了这个：') +
+      `<div class="vm-ba"><figure class="vm-fig">${chart(K.collapsedLoss, '#d9474f', 0.8, 'collapsed DPO loss 0.693 to 0.027')}</figure><div>${out(K.collapsedSample)}${P(`Why: chosen haiku averaged ${K.chosenChars} characters, rejected ones ${K.rejectedChars}. The cheapest difference to learn was “write less”, not “keep the form”.`, `原因：选中的俳句平均 ${K.chosenChars} 个字符，被拒的 ${K.rejectedChars} 个。它学到的是最省事的区别“写短点”，而不是“守格律”。`)}</div></div>`),
+    step(4, 'Fix: add --sft 1 and train again', '修正：加上 --sft 1 再训练', P('The new option also pulls the model toward actually writing the chosen haiku while the preference moves.', '这个选项让模型在“偏向好的那首”的同时，也真的去学写那首被选中的俳句。') + cmd(K.cmd))
+  ], `<div class="vr-head">${T('Every answer is three lines now, and the score went up.', '现在每首都是三行，分数也上去了。')}</div>
+    ${bars([{ en: 'original', zh: '原模型', v: 1.33, lbl: '1.33', sub: T('3 lines 10/12', '三行 10/12') },
+      { en: 'plain DPO (broken)', zh: '普通 DPO（坏了）', v: 0.17, lbl: '0.17', sub: T('3 lines 2/12', '三行 2/12'), cls: 'bad' },
+      { en: 'fixed (two samplings)', zh: '修好后（两次采样）', v: 2.42, lbl: '1.83–2.42', sub: T('3 lines 12/12', '三行 12/12'), cls: 'good' }])}
+    <div class="vm-best"><span>${T('A 4/4 answer', '满分的一首')}</span>${out(K.best)}</div>`,
+    take('Preference data teaches which answer to lean toward, so it records someone’s taste; and a perfect loss can still be a broken model.', '偏好数据教的是“更喜欢哪个”，记录的是人的品味；而且 loss 再完美，模型也可能是坏的。'));
 
-  /* 4 · blend */
+  /* ── 4 · blend ── */
   const B = V.blend;
-  const stopsBtns = B.stops.map((s, i) => `<button class="vm-stop${i === 1 ? ' on' : ''}" data-i="${i}">t = ${s.t}</button>`).join('');
-  const ex4 = `<article class="vm-ex">${head(4, 'Colour + haiku: blend', '颜色 + 俳句：混合', 'Merge', ['8.5'])}
-    ${biBlock(['Both adapters were trained on the same 360M base, so they can be blended: **W = (1 − t)·A + t·B**, where A is the colour adapter and B the haiku adapter. t = 0 is all colour, t = 1 is all haiku. The merge stacks the two adapters side by side, so the result is exactly that formula (rank 16 + 16 = 32; the check on one layer printed a largest difference of 4.66e-10).', 'They recorded four points along the slider. Click through them:'],
-      ['两个适配器都是在同一个 360M 底模上训练的，所以能混：**W = (1 − t)·A + t·B**。A 是颜色适配器，B 是俳句适配器；t = 0 全是颜色，t = 1 全是俳句。合并时把两个适配器并排叠起来，结果就严格等于这个公式（rank 变成 16 + 16 = 32；对一层做的检查，最大误差只有 4.66e-10）。', '他们在滑杆上记录了四个点，点一点看看：'])}
-    <div class="vm-blend">
-      <div class="vm-track"><span class="vm-end"><span class="en">A · colour</span><span class="zh">A · 颜色</span></span><div class="vm-stops">${stopsBtns}</div><span class="vm-end"><span class="en">B · haiku</span><span class="zh">B · 俳句</span></span></div>
-      <div class="vm-model"></div>
-      <div class="vm-ba">
-        <div class="vm-col"><div class="vm-col-h"><q>${esc(B.pA)}</q></div><div class="vm-oa"></div></div>
-        <div class="vm-col"><div class="vm-col-h"><q>${esc(B.pB)}</q></div><div class="vm-ob"></div></div>
-      </div>
-    </div>
-    ${lesson(['**Half the weights is not half the behaviour.** At t = 0.5 the colour habit wins everything: even “write a haiku” and “what colour is the sea in winter?” get hex codes. The colour habit is strong and narrow (1,500 steps, one kind of answer); the haiku preference is a gentler change. At t = 0.75 the model does both: colour descriptions get hex codes, haiku requests get haiku, and the sea question gets ordinary prose. Where one character turns into the other is the thing to listen for. And who is the author of colour-x-haiku-50? Nobody wrote it directly: the colour dataset, the people and model who made the haiku pairs, the base model and its data, and whoever picked t.'],
-      ['**权重一半一半，行为可不是一半一半。** t = 0.5 时颜色习惯全面压倒：连“写一首俳句”“冬天的海是什么颜色”都回了色号。因为颜色习惯又强又窄（练了 1,500 步，只有一种答法），俳句偏好是一个温和得多的改动。到 t = 0.75，模型两样都会了：描述颜色就给色号，要俳句就写俳句，问大海就用普通的话回答。一种性格在哪一点变成另一种，这才是值得仔细听的地方。那 colour-x-haiku-50 的作者是谁？没有人直接写过它：颜色数据集、做俳句配对的人和模型、底模和它的训练数据，还有决定 t 的那个人。'])}
-  </article>`;
+  const ex4 = ex(4, 'Colour + haiku: blend', '颜色 + 俳句：混合', 'Merge', ['8.5'], [
+    step(1, 'Start: two adapters on the same base', '起点：同一个底模上的两个适配器', P('A = the colour adapter from example 2. B = the haiku adapter from example 3. Both were trained on the same 360M model, so they can be mixed.', 'A = 例子 2 的颜色适配器，B = 例子 3 的俳句适配器。两个都是在同一个 360M 底模上训练的，所以才能混。')),
+    step(2, 'Formula: one slider, t', '公式：一个滑杆 t', `<div class="vm-formula">W = (1 − t) · A + t · B</div>` + P('t = 0 is all A (colour), t = 1 is all B (haiku). The merged adapter is exactly this mix (a check on one layer: largest difference 4.66e-10).', 't = 0 全是 A（颜色），t = 1 全是 B（俳句）。合出来的适配器严格等于这个公式（抽查一层，最大误差 4.66e-10）。')),
+    step(3, 'Run: two blends', '运行：混两次', cmd(B.cmd))
+  ], `<div class="vr-head">${T('Half the weights is not half the behaviour.', '权重一半一半，行为可不是一半一半。')}</div>
+    ${P('Click t. The same three questions, answered by the recorded model at each point:', '点不同的 t，看同样三个问题在每个点上的真实回答：')}
+    <div class="vm-blend"><div class="vm-stops">${B.stops.map((s, i) => `<button class="vm-stop" data-i="${i}">t = ${s.t}</button>`).join('')}</div>
+      <div class="vm-say"></div>
+      <div class="vm-qs">${[B.pA, B.pB, B.pC].map((p, i) => `<div class="vm-qa"><div class="vm-qa-q">“${esc(p)}”</div><div class="vm-qa-a" data-k="${'abc'[i]}"></div></div>`).join('')}</div></div>`,
+    take('Blending at t = 0.5 averages the numbers, not the behaviour: the stronger, narrower habit can take over, so you have to listen to where one character turns into the other.', 't = 0.5 平均的是数字，不是行为：更强、更窄的习惯会压倒另一个，所以要亲耳听一种性格在哪一点变成另一种。'));
 
-  const tail = `<div class="vm-ex vm-tail">
-    <div class="vm-try"><h4><span class="en">Try it yourself: one line in Terminal</span><span class="zh">自己跑一遍：终端里一行搞定</span></h4>
-      ${biBlock(['Needs an Apple Silicon Mac (M1 or later), 16 GB+ memory, macOS 14+ and about 10 GB free. Open **Terminal** (cmd-space, type “Terminal”, Return), paste this line, press Return:'],
-        ['需要 Apple 芯片的 Mac（M1 及以上）、16 GB 以上内存、macOS 14 以上、约 10 GB 空间。打开**终端**（按 cmd + 空格，输入“终端”或 Terminal，回车），把下面这一行粘贴进去，回车：'])}
-      <div class="vm-one"><pre class="vm-cmd" id="vm-one">${esc(V.oneLine)}</pre><button class="vm-copy" data-copy="vm-one"><span class="en">Copy</span><span class="zh">复制</span></button></div>
-      <ol class="vm-steps">
-        <li><span class="en"><b>Homebrew</b> (the Mac package installer) is installed if it’s missing. This is the only part that asks for your Mac login password; typing it shows nothing, that’s normal. It may also install Apple’s command-line tools.</span><span class="zh">如果没有 <b>Homebrew</b>（Mac 上装软件的工具），先装它。<b>只有这一步会要你输入开机密码</b>，输的时候屏幕上不显示，这是正常的；它可能还会顺带装苹果的命令行工具。</span></li>
-        <li><span class="en"><b>Node</b> (runs the app) and <b>Ollama</b> (runs the models) are installed, or updated if you already have them.</span><span class="zh">装好 <b>Node</b>（跑这个应用）和 <b>Ollama</b>（跑模型）；已经装过的会更新到新版。</span></li>
-        <li><span class="en">The app’s own installer downloads Variable Machine into <code>~/variable-machine</code>, makes a <b>Variable Machine</b> app in Applications and starts it. On first start it installs <code>uv</code> and the Python training packages, then opens <code>localhost:4817</code> in your browser.</span><span class="zh">应用自己的安装脚本把 Variable Machine 下载到 <code>~/variable-machine</code>，在“应用程序”里生成一个 <b>Variable Machine</b> 图标并启动。第一次启动会自动装 <code>uv</code> 和训练用的 Python 包，然后在浏览器里打开 <code>localhost:4817</code>。</span></li>
-      </ol>
-      ${biBlock(['The first run takes about 10–20 minutes, depending on the internet. Every command is printed in green with ▸ in front, so you can watch what it does. Next time, just open the Variable Machine app; to update, paste the same line again. Already have Node 22+ and Ollama? The app’s official line alone is enough:'],
-        ['第一次大概要 10–20 分钟，看网速。每条命令执行前都会用绿色、前面带 ▸ 打出来，你能看着它一步步做了什么。以后直接打开 Variable Machine 这个应用就行；想更新，再贴一次同一行。如果你已经装好了 Node 22+ 和 Ollama，只用官方这一行就够了：'])}
-      <div class="vm-one"><pre class="vm-cmd" id="vm-app">${esc(V.appLine)}</pre><button class="vm-copy" data-copy="vm-app"><span class="en">Copy</span><span class="zh">复制</span></button></div>
-      ${biBlock(['Then the first ten minutes: Start (the map) → Models (`ollama pull smollm2:360m`, about 700 MB) → Modelfile (pick a preset, make variant, ask both the same question) → Data → Train with a bundled dataset → it exports your model and opens Chat.'],
-        ['装好后的头十分钟：Start（总览图）→ Models（`ollama pull smollm2:360m`，约 700 MB）→ Modelfile（选一个预设，make variant，问两个模型同一句话）→ Data → 用自带数据集 Train → 训练完会自动导出模型并打开 Chat。'])}</div>
-    <p class="vm-src"><span class="en">Source: every command, number and answer above is copied from the app’s own records.</span><span class="zh">来源：上面所有命令、数字和回答都照抄自这个应用自己的记录。</span>
-      <a href="${V.site}" target="_blank" rel="noopener">variablemachine.orpiment.studio ↗</a> · <a href="${V.anim}" target="_blank" rel="noopener"><span class="en">animated examples</span><span class="zh">动画版例子</span> ↗</a> · <a href="${V.records}" target="_blank" rel="noopener"><span class="en">raw records</span><span class="zh">原始记录</span> ↗</a> · Kevin Patton / Studio Orpiment, MIT</p>
-  </div>`;
+  /* ── recap ── */
+  const recap = `<section class="vx vm-recap"><h3>${T('What the four examples show', '四个例子，一起看')}</h3>
+    <table class="vm-tbl"><thead><tr><th>${T('way', '方法')}</th><th>${T('what you give it', '你给它什么')}</th><th>${T('weights change?', '动权重吗')}</th><th>${T('result', '结果')}</th><th></th></tr></thead><tbody>
+    <tr><td>${T('1 Words', '1 用话')}</td><td>${T('a Modelfile', '一个 Modelfile')}</td><td class="no">${T('no', '不动')}</td><td>${T('318 → 61 tokens, three-line crit', '318 → 61 token，三行点评')}</td><td>${qa(['8.1'])}</td></tr>
+    <tr><td>${T('2 Examples', '2 用例子')}</td><td>${T('3,000 question → answer rows', '3,000 条“问题 → 答案”')}</td><td class="yes">${T('adds an adapter', '加一个适配器')}</td><td>${T('only hex codes; 44.6 off vs 167.8 guessing', '只回色号；误差 44.6，瞎猜是 167.8')}</td><td>${qa(['8.2', '8.3'])}</td></tr>
+    <tr><td>${T('3 Taste', '3 用品味')}</td><td>${T('44 “this, not that” pairs', '44 对“要这个不要那个”')}</td><td class="yes">${T('adds an adapter', '加一个适配器')}</td><td>${T('12/12 three lines; score 1.33 → up to 2.42', '12/12 都是三行；分数 1.33 → 最高 2.42')}</td><td>${qa(['8.4'])}</td></tr>
+    <tr><td>${T('4 Blend', '4 混合')}</td><td>${T('two adapters and a t', '两个适配器和一个 t')}</td><td class="yes">${T('mixes adapters', '混合适配器')}</td><td>${T('t = 0.5 all hex; t = 0.75 does both', 't = 0.5 全是色号；t = 0.75 两样都会')}</td><td>${qa(['8.5'])}</td></tr>
+    </tbody></table></section>`;
+
+  /* ── try it ── */
+  const tryit = `<section class="vx vm-tail"><h3>${T('Try it yourself: one line in Terminal', '自己跑一遍：终端里一行搞定')}</h3>
+    ${P('Needs an Apple Silicon Mac (M1 or later), 16 GB+ memory, macOS 14+ and about 10 GB free. Open **Terminal** (cmd-space, type “Terminal”, Return), paste this line, press Return:', '需要 Apple 芯片的 Mac（M1 及以上）、16 GB 以上内存、macOS 14 以上、约 10 GB 空间。打开**终端**（按 cmd + 空格，输入 Terminal，回车），粘贴下面这一行，回车：')}
+    <div class="vm-one"><pre class="vm-cmd" id="vm-one">${esc(V.oneLine)}</pre><button class="vm-copy" data-copy="vm-one">${T('Copy', '复制')}</button></div>
+    <ol class="vm-steps">
+      <li>${P('**Homebrew** (the Mac package installer) is installed if missing. This is the only part that asks for your Mac password; typing shows nothing, that’s normal.', '没有 **Homebrew**（Mac 上装软件的工具）就先装它。**只有这一步要输开机密码**，输入时屏幕不显示，是正常的。')}</li>
+      <li>${P('**Node** (runs the app) and **Ollama** (runs the models) are installed or updated.', '装好或更新 **Node**（跑这个应用）和 **Ollama**（跑模型）。')}</li>
+      <li>${P('The app’s own installer puts it in `~/variable-machine`, adds a **Variable Machine** app and starts it. First start installs the training packages, then opens `localhost:4817`.', '应用自己的安装脚本把它放进 `~/variable-machine`，生成 **Variable Machine** 图标并启动。第一次启动会装训练用的包，然后打开 `localhost:4817`。')}</li>
+    </ol>
+    ${P('First run: about 10–20 minutes. Next time just open the app; to update, paste the same line again. If Node 22+ and Ollama are already installed, the official line alone is enough:', '第一次大约 10–20 分钟。以后直接打开应用；想更新就再贴一次。已经装好 Node 22+ 和 Ollama 的话，只用官方这一行就行：')}
+    <div class="vm-one"><pre class="vm-cmd" id="vm-app">${esc(V.appLine)}</pre><button class="vm-copy" data-copy="vm-app">${T('Copy', '复制')}</button></div>
+    <p class="vm-src">${T('Every command, number and answer on this page is copied from the app’s own records.', '本页所有命令、数字和回答都照抄自这个应用自己的记录。')}
+      <a href="${V.site}" target="_blank" rel="noopener">variablemachine.orpiment.studio ↗</a> · <a href="${V.anim}" target="_blank" rel="noopener">${T('animated examples', '动画版例子')} ↗</a> · <a href="${V.records}" target="_blank" rel="noopener">${T('raw records', '原始记录')} ↗</a> · Kevin Patton / Studio Orpiment, MIT</p></section>`;
 
   const intro = document.getElementById('vm-intro');
-  if (intro) intro.innerHTML = `<div class="en">${V.intro_en.map(x => `<p>${md(x)}</p>`).join('')}</div><div class="zh">${V.intro_zh.map(x => `<p>${md(x)}</p>`).join('')}</div>`;
-  host.innerHTML = `${map}${ex1}${ex2}${ex3}${ex4}${tail}`;
+  if (intro) intro.innerHTML = V.intro_en.map((e, i) => P(e, V.intro_zh[i])).join('');
+  host.innerHTML = ways + ex1 + ex2 + ex3 + ex4 + recap + tryit;
 
   host.querySelectorAll('.vm-copy').forEach(btn => btn.addEventListener('click', async () => {
-    const txt = document.getElementById(btn.dataset.copy).textContent;
-    try { await navigator.clipboard.writeText(txt); } catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById(btn.dataset.copy)); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); document.execCommand('copy'); }
+    const el = document.getElementById(btn.dataset.copy);
+    try { await navigator.clipboard.writeText(el.textContent); } catch (e) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); }
     btn.classList.add('ok'); setTimeout(() => btn.classList.remove('ok'), 1600);
   }));
 
-  /* blend stops */
   const box = host.querySelector('.vm-blend');
   const show = i => {
     const s = B.stops[i];
     box.querySelectorAll('.vm-stop').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
-    box.querySelector('.vm-model').innerHTML = `<code>${s.name}</code>`;
-    const out = v => /^#[0-9a-f]{6}$/i.test(v) ? `<div class="vm-hexout"><span class="vm-big" style="background:${v}"></span><code>${v}</code></div>` : pre(v);
-    box.querySelector('.vm-oa').innerHTML = out(s.a);
-    box.querySelector('.vm-ob').innerHTML = out(s.b) + (s.t === 0.5 ? '<div class="vm-flag"><span class="en">a hex code, not a haiku</span><span class="zh">回了色号，不是俳句</span></div>' : '');
+    box.querySelector('.vm-say').innerHTML = `<code>${s.name}</code>${P(s.en, s.zh)}`;
+    box.querySelectorAll('.vm-qa-a').forEach(el => { const v = s[el.dataset.k]; el.innerHTML = v ? hexOut(v) : `<span class="vm-na">${T('not recorded', '记录里没有')}</span>`; });
   };
   box.addEventListener('click', e => { const b = e.target.closest('.vm-stop'); if (b) show(+b.dataset.i); });
   show(1);

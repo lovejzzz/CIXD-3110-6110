@@ -40,6 +40,7 @@ window.VM = {
   /* 1 · words */
   crit: {
     base: 'smollm2:1.7b', name: 'studio-crit',
+    cmd: 'ollama create studio-crit -f workspace/modelfiles/studio-crit.Modelfile',
     modelfile: [
       ['FROM smollm2:1.7b', 'w'],
       ['SYSTEM """You are a studio critic at an art and design school. Whatever work someone describes, answer in exactly three lines and nothing else:\nWhat works: one short sentence.\nWhat doesn\'t: one short sentence.\nTry next: one short sentence.\nNo greeting, no introduction, no lists, no extra lines."""', 's'],
@@ -57,6 +58,7 @@ window.VM = {
   hex: {
     base: 'SmolLM2-360M-Instruct', name: 'colour-hex-3k-360m', rows: 3000, rank: 16, layers: 16, iters: 1500,
     sample: { q: 'Light mustard yellow: a vibrant shade of yellow…', a: '#ffcc40' },
+    dataCmd: 'data template raw/colors colour-hex-3k --question "{description}" --answer "{color}" --limit 3000 --seed 0\ndata split colour-hex-3k --valid 0.05',
     cmd: 'train colour-hex-3k-360m --data colour-hex-3k --base HuggingFaceTB/SmolLM2-360M-Instruct --rank 16 --layers 16 --iters 1500',
     val: [[1, 5.671], [50, 1.301], [100, 1.346], [150, 1.169], [200, 1.135], [250, 1.185], [300, 1.103], [350, 1.122], [400, 1.096], [450, 1.031], [500, 1.052], [550, 0.975], [600, 1.007], [650, 1.087], [700, 0.997], [750, 1.027], [800, 0.985], [850, 1.003], [900, 0.983], [950, 1.007], [1000, 0.948], [1050, 1], [1100, 0.981], [1150, 1.001], [1200, 0.935], [1250, 0.946], [1300, 0.946], [1350, 0.982], [1400, 0.996], [1450, 0.929], [1500, 1.003]],
     dist: [
@@ -91,14 +93,20 @@ window.VM = {
   /* 4 · blend: the four recorded points along t */
   blend: {
     note: '4.66e-10',
+    cmd: 'merge colour-x-haiku-50 --a colour-hex-3k-360m --b haiku-575-dpo --t 0.5\nmerge colour-x-haiku-75 --a colour-hex-3k-360m --b haiku-575-dpo --t 0.75',
     stops: [
-      { t: 0, name: 'colour-hex-3k-360m', a: '#55a033', b: '#a08070' },
-      { t: 0.5, name: 'colour-x-haiku-50', a: '#558833', b: '#97a0c0' },
-      { t: 0.75, name: 'colour-x-haiku-75', a: '#50b040', b: 'Silent lantern glows\nIn the quiet garden’s embrace\nGlowing light on earth' },
-      { t: 1, name: 'haiku-575-dpo', a: '“Here’s a revised version with some suggested edits for clarity and style: The green of a tennis ball on the sand at dusk. …”', b: 'Folding paper thin\nA lantern light in the breeze\nWarmth in the night.' }
+      { t: 0, name: 'colour-hex-3k-360m', a: '#55a033', b: '#a08070',
+        zh: '全是颜色适配器：要俳句也回色号。', en: 'All colour adapter: even the haiku request gets a hex code.' },
+      { t: 0.5, name: 'colour-x-haiku-50', a: '#558833', b: '#97a0c0', c: '#609090',
+        zh: '一半一半，可颜色习惯全面获胜：三个问题全回色号。', en: 'Half and half, but the colour habit wins everything: all three get hex codes.' },
+      { t: 0.75, name: 'colour-x-haiku-75', a: '#50b040', b: 'Silent lantern glows\nIn the quiet garden’s embrace\nGlowing light on earth', c: 'In winter, the sea is often a deep, icy grey. …',
+        zh: '两样都会了：颜色给色号，俳句写俳句，普通问题用普通的话答。', en: 'It does both: colours get hex codes, haiku get haiku, a plain question gets plain prose.' },
+      { t: 1, name: 'haiku-575-dpo', a: '“Here’s a revised version with some suggested edits for clarity and style: The green of a tennis ball on the sand at dusk. …”', b: 'Folding paper thin\nA lantern light in the breeze\nWarmth in the night.',
+        zh: '全是俳句适配器：会写俳句，但完全不会给色号。', en: 'All haiku adapter: writes the haiku, but has no idea about hex codes.' }
     ],
     pA: 'The green of a tennis ball at dusk.',
     pB: 'Write a haiku about a paper lantern.',
+    pC: 'What colour is the sea in winter?',
     extra: [
       { t: 0.5, p: 'What colour is the sea in winter?', a: '#609090' },
       { t: 0.75, p: 'What colour is the sea in winter?', a: 'In winter, the sea is often a deep, icy grey. …' }
