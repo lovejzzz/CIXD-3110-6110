@@ -42,6 +42,7 @@
     return CL.map(c => `<a href="#c${c.n}" class="nav-c" data-c="${c.n}">
       <span class="nav-n">${c.n}</span><span class="nav-t"><span class="en">${esc(c.t_en)}</span><span class="zh">${esc(c.t_zh)}</span></span>
       <span class="nav-p" data-np="${c.n}"></span></a>`).join('') +
+      `<a href="#vm" class="nav-c nav-g" data-c="vm"><span class="nav-n">V</span><span class="nav-t"><span class="en">Variable Machine</span><span class="zh">Variable Machine 实例</span></span><span class="nav-p"></span></a>` +
       `<a href="#glossary" class="nav-c nav-g" data-c="glossary"><span class="nav-n">≡</span><span class="nav-t"><span class="en">Glossary</span><span class="zh">词汇表</span></span><span class="nav-p"></span></a>` +
       `<a href="#zine" class="nav-c nav-g" data-c="zine"><span class="nav-n">Z</span><span class="nav-t"><span class="en">Zine sample</span><span class="zh">小册子范例</span></span><span class="nav-p"></span></a>`;
   }
