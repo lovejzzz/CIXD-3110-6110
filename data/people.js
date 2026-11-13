@@ -6,7 +6,7 @@ window.PEOPLE = [
     id: 'zuboff', en: 'Shoshana Zuboff', zh: '肖莎娜·祖博夫', yrs: 'b. 1951',
     role_en: 'Social psychologist, Harvard Business School (emerita)', role_zh: '社会心理学家，哈佛商学院荣休教授',
     bio_en: 'Wrote *The Age of Surveillance Capitalism* (2019). She argues that tech companies treat our everyday behavior as free raw material, turn it into predictions about us, and sell those predictions.',
-    bio_zh: '著有《监控资本主义时代》（2019）。她认为科技公司把我们日常的行为当作免费原材料，加工成对我们的预测，再把预测卖出去。',
+    bio_zh: '著有《监视资本主义时代》（2019）。她认为科技公司把我们日常的行为当作免费原材料，加工成对我们的预测，再把预测卖出去。',
     m_en: ['Zuboff'], m_zh: ['祖博夫']
   },
   {

@@ -248,7 +248,7 @@ The result is a huge **asymmetry of knowledge**: they know a great deal about us
       short_en: `[[surv_cap]] is Shoshana Zuboff’s name for an economic order that **claims human experience as free raw material**. Platforms collect more than they need ([[behav_surplus]]), machine intelligence turns it into **prediction products**, and these are sold in **behavioral futures markets** to advertisers — then the system nudges behavior so the predictions come true ([[behav_mod]]). It creates a huge asymmetry: they know us, we don’t know them.`,
       short_zh: `[[surv_cap]]是肖莎娜·祖博夫提出的概念，指一种**把人的经验当作免费原材料**的经济秩序。平台收集远超所需的数据（[[behav_surplus]]），机器智能把它加工成**预测产品**，在**行为期货市场**卖给广告主——系统再推动我们的行为，让预测成真（[[behav_mod]]）。结果是巨大的不对称：他们了解我们，我们却不了解他们。`,
       basis_en: `Shoshana Zuboff, *The Age of Surveillance Capitalism* (2019) — the terms surplus, prediction products, futures markets and behavior modification are hers. The one-line definition (“a business model based on relentless data collection to feed targeted advertising… corporate surveillance distinct from state digital authoritarianism”) is from the course glossary, via the AI and Humanity reading.`,
-      basis_zh: `肖莎娜·祖博夫《监控资本主义时代》（2019）——行为剩余、预测产品、行为期货市场、行为矫正都是她的术语。一句话定义（“一种靠不间断收集数据来投放精准广告的商业模式……与国家数字威权不同的企业监视”）来自课程词汇表，出自《AI and Humanity》读物。`,
+      basis_zh: `肖莎娜·祖博夫《监视资本主义时代》（2019）——行为剩余、预测产品、行为期货市场、行为矫正都是她的术语。一句话定义（“一种靠不间断收集数据来投放精准广告的商业模式……与国家数字威权不同的企业监视”）来自课程词汇表，出自《AI and Humanity》读物。`,
       rel: ['1.2', '3.5', '7.5'],
       hook_en: 'You are not the product — you are the raw material. The product is the prediction of you.',
       hook_zh: '你不是产品，你是原材料；真正的产品是“对你的预测”。',

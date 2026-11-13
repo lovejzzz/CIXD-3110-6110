@@ -315,6 +315,7 @@
           <div class="lq-h"><span class="lq-id">${q.id}</span><h3><span class="en">${esc(q.t_en)}</span><span class="zh">${esc(q.t_zh)}</span></h3><a class="lq-jump" href="${qAnchor(q.id)}" data-exit-lecture><span class="en">student view</span><span class="zh">学生视图</span> ↗</a></div>
           <p class="lq-q"><span class="en">${esc(q.q_en)}</span><span class="zh">${esc(q.q_zh)}</span></p>
           ${blk('lec_open', 'lx-open', 'Open with', '开场先问')}
+          ${(window.LEC_SIMPLE || {})[q.id] ? `<div class="lx lx-simple"><div class="lx-k"><span class="en">Say it simply</span><span class="zh">先用大白话讲</span></div>${two(LEC_SIMPLE[q.id].en, LEC_SIMPLE[q.id].zh)}</div>` : ''}
           ${blk('lec_why', 'lx-why', 'The why', '讲清“为什么”')}
           ${fig ? `<details class="lx-fig"><summary><span class="en">Show the drawing</span><span class="zh">展开示意图</span></summary><div class="lx-figbox">${fig}</div></details>` : ''}
           ${blk('lec_trap', 'lx-trap', 'Where students go wrong — and why', '学生容易错在哪，为什么')}

@@ -2,9 +2,9 @@
    Keyed by question id; rendered at the end of each question in the lecture. */
 window.LEC_ONE = {
   '1.1': ['Surveillance capitalism treats our behavior as free raw material, turns it into predictions about us, and sells those predictions.',
-          '监控资本主义把我们的行为当成免费原材料，加工成对我们的预测，再把预测卖掉。'],
+          '监视资本主义把我们的行为当成免费原材料，加工成对我们的预测，再把预测卖掉。'],
   '1.2': ['Surveillance capitalism is the mechanism (extract, predict, modify); technofeudalism is the economy it builds, where platforms own the market and charge rent.',
-          '监控资本主义讲的是机制（采集、预测、改变行为）；技术封建主义讲的是它造出来的经济：平台拥有市场本身，靠收租赚钱。'],
+          '监视资本主义讲的是机制（采集、预测、改变行为）；技术封建主义讲的是它造出来的经济：平台拥有市场本身，靠收租赚钱。'],
   '1.3': ['A URL is a set of directions: scheme says how, domain says which server, path says which file, query adds details, and the fragment never reaches the server.',
           'URL 就是一串指路说明：scheme 说怎么走，域名说找哪台服务器，路径说要哪个文件，query 补充细节，而 # 后面的片段根本不会发给服务器。'],
   '1.4': ['GET asks for something and carries its data in the URL; POST sends something to change the server and carries its data in the body, so forms usually POST.',

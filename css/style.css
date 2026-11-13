@@ -998,3 +998,8 @@ body.lang-both .lp-r .zh { display: block; font-weight: 500; }
 .lx-one .bi .zh { color: #d9d2c3; }
 .lx-one .bi > .zh { border-top-color: rgba(255,255,255,.18) !important; }
 .lx-one .term, .lx-one .pname { color: inherit; }
+
+/* ── lecture: plain-words block ─────────────── */
+.lx-simple { background: #eef6f0; border-color: #cfe3d5; border-left: 4px solid #4f9a6a; }
+.lx-simple .lx-k { color: #2f6e46; }
+.lx-simple .bi { font-size: calc(var(--L) * 1.02); }
