@@ -6,6 +6,10 @@ window.VM = {
   repo: 'https://github.com/studio0rpiment/variable-machine',
   records: 'https://github.com/studio0rpiment/variable-machine/tree/main/docs/examples',
   anim: 'https://variablemachine.orpiment.studio/examples/',
+  /* one line that also installs the two prerequisites (Homebrew → Node + Ollama), then the app's own installer */
+  oneLine: 'command -v brew >/dev/null || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; eval "$(brew shellenv 2>/dev/null || /opt/homebrew/bin/brew shellenv)"; brew install node ollama; brew upgrade node ollama; curl -fsSL https://variablemachine.orpiment.studio/install.sh | bash',
+  /* the app's official line, when Node 22+ and Ollama are already installed */
+  appLine: 'curl -fsSL https://variablemachine.orpiment.studio/install.sh | bash',
 
   intro_zh: [
     '第 8 课用的就是这个应用。**Variable Machine** 是一个装在 Apple 芯片 Mac 上、在本机浏览器里打开的小工具（地址是 localhost:4817），专门用来“改造”小语言模型。所有东西都在你自己的电脑上跑，做出来的东西不会上传到任何地方。',

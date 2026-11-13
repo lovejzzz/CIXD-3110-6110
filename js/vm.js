@@ -98,9 +98,20 @@
   </article>`;
 
   const tail = `<div class="vm-ex vm-tail">
-    <div class="vm-try"><h4><span class="en">Try it yourself</span><span class="zh">自己跑一遍</span></h4>
-      ${biBlock(['Needs an Apple Silicon Mac (M1 or later), 16 GB+ memory, macOS 14+, about 10 GB free. Install Ollama and Node 22+, paste the install line from the site into Terminal, and it opens at localhost:4817. First ten minutes: Start (the map) → Models (`ollama pull smollm2:360m`, about 700 MB) → Modelfile (pick a preset, make variant, ask both the same question) → Data → Train with a bundled dataset → it exports your model and opens Chat.'],
-        ['需要 Apple 芯片的 Mac（M1 及以上）、16 GB 以上内存、macOS 14 以上、约 10 GB 空间。先装 Ollama 和 Node 22+，把网站上那行安装命令贴进“终端”，它会在 localhost:4817 打开。头十分钟：Start（总览图）→ Models（`ollama pull smollm2:360m`，约 700 MB）→ Modelfile（选一个预设，make variant，问两个模型同一句话）→ Data → 用自带数据集 Train → 训练完会自动导出模型并打开 Chat。'])}</div>
+    <div class="vm-try"><h4><span class="en">Try it yourself: one line in Terminal</span><span class="zh">自己跑一遍：终端里一行搞定</span></h4>
+      ${biBlock(['Needs an Apple Silicon Mac (M1 or later), 16 GB+ memory, macOS 14+ and about 10 GB free. Open **Terminal** (cmd-space, type “Terminal”, Return), paste this line, press Return:'],
+        ['需要 Apple 芯片的 Mac（M1 及以上）、16 GB 以上内存、macOS 14 以上、约 10 GB 空间。打开**终端**（按 cmd + 空格，输入“终端”或 Terminal，回车），把下面这一行粘贴进去，回车：'])}
+      <div class="vm-one"><pre class="vm-cmd" id="vm-one">${esc(V.oneLine)}</pre><button class="vm-copy" data-copy="vm-one"><span class="en">Copy</span><span class="zh">复制</span></button></div>
+      <ol class="vm-steps">
+        <li><span class="en"><b>Homebrew</b> (the Mac package installer) is installed if it’s missing. This is the only part that asks for your Mac login password; typing it shows nothing, that’s normal. It may also install Apple’s command-line tools.</span><span class="zh">如果没有 <b>Homebrew</b>（Mac 上装软件的工具），先装它。<b>只有这一步会要你输入开机密码</b>，输的时候屏幕上不显示，这是正常的；它可能还会顺带装苹果的命令行工具。</span></li>
+        <li><span class="en"><b>Node</b> (runs the app) and <b>Ollama</b> (runs the models) are installed, or updated if you already have them.</span><span class="zh">装好 <b>Node</b>（跑这个应用）和 <b>Ollama</b>（跑模型）；已经装过的会更新到新版。</span></li>
+        <li><span class="en">The app’s own installer downloads Variable Machine into <code>~/variable-machine</code>, makes a <b>Variable Machine</b> app in Applications and starts it. On first start it installs <code>uv</code> and the Python training packages, then opens <code>localhost:4817</code> in your browser.</span><span class="zh">应用自己的安装脚本把 Variable Machine 下载到 <code>~/variable-machine</code>，在“应用程序”里生成一个 <b>Variable Machine</b> 图标并启动。第一次启动会自动装 <code>uv</code> 和训练用的 Python 包，然后在浏览器里打开 <code>localhost:4817</code>。</span></li>
+      </ol>
+      ${biBlock(['The first run takes about 10–20 minutes, depending on the internet. Every command is printed in green with ▸ in front, so you can watch what it does. Next time, just open the Variable Machine app; to update, paste the same line again. Already have Node 22+ and Ollama? The app’s official line alone is enough:'],
+        ['第一次大概要 10–20 分钟，看网速。每条命令执行前都会用绿色、前面带 ▸ 打出来，你能看着它一步步做了什么。以后直接打开 Variable Machine 这个应用就行；想更新，再贴一次同一行。如果你已经装好了 Node 22+ 和 Ollama，只用官方这一行就够了：'])}
+      <div class="vm-one"><pre class="vm-cmd" id="vm-app">${esc(V.appLine)}</pre><button class="vm-copy" data-copy="vm-app"><span class="en">Copy</span><span class="zh">复制</span></button></div>
+      ${biBlock(['Then the first ten minutes: Start (the map) → Models (`ollama pull smollm2:360m`, about 700 MB) → Modelfile (pick a preset, make variant, ask both the same question) → Data → Train with a bundled dataset → it exports your model and opens Chat.'],
+        ['装好后的头十分钟：Start（总览图）→ Models（`ollama pull smollm2:360m`，约 700 MB）→ Modelfile（选一个预设，make variant，问两个模型同一句话）→ Data → 用自带数据集 Train → 训练完会自动导出模型并打开 Chat。'])}</div>
     <p class="vm-src"><span class="en">Source: every command, number and answer above is copied from the app’s own records.</span><span class="zh">来源：上面所有命令、数字和回答都照抄自这个应用自己的记录。</span>
       <a href="${V.site}" target="_blank" rel="noopener">variablemachine.orpiment.studio ↗</a> · <a href="${V.anim}" target="_blank" rel="noopener"><span class="en">animated examples</span><span class="zh">动画版例子</span> ↗</a> · <a href="${V.records}" target="_blank" rel="noopener"><span class="en">raw records</span><span class="zh">原始记录</span> ↗</a> · Kevin Patton / Studio Orpiment, MIT</p>
   </div>`;
@@ -108,6 +119,12 @@
   const intro = document.getElementById('vm-intro');
   if (intro) intro.innerHTML = `<div class="en">${V.intro_en.map(x => `<p>${md(x)}</p>`).join('')}</div><div class="zh">${V.intro_zh.map(x => `<p>${md(x)}</p>`).join('')}</div>`;
   host.innerHTML = `${map}${ex1}${ex2}${ex3}${ex4}${tail}`;
+
+  host.querySelectorAll('.vm-copy').forEach(btn => btn.addEventListener('click', async () => {
+    const txt = document.getElementById(btn.dataset.copy).textContent;
+    try { await navigator.clipboard.writeText(txt); } catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById(btn.dataset.copy)); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); document.execCommand('copy'); }
+    btn.classList.add('ok'); setTimeout(() => btn.classList.remove('ok'), 1600);
+  }));
 
   /* blend stops */
   const box = host.querySelector('.vm-blend');
