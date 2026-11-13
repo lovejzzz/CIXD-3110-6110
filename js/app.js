@@ -144,7 +144,7 @@
       <div class="qz-tag">QUIZ · ${c.n}</div>
       <h3><span class="en">Check yourself: Class ${c.n}</span><span class="zh">第 ${c.n} 课小测验</span></h3>
       <div class="qz-lang" role="group" aria-label="Quiz language"><button data-ql="en">EN</button><button data-ql="zh">中文</button></div>
-      <p class="qz-rule"><span class="en">${c.quiz.length} questions. Every answer comes with an explanation. Score 90% or more to unlock the next chapter.</span><span class="zh">共 ${c.quiz.length} 题，每题选完都有讲解。拿到 90 分以上，就能解锁下一章。</span></p>
+      <p class="qz-rule"><span class="en">${c.quiz.length} questions. Every answer comes with an explanation. Use it to check yourself; every chapter is already open.</span><span class="zh">共 ${c.quiz.length} 题，每题选完都有讲解。用来自测，所有章节都已开放。</span></p>
     </div>
     <ol class="qz-list"></ol>
     <div class="qz-result" hidden></div>
@@ -194,7 +194,7 @@
   function applyLocks() {
     CL.forEach((c, i) => {
       const prev = CL[i - 1];
-      const locked = !TUTOR && i > 0 && prev && prev.quiz && prev.quiz.length && !passed(prev.n) || (!TUTOR && i > 0 && CL.slice(0, i).some(p => p.quiz && p.quiz.length && !passed(p.n)));
+      const locked = false; // all chapters are open; quizzes are for practice only
       const sec = $('#c' + c.n); if (sec) sec.classList.toggle('locked', !!locked);
       const a = $(`.nav-c[data-c="${c.n}"]`); if (a) a.classList.toggle('locked', !!locked);
       const np = $(`[data-np="${c.n}"]`);
@@ -236,8 +236,8 @@
       res.hidden = false; res.className = 'qz-result ' + (ok ? 'pass' : 'fail');
       res.innerHTML = `<div class="qz-score">${score}<small>/100</small></div>
         <div class="qz-msg">${ok
-          ? `<p class="en"><b>Passed.</b> ${next ? `Chapter ${next.n} is unlocked.` : 'All chapters are open.'}</p><p class="zh"><b>通过！</b>${next ? `第 ${next.n} 章已解锁。` : '全部章节都已开放。'}</p>${next ? `<a class="qz-go" href="#c${next.n}"><span class="en">Go to Class ${next.n} →</span><span class="zh">进入第 ${next.n} 课 →</span></a>` : ''}`
-          : `<p class="en">${n} of ${answers.length} right. You need 90% to unlock the next chapter. Read the explanations above, then try again (options are reshuffled).</p><p class="zh">答对 ${n}/${answers.length} 题。需要 90 分才能解锁下一章。先看看上面的讲解，再重做一次（选项会重新打乱）。</p>`}
+          ? `<p class="en"><b>Nice work.</b> You've got this chapter down.</p><p class="zh"><b>很好！</b>这一章你已经掌握了。</p>${next ? `<a class="qz-go" href="#c${next.n}"><span class="en">Go to Class ${next.n} →</span><span class="zh">进入第 ${next.n} 课 →</span></a>` : ''}`
+          : `<p class="en">${n} of ${answers.length} right. Read the explanations above, then try again if you like (options are reshuffled).</p><p class="zh">答对 ${n}/${answers.length} 题。先看看上面的讲解，想的话可以再做一次（选项会重新打乱）。</p>`}
           <button class="qz-retry"><span class="en">Retry quiz</span><span class="zh">重做测验</span></button></div>`;
       res.querySelector('.qz-retry').onclick = () => { buildQuiz(c); box.scrollIntoView({ behavior: 'smooth' }); };
       applyLocks();
